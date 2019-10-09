@@ -1,13 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ErkinStudy.Models
 {
-    public class Subject
+    public class Degree
     {
-        public long Id { get; set; }
+        public Degree(List<Paragraph> paragraphs, string title, uint level, long id)
+        {
+            Paragraphs = paragraphs;
+            Title = title;
+            Level = level;
+            Id = id;
+        }
 
+        public long Id { get; set; }
+        public uint Level { get; set; }
         public string Title { get; set; }
+        public List<Paragraph> Paragraphs { get; set; }
     }
 }
