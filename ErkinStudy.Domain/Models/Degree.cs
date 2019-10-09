@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace ErkinStudy.Models
+namespace ErkinStudy.Domain.Models
 {
     public class Degree
     {
-        public Degree(List<Paragraph> paragraphs, string title, uint level, long id)
+        public Degree(long id, uint level, string title, List<Paragraph> paragraphs)
         {
-            Paragraphs = paragraphs;
-            Title = title;
-            Level = level;
             Id = id;
+            Level = level;
+            Title = title;
+            Paragraphs = paragraphs;
         }
 
         public long Id { get; set; }

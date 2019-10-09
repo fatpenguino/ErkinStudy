@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ErkinStudy.Models
+namespace ErkinStudy.Domain.Models
 {
     public class Paragraph
     {
-        public Paragraph(List<Lesson> lessons, DateTime createdAt, uint order, string description, string title, long id)
+        public Paragraph(long id, string title, string description, uint order, DateTime createdAt, List<Lesson> lessons)
         {
-            Lessons = lessons;
-            CreatedAt = createdAt;
-            Order = order;
-            Description = description;
-            Title = title;
             Id = id;
+            Title = title;
+            Description = description;
+            Order = order;
+            CreatedAt = createdAt;
+            Lessons = lessons;
         }
 
         public long Id { get; set; }

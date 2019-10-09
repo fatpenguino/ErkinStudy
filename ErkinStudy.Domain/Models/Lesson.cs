@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace ErkinStudy.Models
+namespace ErkinStudy.Domain.Models
 {
     public class Lesson
     {
-        public Lesson(List<Content> contents, int price, uint order, DateTime createdAt, string title, long id)
+        public Lesson(long id, string title, DateTime createdAt, uint order, int price, List<Content> contents)
         {
-            Contents = contents;
-            Price = price;
-            Order = order;
-            CreatedAt = createdAt;
-            Title = title;
             Id = id;
+            Title = title;
+            CreatedAt = createdAt;
+            Order = order;
+            Price = price;
+            Contents = contents;
         }
 
         public long Id { get; set; }

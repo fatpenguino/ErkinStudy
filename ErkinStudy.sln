@@ -1,9 +1,10 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErkinStudy", "ErkinStudy\ErkinStudy.csproj", "{4E8164E6-728D-4484-A54D-41F65F9CEDCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Domain", "ErkinStudy.Domain\ErkinStudy.Domain.csproj", "{4E8164E6-728D-4484-A54D-41F65F9CEDCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErkinStudy.Domain.Tests", "ErkinStudy.Domain.Tests\ErkinStudy.Domain.Tests.csproj", "{D90C7812-A1F5-4129-81E0-47DE3F78D40A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +16,10 @@ Global
 		{4E8164E6-728D-4484-A54D-41F65F9CEDCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E8164E6-728D-4484-A54D-41F65F9CEDCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E8164E6-728D-4484-A54D-41F65F9CEDCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
