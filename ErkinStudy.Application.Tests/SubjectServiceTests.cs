@@ -1,10 +1,10 @@
+using System.Linq;
+using System.Threading.Tasks;
 using ErkinStudy.Application.Services;
 using ErkinStudy.Domain.Enums;
 using ErkinStudy.Infrastructure.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ErkinStudy.Application.Tests
@@ -81,8 +81,6 @@ namespace ErkinStudy.Application.Tests
                     var subjectService = new SubjectService(repository);
                     await subjectService.AddSubjectAsync("test name 1", "test description 1");
                     await subjectService.AddSubjectAsync("test name 2", "test description 2");
-
-
                 }
 
                 // Use a separate instance of the context to verify correct data was saved to database
@@ -92,17 +90,17 @@ namespace ErkinStudy.Application.Tests
                     var subjects = await subjectService.GetAllAsync();
 
                     Assert.Collection(subjects, subject =>
-                    {
-                        Assert.Equal(1, subject.Id);
-                        Assert.Equal("test name 1", subject.Name);
-                        Assert.Equal("test description 1", subject.Description);
-                    },
-                    subject =>
-                    {
-                        Assert.Equal(2, subject.Id);
-                        Assert.Equal("test name 2", subject.Name);
-                        Assert.Equal("test description 2", subject.Description);
-                    });
+                        {
+                            Assert.Equal(1, subject.Id);
+                            Assert.Equal("test name 1", subject.Name);
+                            Assert.Equal("test description 1", subject.Description);
+                        },
+                        subject =>
+                        {
+                            Assert.Equal(2, subject.Id);
+                            Assert.Equal("test name 2", subject.Name);
+                            Assert.Equal("test description 2", subject.Description);
+                        });
                 }
             }
             finally
@@ -135,6 +133,7 @@ namespace ErkinStudy.Application.Tests
                     var subjectService = new SubjectService(repository);
                     await subjectService.AddSubjectAsync("name", "desc");
                 }
+
                 // Use a separate instance of the context to verify correct data was saved to database
                 await using (var repository = new SubjectRepository(options))
                 {
@@ -176,8 +175,6 @@ namespace ErkinStudy.Application.Tests
                 {
                     var subjectService = new SubjectService(repository);
                     await subjectService.AddSubjectAsync("test name 1", "test description 1");
-
-
                 }
 
                 // Use a separate instance of the context to verify correct data was saved to database
