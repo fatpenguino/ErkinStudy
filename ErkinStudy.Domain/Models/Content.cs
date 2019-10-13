@@ -4,9 +4,13 @@ namespace ErkinStudy.Domain.Models
 {
     public class Content
     {
-        public Content(long id, string value, uint order, ContentFormat contentFormat)
+        //for ef core
+        public Content()
         {
-            Id = id;
+        }
+
+        public Content(string value, uint order, ContentFormat contentFormat)
+        {
             Value = value;
             Order = order;
             ContentFormat = contentFormat;

@@ -5,18 +5,22 @@ namespace ErkinStudy.Domain.Models
 {
     public class Paragraph
     {
-        public Paragraph(long id, string title, string description, uint order, DateTime createdAt, List<Lesson> lessons)
+        //for ef core
+        public Paragraph()
         {
-            Id = id;
-            Title = title;
+        }
+
+        public Paragraph(string name, string description, uint order, DateTime createdAt)
+        {
+            Name = name;
             Description = description;
             Order = order;
             CreatedAt = createdAt;
-            Lessons = lessons;
+            Lessons = new List<Lesson>();
         }
 
         public long Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public uint Order { get; set; }
         public DateTime CreatedAt { get; set; }

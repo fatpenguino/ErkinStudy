@@ -10,7 +10,7 @@ namespace ErkinStudy.Domain.Tests.Models
         [Fact]
         public void Create()
         {
-            var content = new Content(1, "Hello World", 1, ContentFormat.Text);
+            var content = new Content( "Hello World", 1, ContentFormat.Text);
             Assert.NotNull(content);
         }
     }

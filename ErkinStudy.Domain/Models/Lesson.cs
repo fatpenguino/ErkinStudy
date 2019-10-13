@@ -5,18 +5,22 @@ namespace ErkinStudy.Domain.Models
 {
     public class Lesson
     {
-        public Lesson(long id, string title, DateTime createdAt, uint order, int price, List<Content> contents)
+        //for ef core
+        public Lesson()
+        { }
+        public Lesson(string name, string description, DateTime createdAt, uint order, int price)
         {
-            Id = id;
-            Title = title;
+            Name = name;
+            Description = description;
             CreatedAt = createdAt;
             Order = order;
             Price = price;
-            Contents = contents;
+            Contents = new List<Content>();
         }
 
         public long Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public uint Order { get; set; }
         public int Price { get; set; }

@@ -4,17 +4,21 @@ namespace ErkinStudy.Domain.Models
 {
     public class Degree
     {
-        public Degree(long id, uint level, string title, List<Paragraph> paragraphs)
+        //for ef core
+        public Degree()
+        { }
+        public Degree(string name, string description, uint level)
         {
-            Id = id;
             Level = level;
-            Title = title;
-            Paragraphs = paragraphs;
+            Name = name;
+            Description = description;
+            Paragraphs = new List<Paragraph>();
         }
 
         public long Id { get; set; }
         public uint Level { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public List<Paragraph> Paragraphs { get; set; }
     }
 }

@@ -12,11 +12,10 @@ namespace ErkinStudy.Domain.Tests.Models
         [Fact]
         public void Create()
         {
-            var content = new Content(1, "Hello World", 1, ContentFormat.Text);
-            var lesson = new Lesson(1, "Hello World", DateTime.UtcNow, 1, 500, new List<Content>() {content});
+            var content = new Content("Hello World", 1, ContentFormat.Text);
+            var lesson = new Lesson("Hello World","desc", DateTime.UtcNow, 1, 500);
             Assert.NotNull(content);
             Assert.NotNull(lesson);
-            Assert.NotEmpty(lesson.Contents);
         }
     }
 }

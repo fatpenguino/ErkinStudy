@@ -6,10 +6,15 @@ namespace ErkinStudy.Domain.Models
 {
     public class Subject
     {
-        public Subject(string name, string description)
+        // for ef core
+        public Subject()
+        { }
+
+    public Subject(string name, string description)
         {
             Name = name;
             Description = description;
+            Degrees = new List<Degree>();
         }
 
         public void UpdateInfo(string name, string description)
