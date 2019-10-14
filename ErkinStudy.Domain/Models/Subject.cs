@@ -28,6 +28,19 @@ namespace ErkinStudy.Domain.Models
             Description = description;
         }
 
+        public Degree AddDegree(string name, string description, uint level)
+        {
+	        var degree = new Degree()
+	        {
+		        Name = name,
+		        Description = description,
+				Subject = this,
+				Level = level
+	        };
+			Degrees.Add(degree);
+			return degree;
+        }
+
         public void UpdateState(SubjectState state)
         {
             State = state;
@@ -37,7 +50,6 @@ namespace ErkinStudy.Domain.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public SubjectState State { get; set; }
-
         public List<Degree> Degrees { get; set; }
     }
 }
