@@ -4,20 +4,20 @@ using ErkinStudy.Domain.Models;
 
 namespace ErkinStudy.Application.Services
 {
-    public class DegreeService
+    public class LessonService
     {
         private readonly ISubjectRepository _subjectRepository;
 
-        public DegreeService(ISubjectRepository subjectRepository)
+        public LessonService(ISubjectRepository subjectRepository)
         {
             _subjectRepository = subjectRepository;
         }
-        public async Task<Degree> AddDegreeAsync(string name, string description, uint level, long subjectId)
+        public async Task<Lesson> AddLessonAsync(string name, string description, int price, long subjectId, long degreeId, long paragraphId, int? order = null)
         {
 	        var subject = await _subjectRepository.GetAsync(subjectId);
-	        var degree = subject.AddDegree(name, description, level);
+	        var lesson = subject.AddLesson(name, description, price, degreeId, paragraphId, order);
             await _subjectRepository.SaveAsync();
-            return degree;
+            return lesson;
         }
     }
 }
