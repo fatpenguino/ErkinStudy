@@ -3,6 +3,7 @@
     public enum ContentFormat
     {
         Text,
-        VideoLink
+        VideoLink,
+        Image
     }
 }

@@ -48,11 +48,22 @@ namespace ErkinStudy.Domain.Models
         public Lesson AddLesson(string name, string description, int price, long degreeId, long paragraphId, int? order = null)
         {
 	        var degree = Degrees.Find(x => x.Id == degreeId);
-	       var paragraph = degree.Paragraphs.Find(x => x.Id == paragraphId);
-	       order ??= paragraph.Lessons.Any() ? (int) paragraph.Lessons.Max(x => x.Order) + 1 : 0;
-	       var lesson = new Lesson(name, description, paragraph, DateTime.UtcNow, (uint)order, price);
-	       paragraph.Lessons.Add(lesson);
-	       return lesson;
+	        var paragraph = degree.Paragraphs.Find(x => x.Id == paragraphId);
+	        order ??= paragraph.Lessons.Any() ? (int) paragraph.Lessons.Max(x => x.Order) + 1 : 0;
+	        var lesson = new Lesson(name, description, paragraph, DateTime.UtcNow, (uint)order, price);
+	        paragraph.Lessons.Add(lesson);
+	        return lesson;
+        }
+
+        public Content AddContent(string value, ContentFormat format, long degreeId, long paragraphId, long lessonId, int? order = null)
+        {
+            var degree = Degrees.Find(x => x.Id == degreeId);
+            var paragraph = degree.Paragraphs.Find(x => x.Id == paragraphId);
+            var lesson = paragraph.Lessons.Find(x => x.Id == lessonId);
+            order ??= lesson.Contents.Any() ? (int)lesson.Contents.Max(x => x.Order) + 1 : 0;
+            var content = new Content(value, lesson, (uint)order, format);
+            lesson.Contents.Add(content);
+            return content;
         }
 
         public void UpdateState(SubjectState state)
