@@ -1,12 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@using ErkinStudy.Domain.Models
 @model IEnumerable<ErkinStudy.Domain.Models.Subject>
 <div class="text-center">
     @foreach (var subject in Model)
     {
-        <p>@subject.Name</p><br>
-
+        <div>
+        <p>@subject.Name</p>
+            <ul> 
+                @foreach (var degree in subject.Degrees ?? new List<Degree>())
+                {
+                    <li>@degree.Name</li>
+                }
+            </ul>
+        </div>
     }
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>

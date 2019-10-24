@@ -41,6 +41,7 @@ namespace ErkinStudy.Web
             services.AddRazorPages();
             services.AddScoped<ISubjectRepository, SubjectRepository>();
             services.AddScoped<SubjectService>();
+            services.AddScoped<DegreeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

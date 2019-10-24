@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Application;
 using ErkinStudy.Application.Repositories;
+using ErkinStudy.Domain.Enums;
 using ErkinStudy.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +41,10 @@ namespace ErkinStudy.Infrastructure.Repositories
 
         public async Task<List<Subject>> GetAllAsync()
         {
-            return await Subjects.ToListAsync();
+            return await Subjects.Include(sub => sub.Degrees)
+                .ThenInclude(deg => deg.Paragraphs)
+                .ThenInclude(les => les.Lessons)
+                .ThenInclude(c => c.Contents).Where(x => x.State != SubjectState.Deleted).ToListAsync();
         }
     }
 }
