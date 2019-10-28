@@ -1,25 +1,26 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using ErkinStudy.Application.Services;
+using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly SubjectService _subjectService;
-        public HomeController(ILogger<HomeController> logger, SubjectService subjectService)
+        private readonly AppDbContext _dbContext;
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext)
         {
-            _logger = logger;
-            _subjectService = subjectService;
+	        _logger = logger;
+	        _dbContext = dbContext;
         }
 
         public async Task<IActionResult> Index()
         {
-            var subjects = await _subjectService.GetAllAsync();
+            var subjects = await _dbContext.Subjects.ToListAsync();
             return View(subjects);
         }
 

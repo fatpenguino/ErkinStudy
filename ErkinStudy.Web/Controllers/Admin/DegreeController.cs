@@ -1,28 +1,31 @@
-﻿using System.Threading.Tasks;
-using ErkinStudy.Application.Services;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using ErkinStudy.Domain.Models;
+using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
     public class DegreeController : Controller
     {
-        private readonly DegreeService _degreeService;
-        private SubjectService _subjectService;
-
-        public DegreeController(DegreeService degreeService, SubjectService subjectService)
+	    private readonly AppDbContext _context;
+        public DegreeController(AppDbContext context)
         {
-            _degreeService = degreeService;
-            _subjectService = subjectService;
+	        _context = context;
         }
 
         // GET: Degree
-        public async Task<IActionResult> Index(long? id)
+        public  IActionResult Index(long? subjectId)
         {
-            return View(await _degreeService.GetSubjectDegrees(id.Value));
+	        ViewBag.SubjectId = subjectId;
+	        return subjectId.HasValue
+		        ? View( _context.Degrees.Include(x => x.Subject).Where(x => x.SubjectId == subjectId).AsQueryable())
+		        : View( _context.Degrees.Include(x => x.Subject).AsQueryable());
         }
 
         // GET: Degree/Details/5
-        /*
+ 
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -30,19 +33,20 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var degree = await _context.Degrees
+            var degree = await _context.Degrees.Include(x => x.Subject)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (degree == null)
             {
                 return NotFound();
             }
 
-            return View();
+            return View(degree);
         }
 
         // GET: Degree/Create
-        public IActionResult Create()
+        public IActionResult Create(long? id)
         {
+	        ViewBag.SubjectId = id;
             return View();
         }
 
@@ -51,13 +55,13 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Level,Name,Description")] Degree degree)
+        public async Task<IActionResult> Create([Bind("Level,Name,Description,SubjectId")] Degree degree)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(degree);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new {subjectId = degree.SubjectId});
             }
             return View(degree);
         }
@@ -83,7 +87,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Level,Name,Description")] Degree degree)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Level,Name,Description,SubjectId")] Degree degree)
         {
             if (id != degree.Id)
             {
@@ -99,16 +103,14 @@ namespace ErkinStudy.Web.Controllers.Admin
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DegreeExists(degree.Id))
+	                if (!DegreeExists(degree.Id))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+	                throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { subjectId = degree.SubjectId});
             }
             return View(degree);
         }
@@ -137,14 +139,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var degree = await _context.Degrees.FindAsync(id);
+            var subjectId = degree.SubjectId;
             _context.Degrees.Remove(degree);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { subjectId = subjectId });
         }
 
         private bool DegreeExists(long id)
         {
             return _context.Degrees.Any(e => e.Id == id);
-        }*/
+        }
     }
 }

@@ -4,17 +4,9 @@ VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Domain", "ErkinStudy.Domain\ErkinStudy.Domain.csproj", "{4E8164E6-728D-4484-A54D-41F65F9CEDCA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Domain.Tests", "ErkinStudy.Domain.Tests\ErkinStudy.Domain.Tests.csproj", "{D90C7812-A1F5-4129-81E0-47DE3F78D40A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Infrastructure", "ErkinStudy.Infrastructure\ErkinStudy.Infrastructure.csproj", "{A5D956C7-7161-40AC-A0A7-5C0B3D97B8DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Application", "ErkinStudy.Application\ErkinStudy.Application.csproj", "{C7D906B8-4B80-4D85-96C8-A0C5E0123D5B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Application.Tests", "ErkinStudy.Application.Tests\ErkinStudy.Application.Tests.csproj", "{1D4CDFDD-AB79-4C5D-82A1-F8B239B76EEE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.DTOs", "ErkinStudy.DTOs\ErkinStudy.DTOs.csproj", "{99CDE5CE-4BF5-4AEB-8BA7-66D25E42054F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErkinStudy.Web", "ErkinStudy.Web\ErkinStudy.Web.csproj", "{E22E6645-93DE-48D2-9FBA-60FBB2EFC9AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErkinStudy.Web", "ErkinStudy.Web\ErkinStudy.Web.csproj", "{E22E6645-93DE-48D2-9FBA-60FBB2EFC9AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,26 +18,10 @@ Global
 		{4E8164E6-728D-4484-A54D-41F65F9CEDCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E8164E6-728D-4484-A54D-41F65F9CEDCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E8164E6-728D-4484-A54D-41F65F9CEDCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D90C7812-A1F5-4129-81E0-47DE3F78D40A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A5D956C7-7161-40AC-A0A7-5C0B3D97B8DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A5D956C7-7161-40AC-A0A7-5C0B3D97B8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5D956C7-7161-40AC-A0A7-5C0B3D97B8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5D956C7-7161-40AC-A0A7-5C0B3D97B8DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7D906B8-4B80-4D85-96C8-A0C5E0123D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7D906B8-4B80-4D85-96C8-A0C5E0123D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7D906B8-4B80-4D85-96C8-A0C5E0123D5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7D906B8-4B80-4D85-96C8-A0C5E0123D5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D4CDFDD-AB79-4C5D-82A1-F8B239B76EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D4CDFDD-AB79-4C5D-82A1-F8B239B76EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D4CDFDD-AB79-4C5D-82A1-F8B239B76EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D4CDFDD-AB79-4C5D-82A1-F8B239B76EEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99CDE5CE-4BF5-4AEB-8BA7-66D25E42054F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99CDE5CE-4BF5-4AEB-8BA7-66D25E42054F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99CDE5CE-4BF5-4AEB-8BA7-66D25E42054F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99CDE5CE-4BF5-4AEB-8BA7-66D25E42054F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E22E6645-93DE-48D2-9FBA-60FBB2EFC9AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E22E6645-93DE-48D2-9FBA-60FBB2EFC9AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E22E6645-93DE-48D2-9FBA-60FBB2EFC9AB}.Release|Any CPU.ActiveCfg = Release|Any CPU

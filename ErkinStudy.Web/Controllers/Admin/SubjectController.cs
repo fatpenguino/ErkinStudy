@@ -1,22 +1,23 @@
 ﻿using System.Threading.Tasks;
-using ErkinStudy.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using ErkinStudy.Domain.Models;
+using ErkinStudy.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
     public class SubjectController : Controller
     {
-        private readonly SubjectService _subjectService;
-        public SubjectController(SubjectService subjectService)
+	    private readonly AppDbContext _dbContext;
+        public SubjectController(AppDbContext dbContext)
         {
-            _subjectService = subjectService;
+	        _dbContext = dbContext;
         }
 
         // GET: Subject
         public async Task<IActionResult> Index()
         {
-            return View(await _subjectService.GetAllAsync());
+            return View(await _dbContext.Subjects.ToListAsync());
         }
 
         // GET: Subject/Details/5
@@ -27,7 +28,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var subject = await _subjectService.GetAsync(id.Value);
+            var subject = await _dbContext.Subjects.FindAsync(id.Value);
             if (subject == null)
             {
                 return NotFound();
@@ -49,7 +50,8 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             if (ModelState.IsValid)
             {
-                await _subjectService.AddSubjectAsync(subject.Name, subject.Description);
+                await _dbContext.Subjects.AddAsync(subject);
+                await _dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(subject);
@@ -62,7 +64,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            var subject = await _subjectService.GetAsync(id.Value);
+            var subject = await _dbContext.Subjects.FindAsync(id);
             if (subject == null)
             {
                 return NotFound();
@@ -84,8 +86,9 @@ namespace ErkinStudy.Web.Controllers.Admin
 
             if (ModelState.IsValid)
             {
-                await _subjectService.UpdateSubject(subject.Id, subject.Name, subject.Description);
-                   return RedirectToAction(nameof(Index));
+                _dbContext.Subjects.Update(subject);
+                await _dbContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(subject);
         }
@@ -98,7 +101,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var subject = await _subjectService.GetAsync(id.Value);
+            var subject = await _dbContext.Subjects.FindAsync(id);
             if (subject == null)
             {
                 return NotFound();
@@ -112,7 +115,9 @@ namespace ErkinStudy.Web.Controllers.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-           await _subjectService.RemoveAsync(id);
+	        var subject = await _dbContext.Subjects.FindAsync(id);
+           _dbContext.Subjects.Remove(subject);
+           await _dbContext.SaveChangesAsync();
            return RedirectToAction(nameof(Index));
         }
     }
