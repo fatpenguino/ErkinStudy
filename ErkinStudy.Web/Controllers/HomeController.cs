@@ -23,7 +23,7 @@ namespace ErkinStudy.Web.Controllers
             return View(subjects);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Privacy() 
         {
             return View();
         }
