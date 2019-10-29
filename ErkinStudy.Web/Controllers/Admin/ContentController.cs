@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
 	        ViewBag.LessonId = lessonId;
             return lessonId.HasValue ? View(_context.Contents.Include(x => x.Lesson).Where(x => x.LessonId == lessonId).AsQueryable()) 
-									 : View(_context.Contents.Include(x => x.LessonId == lessonId).AsQueryable());
+									 : View(_context.Contents.Include(x => x.Lesson).AsQueryable());
         }
 
         // GET: Content/Details/5
@@ -62,9 +63,8 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 _context.Add(content);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { lessonId = content.LessonId });
             }
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id", content.LessonId);
             return View(content);
         }
 
@@ -81,7 +81,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id", content.LessonId);
             return View(content);
         }
 
@@ -106,18 +105,15 @@ namespace ErkinStudy.Web.Controllers.Admin
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ContentExists(content.Id))
+	                if (!ContentExists(content.Id))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+	                throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { lessonId = content.LessonId });
             }
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id", content.LessonId);
             return View(content);
         }
 
@@ -146,9 +142,10 @@ namespace ErkinStudy.Web.Controllers.Admin
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var content = await _context.Contents.FindAsync(id);
+            var lessonId = content.LessonId;
             _context.Contents.Remove(content);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { lessonId });
         }
 
         private bool ContentExists(long id)

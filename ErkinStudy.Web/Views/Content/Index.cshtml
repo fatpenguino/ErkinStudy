@@ -4,8 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
+<h1>Contents</h1>
+<a asp-controller="Lesson" asp-action="Index" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-lessonId="@ViewBag.LessonId">Create New</a>
 </p>
@@ -24,7 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Lesson)
             </th>
-            <th></th>
+	        <th>
+		        Actions
+	        </th>
         </tr>
     </thead>
     <tbody>

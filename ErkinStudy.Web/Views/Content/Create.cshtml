@@ -1,4 +1,5 @@
-﻿@model ErkinStudy.Domain.Models.Content
+﻿@using ErkinStudy.Domain.Enums
+@model ErkinStudy.Domain.Models.Content
 
 @{
     ViewData["Title"] = "Create";
@@ -12,12 +13,8 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="LessonId" class="control-label"></label>
-                <select asp-for="LessonId" class ="form-control" asp-items="ViewBag.LessonId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Value" class="control-label"></label>
+	        <div class="form-group">
+                <label asp-for="Value" class="control-label">Content</label>
                 <input asp-for="Value" class="form-control" />
                 <span asp-validation-for="Value" class="text-danger"></span>
             </div>
@@ -28,18 +25,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="ContentFormat" class="control-label"></label>
-                <select asp-for="ContentFormat" class="form-control"></select>
+                <select asp-for="ContentFormat" class="form-control" asp-items="Html.GetEnumSelectList<ContentFormat>()"></select>
                 <span asp-validation-for="ContentFormat" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+	        <div class="form-group">
+		        <input asp-for="LessonId"  type="hidden" value="@ViewBag.LessonId"/>
+		        <input type="submit" value="Create" class="btn btn-primary"/>
+	        </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-lessonId="@ViewBag.LessonId">Back to List</a>
 </div>
 
 @section Scripts {

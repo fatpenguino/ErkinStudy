@@ -4,8 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
+<h1>Lessons</h1>
+<a asp-controller="Paragraph" asp-action="Index" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-paragraphId="@ViewBag.ParagraphId">Create New</a>
 </p>
@@ -27,7 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Paragraph)
             </th>
-            <th></th>
+	        <th>
+		        Actions
+	        </th>
         </tr>
     </thead>
     <tbody>
