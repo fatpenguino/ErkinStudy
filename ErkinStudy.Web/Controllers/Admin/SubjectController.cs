@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    public class SubjectController : Controller
+	public class SubjectController : Controller
     {
 	    private readonly AppDbContext _dbContext;
         public SubjectController(AppDbContext dbContext)

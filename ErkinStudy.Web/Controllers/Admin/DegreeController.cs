@@ -44,9 +44,9 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Degree/Create
-        public IActionResult Create(long? id)
+        public IActionResult Create(long? subjectId)
         {
-	        ViewBag.SubjectId = id;
+	        ViewBag.SubjectId = subjectId;
             return View();
         }
 

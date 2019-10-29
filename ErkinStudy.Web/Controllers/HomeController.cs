@@ -20,7 +20,7 @@ namespace ErkinStudy.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var subjects = await _dbContext.Subjects.ToListAsync();
+            var subjects = await _dbContext.Subjects.Include(x => x.Degrees).ToListAsync();
             return View(subjects);
         }
 
