@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ErkinStudy.Domain.Models;
 using ErkinStudy.Infrastructure.Context;
 
 namespace ErkinStudy.Web.Controllers.Admin

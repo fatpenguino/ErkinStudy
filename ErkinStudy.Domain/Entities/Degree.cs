@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ErkinStudy.Domain.Models
+namespace ErkinStudy.Domain.Entities
 {
     public class Degree
     {

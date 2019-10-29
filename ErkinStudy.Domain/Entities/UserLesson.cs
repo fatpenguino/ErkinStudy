@@ -1,0 +1,12 @@
+﻿using ErkinStudy.Domain.Entities.Identity;
+
+namespace ErkinStudy.Domain.Entities
+{
+    public class UserLesson
+    {
+        public int UserId { get; set; }
+        public long LessonId { get; set; }
+        public virtual ApplicationUser User { get; set; }
+        public virtual Lesson Lesson { get; set; }
+    }
+}

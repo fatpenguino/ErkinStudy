@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ErkinStudy.Domain.Models
+namespace ErkinStudy.Domain.Entities
 {
     public class Lesson
     {
@@ -14,5 +14,8 @@ namespace ErkinStudy.Domain.Models
         public int Price { get; set; }
         public virtual Paragraph Paragraph { get; set; }
         public virtual List<Content> Contents { get; set; }
+        public virtual List<Payment> Transactions { get; set; }
+        public virtual List<UserLesson> UserLessons { get; set; }
+
     }
 }

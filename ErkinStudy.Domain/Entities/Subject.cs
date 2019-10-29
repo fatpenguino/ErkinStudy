@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using ErkinStudy.Domain.Enums;
 
-namespace ErkinStudy.Domain.Models
+namespace ErkinStudy.Domain.Entities
 {
     public class Subject
     {

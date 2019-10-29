@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using ErkinStudy.Domain.Models;
+using ErkinStudy.Domain.Entities;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

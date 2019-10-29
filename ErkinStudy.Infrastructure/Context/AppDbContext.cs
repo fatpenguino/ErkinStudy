@@ -1,10 +1,11 @@
-﻿using ErkinStudy.Domain.Models;
+﻿using ErkinStudy.Domain.Entities;
+using ErkinStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Infrastructure.Context
 {
-    public class AppDbContext : IdentityDbContext    {
+    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int> {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
