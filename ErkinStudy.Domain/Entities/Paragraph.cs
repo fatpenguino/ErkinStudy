@@ -11,7 +11,7 @@ namespace ErkinStudy.Domain.Entities
         public string Description { get; set; }
         public uint Order { get; set; }
         public DateTime CreatedAt { get; set; }
-        public virtual List<Lesson> Lessons { get; set; }
+        public virtual ICollection<Lesson> Lessons { get; set; }
         public virtual Degree Degree { get; set; }
     }
 }

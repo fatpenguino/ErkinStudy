@@ -7,7 +7,7 @@ namespace ErkinStudy.Domain.Entities
     public class Payment
     {
         public long Id { get; set; }
-        public int UserId { get; set; }
+        public long UserId { get; set; }
         public long LessonId { get; set; }
         public DateTime CreationTime { get; set; }
         public int Amount { get; set; }

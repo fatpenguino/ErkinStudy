@@ -4,6 +4,7 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers
@@ -17,7 +18,7 @@ namespace ErkinStudy.Web.Controllers
 	        _logger = logger;
 	        _dbContext = dbContext;
         }
-
+		[Authorize]
         public async Task<IActionResult> Index()
         {
             var subjects = await _dbContext.Subjects.Include(x => x.Degrees).ToListAsync();

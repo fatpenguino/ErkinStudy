@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ErkinStudy.Domain.Entities.Identity
 {
-    public class ApplicationUser : IdentityUser<int>
+    public class ApplicationUser : IdentityUser<long>
     {
-        public virtual List<Payment> Payments { get; set; }
-        public virtual List<UserLesson> UserLessons { get; set; }
+        public virtual ICollection<Payment> Payments { get; set; }
+        public virtual ICollection<UserLesson> UserLessons { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace ErkinStudy.Domain.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public virtual Subject Subject { get; set; }
-        public virtual List<Paragraph> Paragraphs { get; set; }
+        public virtual ICollection<Paragraph> Paragraphs { get; set; }
     }
 }
