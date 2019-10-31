@@ -2,8 +2,8 @@
 {
     public enum ContentFormat
     {
-        Text,
-        VideoLink,
+        Html,
+        Youtube,
         Image
     }
 }

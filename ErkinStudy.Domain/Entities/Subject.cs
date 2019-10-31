@@ -10,6 +10,7 @@ namespace ErkinStudy.Domain.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public SubjectState State { get; set; }
+        public bool IsActive { get; set; }
         public virtual ICollection<Degree> Degrees { get; set; }
     }
 }

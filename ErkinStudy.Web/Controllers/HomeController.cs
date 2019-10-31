@@ -18,7 +18,6 @@ namespace ErkinStudy.Web.Controllers
 	        _logger = logger;
 	        _dbContext = dbContext;
         }
-		[Authorize]
         public async Task<IActionResult> Index()
         {
             var subjects = await _dbContext.Subjects.Include(x => x.Degrees).ToListAsync();

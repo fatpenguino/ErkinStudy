@@ -1,0 +1,34 @@
+﻿@using ErkinStudy.Domain.Enums
+@model ErkinStudy.Domain.Entities.Lesson;
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.Name</h3>
+<div>
+	Content:
+	@foreach (var content in Model.Contents)
+	{
+		if (content.ContentFormat == ContentFormat.Html)
+		{
+			<div class="content">
+				@Html.Raw(content.Value)
+			</div>
+		}
+		if (content.ContentFormat == ContentFormat.Youtube)
+		{
+			<div class="content-video">
+				<iframe width="720" height="480"
+				        src="@content.Value">
+				</iframe>
+			</div>
+		}
+		if (content.ContentFormat == ContentFormat.Image)
+		{
+			<div class="content content-image">
+				<img src="@content.Value"/>
+			</div>
+		}
+	}
+</div>
