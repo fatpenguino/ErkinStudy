@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities;
-using ErkinStudy.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 
@@ -57,7 +55,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LessonId,Value,Order,ContentFormat")] Content content)
+        public async Task<IActionResult> Create([Bind("LessonId,Value,Order,ContentFormat,IsActive")] Content content)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +87,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,LessonId,Value,Order,ContentFormat")] Content content)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,LessonId,Value,Order,ContentFormat,IsActive")] Content content)
         {
             if (id != content.Id)
             {

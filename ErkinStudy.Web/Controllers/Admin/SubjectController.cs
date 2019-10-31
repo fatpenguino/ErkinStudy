@@ -46,7 +46,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // POST: Subject/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,State")] Subject subject)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,IsActive")] Subject subject)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,State")] Subject subject)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,IsActive")] Subject subject)
         {
             if (id != subject.Id)
             {

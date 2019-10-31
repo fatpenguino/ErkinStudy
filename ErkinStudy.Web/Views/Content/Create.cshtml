@@ -28,6 +28,11 @@
                 <select asp-for="ContentFormat" class="form-control" asp-items="Html.GetEnumSelectList<ContentFormat>()"></select>
                 <span asp-validation-for="ContentFormat" class="text-danger"></span>
             </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
 	        <div class="form-group">
 		        <input asp-for="LessonId"  type="hidden" value="@ViewBag.LessonId"/>
 		        <input type="submit" value="Create" class="btn btn-primary"/>

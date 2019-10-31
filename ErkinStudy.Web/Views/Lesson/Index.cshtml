@@ -27,9 +27,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Paragraph)
             </th>
-	        <th>
-		        Actions
-	        </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
+                Actions
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -51,10 +54,13 @@
                 @Html.DisplayFor(modelItem => item.Paragraph.Name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-	            <a asp-controller="Content" asp-action="Index" asp-route-lessonId="@item.Id">Contents</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                <a asp-controller="Content" asp-action="Index" asp-route-lessonId="@item.Id">Contents</a>
             </td>
         </tr>
 }

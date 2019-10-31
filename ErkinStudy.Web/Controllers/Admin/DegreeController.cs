@@ -55,7 +55,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Level,Name,Description,SubjectId")] Degree degree)
+        public async Task<IActionResult> Create([Bind("Level,Name,Description,SubjectId,IsActive")] Degree degree)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Level,Name,Description,SubjectId")] Degree degree)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Level,Name,Description,SubjectId,IsActive")] Degree degree)
         {
             if (id != degree.Id)
             {
@@ -142,7 +142,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             var subjectId = degree.SubjectId;
             _context.Degrees.Remove(degree);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { subjectId = subjectId });
+            return RedirectToAction(nameof(Index), new {subjectId });
         }
 
         private bool DegreeExists(long id)

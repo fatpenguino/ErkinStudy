@@ -56,7 +56,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Order,DegreeId")] Paragraph paragraph)
+        public async Task<IActionResult> Create([Bind("Name,Description,Order,DegreeId,IsActive")] Paragraph paragraph)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +89,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,DegreeId")] Paragraph paragraph)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,DegreeId,IsActive")] Paragraph paragraph)
         {
             if (id != paragraph.Id)
             {
