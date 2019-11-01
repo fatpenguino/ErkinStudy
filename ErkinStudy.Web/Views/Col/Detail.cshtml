@@ -8,7 +8,7 @@
 <h3>@Model.Name</h3>
 <div>
 	Content:
-	@foreach (var content in Model.Contents)
+	@foreach (var content in Model.Contents.Where(x => x.IsActive))
 	{
 		if (content.ContentFormat == ContentFormat.Html)
 		{
@@ -26,7 +26,7 @@
 		}
 		if (content.ContentFormat == ContentFormat.Image)
 		{
-			<div class="content content-image">
+			<div class="content">
 				<img src="@content.Value"/>
 			</div>
 		}

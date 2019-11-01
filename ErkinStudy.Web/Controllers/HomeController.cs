@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers
@@ -20,7 +20,7 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var subjects = await _dbContext.Subjects.Include(x => x.Degrees).ToListAsync();
+            var subjects = await _dbContext.Subjects.Include(x => x.Degrees).Where(x => x.IsActive).ToListAsync();
             return View(subjects);
         }
 
