@@ -1,6 +1,5 @@
 ﻿using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,9 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Content> Contents { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<UserLesson> UserLessons { get; set; }
+        public DbSet<OnlineCourse> OnlineCourses { get; set; }
+        public DbSet<OnlineCourseWeek> OnlineCourseWeeks { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 	        modelBuilder.Entity<UserLesson>(entity =>
