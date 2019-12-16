@@ -74,3 +74,25 @@ body {
 }.content-video {
 	 margin: 10px 0;
  }
+ .countdown {
+     padding-left: 0;
+ }
+.countdown li {
+    display: inline-block;
+    font-size: 0.75em;
+    list-style-type: none;
+    padding: 1em;
+    text-transform: uppercase;
+}
+
+.countdown li span {
+    display: block;
+    font-size: 2.5rem;
+}
+.jumbotron {
+    background-color: white;
+}
+
+
+
+

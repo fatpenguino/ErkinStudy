@@ -1,0 +1,16 @@
+﻿@model ErkinStudy.Domain.Entities.OnlineCourse
+@{
+    ViewData["Title"] = "OnlineCourseSchedule";
+}
+
+<h1>Курс бағдарламасы</h1>
+<div class="container">
+    <div class="row">
+        <ul class="list-group">
+            @foreach (var week in Model.OnlineCourseWeeks)
+            {
+                <li class="list-group-item">@week.Name</li>   
+            }
+        </ul>
+    </div>
+</div>

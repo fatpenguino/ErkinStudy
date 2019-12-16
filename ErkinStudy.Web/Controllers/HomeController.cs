@@ -23,7 +23,18 @@ namespace ErkinStudy.Web.Controllers
             var subjects = await _dbContext.Subjects.Include(x => x.Degrees).Where(x => x.IsActive).ToListAsync();
             return View(subjects);
         }
+        public async Task<IActionResult> Subjects()
+        {
+            var subjects = await _dbContext.Subjects.Include(x => x.Degrees).Where(x => x.IsActive).ToListAsync();
+            return View(subjects);
+        }
 
+        public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
+        {
+            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks)
+                .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
+            return View(onlineCourse);
+        }
         public IActionResult Privacy() 
         {
             return View();

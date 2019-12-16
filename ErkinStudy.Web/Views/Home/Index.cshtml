@@ -4,16 +4,65 @@
 @using ErkinStudy.Domain.Entities
 @model IEnumerable<Subject>
 <div class="container">
-		<div class="row">
-			@foreach (var subject in Model)
-			{
-				<div class="list-group col-sm">
-					<a href="#" class="list-group-item list-group-item-action active">@subject.Name</a>
-					@foreach (var degree in subject.Degrees.Where(x => x.IsActive))
-					{
-						<a href="course/detail/@degree.Id" class="list-group-item list-group-item-action">@degree.Level - @degree.Description</a>
-					}
-				</div>
-			}
-		</div>
+    <div class="row">
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h1>Математикалық сауаттылық</h1>
+                <p class="lead text-muted">
+                    Математикалық сауаттылықтан ҰБТ-дан 20 балл алу құпиялары небәрі бір айдың ішінде, 12 сабақта түсіндіріледі. 
+                    Әр сабақта математикалық сауаттылық үшін білуге міндетті бір тақырып талқыланады, тақырыпқа байланысты есептер шығарылады.
+                    Онлайн курс 9 қаңтарда басталады.
+                </p>
+                <ul class="countdown">
+                    <li><span id="days"></span>күн</li>
+                    <li><span id="hours"></span>сағат</li>
+                    <li><span id="minutes"></span>минут</li>
+                    <li><span id="seconds"></span>секунд</li>
+                </ul>
+                <p>
+                    <a href="" class="btn btn-primary my-2">Онлайн курсты сатып алу</a>
+                    <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-secondary my-2">Курс бағдарламасы</a>
+                </p>
+            </div>
+        </section>
+        <div class="container">
+            <div class="row">
+                @foreach (var subject in Model)
+                {
+                    <div class="list-group col-sm">
+                        <a href="#" class="list-group-item list-group-item-action active">@subject.Name</a>
+                        @foreach (var degree in subject.Degrees.Where(x => x.IsActive))
+                        {
+                            <a href="course/detail/@degree.Id" class="list-group-item list-group-item-action">@degree.Level - @degree.Description</a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+    const second = 1000,
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24;
+
+    let countDown = new Date('Jan 09, 2020 00:00:00').getTime(),
+        x = setInterval(function() {
+
+            let now = new Date().getTime(),
+                distance = countDown - now;
+
+            document.getElementById('days').innerText = Math.floor(distance / (day)),
+                document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)),
+                document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
+                document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
+      
+            //do something later when date is reached
+            //if (distance < 0) {
+            //  clearInterval(x);
+            //  'IT'S MY BIRTHDAY!;
+            //}
+
+        }, second)
+</script>

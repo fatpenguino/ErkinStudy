@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using ErkinStudy.Domain.Entities
+@model IEnumerable<Subject>
+<div class="container">
+		<div class="row">
+			@foreach (var subject in Model)
+			{
+				<div class="list-group col-sm">
+					<a href="#" class="list-group-item list-group-item-action active">@subject.Name</a>
+					@foreach (var degree in subject.Degrees.Where(x => x.IsActive))
+					{
+						<a href="course/detail/@degree.Id" class="list-group-item list-group-item-action">@degree.Level - @degree.Description</a>
+					}
+				</div>
+			}
+		</div>
+</div>
