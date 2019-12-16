@@ -1,23 +1,22 @@
-﻿@model ErkinStudy.Domain.Entities.Degree
+﻿@using ErkinStudy.Domain.Entities
+@model ErkinStudy.Domain.Entities.Degree
 @{
     ViewData["Title"] = Model.Name;
 }
 
-<h1>@Model.Name</h1>
+<h1>@Model.Subject.Name - @Model.Level</h1>
 
-<div id="accordion">
-	<ul style="width: 30%">
-		@foreach(var paragraph in Model.Paragraphs)
+<div class="container">
+	<div class="row">
+		@foreach (var paragraph in Model.Paragraphs)
 		{
-			<li>
-				@paragraph.Name
-				<ul>
-					@foreach (var lesson in paragraph.Lessons)
-					{
-						<li><a asp-action="Detail" asp-controller="Col" asp-route-id="@lesson.Id"> @lesson.Name</a></li>
-					}
-				</ul>
-			</li>
+			<div class="list-group col-md-4 mb-5">
+				<a href="#" class="list-group-item list-group-item-action active">@paragraph.Name</a>
+				@foreach (var lesson in paragraph.Lessons.Where(x =>x.IsActive))
+				{
+					<a href="/col/detail/@lesson.Id" class="list-group-item list-group-item-action">@lesson.Name</a>
+				}
+			</div>
 		}
-	</ul>
+	</div>
 </div>

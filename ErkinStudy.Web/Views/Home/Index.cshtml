@@ -9,7 +9,7 @@
 			{
 				<div class="list-group col-sm">
 					<a href="#" class="list-group-item list-group-item-action active">@subject.Name</a>
-					@foreach (var degree in subject.Degrees ?? new List<Degree>())
+					@foreach (var degree in subject.Degrees.Where(x => x.IsActive))
 					{
 						<a href="course/detail/@degree.Id" class="list-group-item list-group-item-action">@degree.Level - @degree.Description</a>
 					}

@@ -13,7 +13,6 @@ namespace ErkinStudy.Domain.Entities
         public int Amount { get; set; }
         public PaymentProvider Provider { get; set; }
         public PaymentStatus Status { get; set; }
-        public bool IsActive { get; set; }
         public virtual ApplicationUser User { get; set; }
         public virtual Lesson Lesson { get; set; }
     }
