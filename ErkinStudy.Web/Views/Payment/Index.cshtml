@@ -24,9 +24,6 @@
 	        <th>
                 @Html.DisplayNameFor(model => model.User)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lesson)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -47,9 +44,6 @@
             </td>
 	        <td>
                 @Html.DisplayFor(modelItem => item.User.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lesson.Name)
             </td>
             <td>
                 <a asp-action="Approve" asp-route-id="@item.Id">Approve</a>

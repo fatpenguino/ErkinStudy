@@ -15,7 +15,6 @@ namespace ErkinStudy.Domain.Entities
         public bool IsActive { get; set; }
         public virtual Paragraph Paragraph { get; set; }
         public virtual ICollection<Content> Contents { get; set; }
-        public virtual ICollection<Payment> Transactions { get; set; }
         public virtual ICollection<UserLesson> UserLessons { get; set; }
 
     }

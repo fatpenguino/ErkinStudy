@@ -20,7 +20,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Payment
         public async Task<IActionResult> Index()
         {
-            var payments = _context.Payments.Include(p => p.Lesson).Include(p => p.User);
+            var payments = _context.Payments.Include(p => p.User);
             return View(await payments.ToListAsync());
         }
 
@@ -33,7 +33,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var payment = await _context.Payments
-                .Include(p => p.Lesson)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (payment == null)
@@ -47,8 +46,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Payment/Create
         public IActionResult Create()
         {
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -63,7 +60,6 @@ namespace ErkinStudy.Web.Controllers.Admin
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id", payment.LessonId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
             return View(payment);
         }
@@ -81,7 +77,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id", payment.LessonId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
             return View(payment);
         }
@@ -116,7 +111,6 @@ namespace ErkinStudy.Web.Controllers.Admin
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id", payment.LessonId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
             return View(payment);
         }
@@ -130,7 +124,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var payment = await _context.Payments
-                .Include(p => p.Lesson)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (payment == null)

@@ -15,5 +15,6 @@ namespace ErkinStudy.Domain.Entities
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
         public virtual ICollection<OnlineCourseWeek> OnlineCourseWeeks { get; set; }
+        public virtual ICollection<UserOnlineCourse> UserOnlineCourses { get; set; }
     }
 }
