@@ -92,7 +92,26 @@ body {
 .jumbotron {
     background-color: white;
 }
-
-
+.logo {
+    line-height: 1;
+    font-size: 18px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+.logo-text {
+    display: inline;
+    padding: 0;
+}
+.logo-text-first {
+    color: black;
+}
+.logo-text-second {
+    color: red;
+    margin-left: -4px;
+}
+.logo-sabaq {
+    color: blue;
+    margin-bottom: 0;
+    padding: 0;
+}
 
 
