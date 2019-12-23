@@ -8,6 +8,7 @@ namespace ErkinStudy.Web.Models
         public string UserName { get; set; }
 
         [Required]
+		[Phone]
         public string PhoneNumber { get; set; }
 
 		[Required]

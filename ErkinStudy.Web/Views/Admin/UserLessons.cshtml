@@ -1,0 +1,10 @@
+﻿@model UserLessonViewModel
+@{
+    ViewData["Title"] = "UserLessons";
+}
+
+<h1>User Lessons</h1>
+@foreach (var item in Model.SelectListItems)
+{
+    @item.Text
+}
