@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGeneration;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -49,7 +50,7 @@ namespace ErkinStudy.Web.Controllers
 				// This doesn't count login failures towards account lockout
 				// To enable password failures to trigger account lockout, set lockoutOnFailure: true
 				var result =
-					await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+					await _signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);
 				if (result.Succeeded)
 				{
 					return RedirectToAction("Index", "Home");
@@ -76,7 +77,7 @@ namespace ErkinStudy.Web.Controllers
 			ViewData["ReturnUrl"] = returnUrl;
 			if (ModelState.IsValid)
 			{
-				var user = new ApplicationUser { Email = model.Email, UserName = model.Email };
+				var user = new ApplicationUser { Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber };
 				var result = await _userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{

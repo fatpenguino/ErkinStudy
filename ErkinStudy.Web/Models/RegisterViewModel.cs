@@ -4,6 +4,12 @@ namespace ErkinStudy.Web.Models
 {
 	public class RegisterViewModel
 	{
+        [Required]
+        public string UserName { get; set; }
+
+        [Required]
+        public string PhoneNumber { get; set; }
+
 		[Required]
 		[EmailAddress]
 		public string Email { get; set; }
