@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Identity.ApplicationUser>
+﻿@model IEnumerable<UserViewModel>
 
 @{
     ViewData["Title"] = "Users";
@@ -33,8 +33,15 @@
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
-                <a asp-action="UserLessons" asp-route-userId="@item.Id">User Lessons</a> |
-                <a asp-action="ApproveOnlineCourse" asp-route-userId="@item.Id">Appove Online Course</a> |
+                @if (item.IsApprovedOnlineCourse)
+                {
+                    <a asp-action="ApproveOnlineCourse" asp-route-userId="@item.Id">Appove Online Course</a> 
+                }
+                else
+                {
+                    <p style="color: green;">Approved</p>
+                }
+                <a asp-action="UserLessons" asp-route-userId="@item.Id">User Lessons</a>
             </td>
         </tr>
 }

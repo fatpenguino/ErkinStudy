@@ -1,10 +1,14 @@
-﻿@model UserLessonViewModel
+﻿@using System.Security.Cryptography.X509Certificates
+@model UserLessonViewModel
 @{
     ViewData["Title"] = "UserLessons";
 }
 
 <h1>User Lessons</h1>
-@foreach (var item in Model.SelectListItems)
-{
-    @item.Text
-}
+
+<form asp-route-returnurl="@ViewData["ReturnUrl"]" asp-action="UpdateUserLessons" method="post">
+    @foreach (var item in Model.SelectListItems)
+    {
+        <input type="checkbox">
+    }
+</form>

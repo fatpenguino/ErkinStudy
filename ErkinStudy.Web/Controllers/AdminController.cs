@@ -31,7 +31,20 @@ namespace ErkinStudy.Web.Controllers
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
-            return View(users);
+            var model = new List<UserViewModel>();
+            foreach (var user in users)
+            {
+                var item = new UserViewModel
+                {
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id)
+                };
+                model.Add(item);
+            }
+            return View(model);
         }
 
         public async Task<IActionResult> UserLessons(long userId)
@@ -45,7 +58,7 @@ namespace ErkinStudy.Web.Controllers
             {
                 var item = new SelectListItem
                 {
-                    Text = lesson.Name,
+                    Text = $"{lesson.Paragraph.Name} - {lesson.Name}",
                     Value = lesson.Id.ToString(),
                     Selected = userLessons.Any(x => x.LessonId == lesson.Id)
                 };
