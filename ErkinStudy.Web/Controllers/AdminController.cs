@@ -89,4 +89,3 @@ namespace ErkinStudy.Web.Controllers
         }
     }
 }
-//надо допилить оба метода и сделать userView

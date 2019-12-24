@@ -20,7 +20,9 @@
                     <li><span id="seconds"></span>секунд</li>
                 </ul>
                 <p>
-                    <a href="" class="btn btn-primary my-2">Онлайн курсты сатып алу</a>
+                    <button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#courseModal">
+                        Онлайн курсты сатып алу
+                    </button>
                     <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-secondary my-2">Курс бағдарламасы</a>
                 </p>
             </div>
@@ -38,6 +40,34 @@
                     </div>
                 }
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="SendCallRequest" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input name="name" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label name="name">Number</label>
+                        <input name="number" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Make request</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
