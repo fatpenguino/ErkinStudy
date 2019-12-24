@@ -1,22 +1,20 @@
 ﻿@using ErkinStudy.Domain.Entities
-@model ErkinStudy.Domain.Entities.Degree
+@model Folder
 @{
     ViewData["Title"] = Model.Name;
 }
 
-<h1>@Model.Subject.Name - @Model.Level</h1>
+<h1>@Model.Subject.Name - @Model.Name</h1>
 
 <div class="container">
 	<div class="row">
-		@foreach (var paragraph in Model.Paragraphs)
-		{
+		
 			<div class="list-group col-md-4 mb-5">
-				<a href="#" class="list-group-item list-group-item-action active">@paragraph.Name</a>
-				@foreach (var lesson in paragraph.Lessons.Where(x =>x.IsActive))
+				<a href="#" class="list-group-item list-group-item-action active">@Model.Name</a>
+				@foreach (var lesson in Model.Lessons.Where(x =>x.IsActive))
 				{
 					<a href="/col/detail/@lesson.Id" class="list-group-item list-group-item-action">@lesson.Name</a>
 				}
 			</div>
-		}
-	</div>
+    </div>
 </div>

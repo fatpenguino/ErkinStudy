@@ -21,8 +21,8 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Index(long? paragraphId)
         {
 	        ViewBag.ParagraphId = paragraphId;
-            return paragraphId.HasValue ? View(_context.Lessons.Include(l => l.Paragraph).Where(x => x.ParagraphId == paragraphId).AsQueryable()) 
-										: View(_context.Lessons.Include(x => x.Paragraph).AsQueryable());
+            return paragraphId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.ParagraphId == paragraphId).AsQueryable()) 
+										: View(_context.Lessons.Include(x => x.Folder).AsQueryable());
         }
 
         // GET: Lesson/Details/5
@@ -34,7 +34,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var lesson = await _context.Lessons
-                .Include(l => l.Paragraph)
+                .Include(l => l.Folder)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (lesson == null)
             {
@@ -126,7 +126,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var lesson = await _context.Lessons
-                .Include(l => l.Paragraph)
+                .Include(l => l.Folder)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (lesson == null)
             {

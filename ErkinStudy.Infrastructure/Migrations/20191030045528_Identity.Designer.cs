@@ -201,7 +201,7 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Paragraph", b =>
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Folder", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +211,7 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("DegreeId")
+                    b.Property<long>("SubjectId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Description")
@@ -225,7 +225,7 @@ namespace ErkinStudy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DegreeId");
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("Paragraphs");
                 });
@@ -421,18 +421,18 @@ namespace ErkinStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Lesson", b =>
                 {
-                    b.HasOne("ErkinStudy.Domain.Entities.Paragraph", "Paragraph")
+                    b.HasOne("ErkinStudy.Domain.Entities.Folder", "Folder")
                         .WithMany("Lessons")
                         .HasForeignKey("ParagraphId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Paragraph", b =>
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Folder", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Degree", "Degree")
                         .WithMany("Paragraphs")
-                        .HasForeignKey("DegreeId")
+                        .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

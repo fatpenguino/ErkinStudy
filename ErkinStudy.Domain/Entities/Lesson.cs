@@ -13,7 +13,7 @@ namespace ErkinStudy.Domain.Entities
         public uint Order { get; set; }
         public int Price { get; set; }
         public bool IsActive { get; set; }
-        public virtual Paragraph Paragraph { get; set; }
+        public virtual Folder Folder { get; set; }
         public virtual ICollection<Content> Contents { get; set; }
         public virtual ICollection<UserLesson> UserLessons { get; set; }
 

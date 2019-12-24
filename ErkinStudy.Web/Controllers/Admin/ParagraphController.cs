@@ -17,16 +17,16 @@ namespace ErkinStudy.Web.Controllers.Admin
             _context = context;
         }
 
-        // GET: Paragraph
+        // GET: Folder
         public IActionResult Index(long? degreeId)
         {
 	        ViewBag.DegreeId = degreeId;
 	        return degreeId.HasValue
-		        ? View(_context.Paragraphs.Include(x => x.Degree).Where(x => x.DegreeId == degreeId).AsQueryable())
-		        : View(_context.Paragraphs.Include(x => x.Degree).AsQueryable());
+		        ? View(_context.Paragraphs.Where(x => x.SubjectId == degreeId).AsQueryable())
+		        : View(_context.Paragraphs.AsQueryable());
         }
 
-        // GET: Paragraph/Details/5
+        // GET: Folder/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -34,7 +34,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Paragraphs.Include(x => x.Degree)
+            var paragraph = await _context.Paragraphs
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (paragraph == null)
             {
@@ -44,31 +44,31 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(paragraph);
         }
 
-        // GET: Paragraph/Create
+        // GET: Folder/Create
         public IActionResult Create(long degreeId)
         {
 	        ViewBag.DegreeId = degreeId;
             return View();
         }
 
-        // POST: Paragraph/Create
+        // POST: Folder/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Order,DegreeId,IsActive")] Paragraph paragraph)
+        public async Task<IActionResult> Create([Bind("Name,Description,Order,SubjectId,IsActive")] Folder folder)
         {
             if (ModelState.IsValid)
             {
-				paragraph.CreatedAt = DateTime.Now;
-                _context.Add(paragraph);
+				folder.CreatedAt = DateTime.Now;
+                _context.Add(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { degreeId = paragraph.DegreeId });
+                return RedirectToAction(nameof(Index), new { degreeId = folder.SubjectId });
             }
-            return View(paragraph);
+            return View(folder);
         }
 
-        // GET: Paragraph/Edit/5
+        // GET: Folder/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -84,14 +84,14 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(paragraph);
         }
 
-        // POST: Paragraph/Edit/5
+        // POST: Folder/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,DegreeId,IsActive")] Paragraph paragraph)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,SubjectId,IsActive")] Folder folder)
         {
-            if (id != paragraph.Id)
+            if (id != folder.Id)
             {
                 return NotFound();
             }
@@ -100,24 +100,24 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {
-                    _context.Update(paragraph);
+                    _context.Update(folder);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-	                if (!ParagraphExists(paragraph.Id))
+	                if (!ParagraphExists(folder.Id))
                     {
                         return NotFound();
                     }
 
 	                throw;
                 }
-                return RedirectToAction(nameof(Index), new { degreeId = paragraph.DegreeId });
+                return RedirectToAction(nameof(Index), new { degreeId = folder.SubjectId });
             }
-            return View(paragraph);
+            return View(folder);
         }
 
-        // GET: Paragraph/Delete/5
+        // GET: Folder/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -135,7 +135,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(paragraph);
         }
 
-        // POST: Paragraph/Delete/5
+        // POST: Folder/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
@@ -143,7 +143,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             var paragraph = await _context.Paragraphs.FindAsync(id);
             _context.Paragraphs.Remove(paragraph);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { degreeId = paragraph.DegreeId });
+            return RedirectToAction(nameof(Index), new { degreeId = paragraph.SubjectId });
         }
 
         private bool ParagraphExists(long id)

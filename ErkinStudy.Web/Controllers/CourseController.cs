@@ -15,9 +15,8 @@ namespace ErkinStudy.Web.Controllers
 	    }
 
 	    public IActionResult Detail(long id)
-	    {
-		    var course = _context.Degrees.Include(x => x.Subject).Include(x => x.Paragraphs).ThenInclude(x => x.Lessons).FirstOrDefault(x => x.Id == id && x.IsActive);
-            return View(course);
+        {
+            return View();
         }
     }
 }

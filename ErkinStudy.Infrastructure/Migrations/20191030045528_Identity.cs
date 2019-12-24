@@ -371,7 +371,7 @@ namespace ErkinStudy.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Paragraphs_DegreeId",
                 table: "Paragraphs",
-                column: "DegreeId");
+                column: "SubjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_LessonId",

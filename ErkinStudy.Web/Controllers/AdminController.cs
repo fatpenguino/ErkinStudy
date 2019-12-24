@@ -58,7 +58,7 @@ namespace ErkinStudy.Web.Controllers
             {
                 var item = new SelectListItem
                 {
-                    Text = $"{lesson.Paragraph.Name} - {lesson.Name}",
+                    Text = $"{lesson.Folder.Name} - {lesson.Name}",
                     Value = lesson.Id.ToString(),
                     Selected = userLessons.Any(x => x.LessonId == lesson.Id)
                 };

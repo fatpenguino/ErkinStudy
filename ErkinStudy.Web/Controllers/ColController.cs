@@ -16,7 +16,7 @@ namespace ErkinStudy.Web.Controllers
 
 	    public IActionResult Detail(long id)
 	    {
-		    var lesson = _context.Lessons.Include(x => x.Contents).Include(x => x.Paragraph).FirstOrDefaultAsync(x => x.Id == id).Result;
+		    var lesson = _context.Lessons.Include(x => x.Contents).Include(x => x.Folder).FirstOrDefaultAsync(x => x.Id == id).Result;
             return View(lesson);
         }
     }

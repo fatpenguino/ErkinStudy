@@ -12,8 +12,7 @@ namespace ErkinStudy.Infrastructure.Context
         {
         }
         public DbSet<Subject> Subjects { get; set; }
-        public DbSet<Degree> Degrees { get; set; }
-        public DbSet<Paragraph> Paragraphs { get; set; }
+        public DbSet<Folder> Paragraphs { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Content> Contents { get; set; }
         public DbSet<Payment> Payments { get; set; }

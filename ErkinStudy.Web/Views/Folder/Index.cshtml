@@ -1,25 +1,25 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Degree>
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Folder>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Degrees</h1>
+<h1>Folders</h1>
 <a asp-controller="Subject" asp-action="Index" class="btn btn-primary">Back</a>
 <p>
-    <a asp-action="Create" asp-route-subjectId="@ViewBag.SubjectId" >Create New</a>
+    <a asp-action="Create" asp-route-degreeId="@ViewBag.DegreeId">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Level)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Subject)
@@ -28,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.IsActive)
             </th>
 	        <th>
-				Actions
+		        Actions
 	        </th>
         </tr>
     </thead>
@@ -36,14 +36,14 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Level)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-	        <td>
-		        @Html.DisplayFor(modelItem => item.Description)
-	        </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Subject.Name)
             </td>
@@ -54,7 +54,7 @@
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
 	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-	            <a asp-controller="Paragraph" asp-action="Index" asp-route-degreeId="@item.Id">Paragraphs</a>
+	            <a asp-controller="Lesson" asp-action="Index" asp-route-paragraphId="@item.Id">Lessons</a>
             </td>
         </tr>
 }
