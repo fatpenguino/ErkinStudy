@@ -33,7 +33,7 @@
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
-                @if (item.IsApprovedOnlineCourse)
+                @if (!item.IsApprovedOnlineCourse)
                 {
                     <a asp-action="ApproveOnlineCourse" asp-route-userId="@item.Id">Appove Online Course</a> 
                 }

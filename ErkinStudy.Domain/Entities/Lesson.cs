@@ -6,7 +6,7 @@ namespace ErkinStudy.Domain.Entities
     public class Lesson
     {
 	    public long Id { get; set; }
-	    public long ParagraphId { get; set; }
+	    public long FolderId { get; set; }
 	    public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }

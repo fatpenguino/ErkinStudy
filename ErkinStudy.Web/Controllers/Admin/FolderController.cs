@@ -8,22 +8,22 @@ using ErkinStudy.Infrastructure.Context;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    public class ParagraphController : Controller
+    public class FolderController : Controller
     {
         private readonly AppDbContext _context;
 
-        public ParagraphController(AppDbContext context)
+        public FolderController(AppDbContext context)
         {
             _context = context;
         }
 
         // GET: Folder
-        public IActionResult Index(long? degreeId)
+        public IActionResult Index(long? subjectId)
         {
-	        ViewBag.DegreeId = degreeId;
-	        return degreeId.HasValue
-		        ? View(_context.Paragraphs.Where(x => x.SubjectId == degreeId).AsQueryable())
-		        : View(_context.Paragraphs.AsQueryable());
+	        ViewBag.DegreeId = subjectId;
+	        return subjectId.HasValue
+		        ? View(_context.Folders.Where(x => x.SubjectId == subjectId).AsQueryable())
+		        : View(_context.Folders.AsQueryable());
         }
 
         // GET: Folder/Details/5
@@ -34,7 +34,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Paragraphs
+            var paragraph = await _context.Folders
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (paragraph == null)
             {
@@ -76,7 +76,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Paragraphs.FindAsync(id);
+            var paragraph = await _context.Folders.FindAsync(id);
             if (paragraph == null)
             {
                 return NotFound();
@@ -125,7 +125,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Paragraphs
+            var paragraph = await _context.Folders
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (paragraph == null)
             {
@@ -140,15 +140,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var paragraph = await _context.Paragraphs.FindAsync(id);
-            _context.Paragraphs.Remove(paragraph);
+            var paragraph = await _context.Folders.FindAsync(id);
+            _context.Folders.Remove(paragraph);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { degreeId = paragraph.SubjectId });
         }
 
         private bool ParagraphExists(long id)
         {
-            return _context.Paragraphs.Any(e => e.Id == id);
+            return _context.Folders.Any(e => e.Id == id);
         }
     }
 }

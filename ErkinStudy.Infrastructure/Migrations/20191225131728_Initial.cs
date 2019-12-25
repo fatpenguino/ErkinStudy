@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ErkinStudy.Infrastructure.Migrations
 {
-    public partial class Identity : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,6 +49,25 @@ namespace ErkinStudy.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OnlineCourses",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    NumberOfWeeks = table.Column<int>(nullable: false),
+                    Price = table.Column<long>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnlineCourses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subjects",
                 columns: table => new
                 {
@@ -56,7 +75,7 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    State = table.Column<int>(nullable: false)
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -170,46 +189,105 @@ namespace ErkinStudy.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Degrees",
+                name: "Payments",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SubjectId = table.Column<long>(nullable: false),
-                    Level = table.Column<long>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
+                    UserId = table.Column<long>(nullable: false),
+                    ApproverId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    ApprovedTime = table.Column<DateTime>(nullable: false),
+                    Amount = table.Column<long>(nullable: false),
+                    Provider = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    ProductType = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Degrees", x => x.Id);
+                    table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Degrees_Subjects_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subjects",
+                        name: "FK_Payments_AspNetUsers_ApproverId",
+                        column: x => x.ApproverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Payments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OnlineCourseWeeks",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OnlineCourseId = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    Order = table.Column<int>(nullable: false),
+                    StreamUrl = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnlineCourseWeeks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OnlineCourseWeeks_OnlineCourses_OnlineCourseId",
+                        column: x => x.OnlineCourseId,
+                        principalTable: "OnlineCourses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Paragraphs",
+                name: "UserOnlineCourses",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(nullable: false),
+                    OnlineCourseId = table.Column<long>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOnlineCourses", x => new { x.OnlineCourseId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserOnlineCourses_OnlineCourses_OnlineCourseId",
+                        column: x => x.OnlineCourseId,
+                        principalTable: "OnlineCourses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserOnlineCourses_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Folders",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DegreeId = table.Column<long>(nullable: false),
+                    SubjectId = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Order = table.Column<long>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Paragraphs", x => x.Id);
+                    table.PrimaryKey("PK_Folders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Paragraphs_Degrees_DegreeId",
-                        column: x => x.DegreeId,
-                        principalTable: "Degrees",
+                        name: "FK_Folders_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -220,20 +298,21 @@ namespace ErkinStudy.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ParagraphId = table.Column<long>(nullable: false),
+                    FolderId = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     Order = table.Column<long>(nullable: false),
-                    Price = table.Column<int>(nullable: false)
+                    Price = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Lessons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Lessons_Paragraphs_ParagraphId",
-                        column: x => x.ParagraphId,
-                        principalTable: "Paragraphs",
+                        name: "FK_Lessons_Folders_FolderId",
+                        column: x => x.FolderId,
+                        principalTable: "Folders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -247,6 +326,7 @@ namespace ErkinStudy.Infrastructure.Migrations
                     LessonId = table.Column<long>(nullable: false),
                     Value = table.Column<string>(nullable: true),
                     Order = table.Column<long>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
                     ContentFormat = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -261,41 +341,12 @@ namespace ErkinStudy.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(nullable: false),
-                    LessonId = table.Column<long>(nullable: false),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    Amount = table.Column<int>(nullable: false),
-                    Provider = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Lessons_LessonId",
-                        column: x => x.LessonId,
-                        principalTable: "Lessons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Payments_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserLessons",
                 columns: table => new
                 {
                     UserId = table.Column<long>(nullable: false),
-                    LessonId = table.Column<long>(nullable: false)
+                    LessonId = table.Column<long>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -359,24 +410,24 @@ namespace ErkinStudy.Infrastructure.Migrations
                 column: "LessonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Degrees_SubjectId",
-                table: "Degrees",
+                name: "IX_Folders_SubjectId",
+                table: "Folders",
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Lessons_ParagraphId",
+                name: "IX_Lessons_FolderId",
                 table: "Lessons",
-                column: "ParagraphId");
+                column: "FolderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Paragraphs_DegreeId",
-                table: "Paragraphs",
-                column: "SubjectId");
+                name: "IX_OnlineCourseWeeks_OnlineCourseId",
+                table: "OnlineCourseWeeks",
+                column: "OnlineCourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_LessonId",
+                name: "IX_Payments_ApproverId",
                 table: "Payments",
-                column: "LessonId");
+                column: "ApproverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_UserId",
@@ -386,6 +437,11 @@ namespace ErkinStudy.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserLessons_UserId",
                 table: "UserLessons",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserOnlineCourses_UserId",
+                table: "UserOnlineCourses",
                 column: "UserId");
         }
 
@@ -410,10 +466,16 @@ namespace ErkinStudy.Infrastructure.Migrations
                 name: "Contents");
 
             migrationBuilder.DropTable(
+                name: "OnlineCourseWeeks");
+
+            migrationBuilder.DropTable(
                 name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "UserLessons");
+
+            migrationBuilder.DropTable(
+                name: "UserOnlineCourses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -422,13 +484,13 @@ namespace ErkinStudy.Infrastructure.Migrations
                 name: "Lessons");
 
             migrationBuilder.DropTable(
+                name: "OnlineCourses");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Paragraphs");
-
-            migrationBuilder.DropTable(
-                name: "Degrees");
+                name: "Folders");
 
             migrationBuilder.DropTable(
                 name: "Subjects");

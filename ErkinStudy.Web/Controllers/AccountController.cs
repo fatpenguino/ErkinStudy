@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
+using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +13,13 @@ namespace ErkinStudy.Web.Controllers
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
-
-		public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly RoleManager<ApplicationRole> _roleManager;
+		public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
-		}
+            _roleManager = roleManager;
+        }
 
 		[HttpGet]
 		[AllowAnonymous]
@@ -103,5 +105,11 @@ namespace ErkinStudy.Web.Controllers
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Login", "Account");
 		}
-	}
+
+        public IActionResult Seed()
+        {
+			AppDbInitializer.SeedUsers(_userManager, _roleManager);
+            return View(nameof(Login));
+        }
+    }
 }

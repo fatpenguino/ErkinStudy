@@ -48,12 +48,15 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("Contents");
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Degree", b =>
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Folder", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -61,11 +64,11 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<long>("Level")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Order")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("SubjectId")
                         .HasColumnType("bigint");
@@ -74,7 +77,7 @@ namespace ErkinStudy.Infrastructure.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Degrees");
+                    b.ToTable("Folders");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Identity.ApplicationRole", b =>
@@ -186,6 +189,9 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("FolderId")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -195,15 +201,12 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<long>("Order")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ParagraphId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParagraphId");
+                    b.HasIndex("FolderId");
 
                     b.ToTable("Lessons");
                 });
@@ -271,38 +274,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasIndex("OnlineCourseId");
 
                     b.ToTable("OnlineCourseWeeks");
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Paragraph", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("DegreeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Order")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DegreeId");
-
-                    b.ToTable("Paragraphs");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Payment", b =>
@@ -515,10 +486,10 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Degree", b =>
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Folder", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Subject", "Subject")
-                        .WithMany("Degrees")
+                        .WithMany("Folders")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -526,9 +497,9 @@ namespace ErkinStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Lesson", b =>
                 {
-                    b.HasOne("ErkinStudy.Domain.Entities.Paragraph", "Paragraph")
+                    b.HasOne("ErkinStudy.Domain.Entities.Folder", "Folder")
                         .WithMany("Lessons")
-                        .HasForeignKey("ParagraphId")
+                        .HasForeignKey("FolderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -538,15 +509,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasOne("ErkinStudy.Domain.Entities.OnlineCourse", "OnlineCourse")
                         .WithMany("OnlineCourseWeeks")
                         .HasForeignKey("OnlineCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Paragraph", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.Degree", "Degree")
-                        .WithMany("Paragraphs")
-                        .HasForeignKey("DegreeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

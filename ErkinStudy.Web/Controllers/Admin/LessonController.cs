@@ -21,7 +21,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Index(long? paragraphId)
         {
 	        ViewBag.ParagraphId = paragraphId;
-            return paragraphId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.ParagraphId == paragraphId).AsQueryable()) 
+            return paragraphId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.FolderId == paragraphId).AsQueryable()) 
 										: View(_context.Lessons.Include(x => x.Folder).AsQueryable());
         }
 
@@ -56,14 +56,14 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ParagraphId,Name,Description,Order,Price,IsActive")] Lesson lesson)
+        public async Task<IActionResult> Create([Bind("FolderId,Name,Description,Order,Price,IsActive")] Lesson lesson)
         {
             if (ModelState.IsValid)
             {
 				lesson.CreatedAt = DateTime.Now;
 				_context.Add(lesson);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { paragraphId = lesson.ParagraphId });
+                return RedirectToAction(nameof(Index), new { paragraphId = lesson.FolderId });
             }
             return View(lesson);
         }
@@ -89,7 +89,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,ParagraphId,Name,Description,Order,Price,IsActive")] Lesson lesson)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,FolderId,Name,Description,Order,Price,IsActive")] Lesson lesson)
         {
             if (id != lesson.Id)
             {
@@ -112,7 +112,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
 	                throw;
                 }
-                return RedirectToAction(nameof(Index), new { paragraphId = lesson.ParagraphId });
+                return RedirectToAction(nameof(Index), new { paragraphId = lesson.FolderId });
             }
             return View(lesson);
         }
@@ -142,7 +142,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var lesson = await _context.Lessons.FindAsync(id);
-            var paragraphId = lesson.ParagraphId;
+            var paragraphId = lesson.FolderId;
             _context.Lessons.Remove(lesson);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { paragraphId });
