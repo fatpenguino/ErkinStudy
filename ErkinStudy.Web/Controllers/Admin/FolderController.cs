@@ -20,7 +20,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Folder
         public IActionResult Index(long? subjectId)
         {
-	        ViewBag.DegreeId = subjectId;
+	        ViewBag.SubjectId = subjectId;
 	        return subjectId.HasValue
 		        ? View(_context.Folders.Where(x => x.SubjectId == subjectId).AsQueryable())
 		        : View(_context.Folders.AsQueryable());
@@ -34,20 +34,20 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Folders
+            var folder = await _context.Folders
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (paragraph == null)
+            if (folder == null)
             {
                 return NotFound();
             }
 
-            return View(paragraph);
+            return View(folder);
         }
 
         // GET: Folder/Create
-        public IActionResult Create(long degreeId)
+        public IActionResult Create(long subjectId)
         {
-	        ViewBag.DegreeId = degreeId;
+	        ViewBag.SubjectId = subjectId;
             return View();
         }
 
@@ -63,7 +63,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 				folder.CreatedAt = DateTime.Now;
                 _context.Add(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { degreeId = folder.SubjectId });
+                return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
             }
             return View(folder);
         }
@@ -76,12 +76,12 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Folders.FindAsync(id);
-            if (paragraph == null)
+            var folder = await _context.Folders.FindAsync(id);
+            if (folder == null)
             {
                 return NotFound();
             }
-            return View(paragraph);
+            return View(folder);
         }
 
         // POST: Folder/Edit/5
@@ -98,21 +98,9 @@ namespace ErkinStudy.Web.Controllers.Admin
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(folder);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-	                if (!ParagraphExists(folder.Id))
-                    {
-                        return NotFound();
-                    }
-
-	                throw;
-                }
-                return RedirectToAction(nameof(Index), new { degreeId = folder.SubjectId });
+                _context.Update(folder);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
             }
             return View(folder);
         }
@@ -125,14 +113,14 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var paragraph = await _context.Folders
+            var folder = await _context.Folders
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (paragraph == null)
+            if (folder == null)
             {
                 return NotFound();
             }
 
-            return View(paragraph);
+            return View(folder);
         }
 
         // POST: Folder/Delete/5
@@ -140,15 +128,11 @@ namespace ErkinStudy.Web.Controllers.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var paragraph = await _context.Folders.FindAsync(id);
-            _context.Folders.Remove(paragraph);
+            var folder = await _context.Folders.FindAsync(id);
+            _context.Folders.Remove(folder);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { degreeId = paragraph.SubjectId });
+            return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
         }
 
-        private bool ParagraphExists(long id)
-        {
-            return _context.Folders.Any(e => e.Id == id);
-        }
     }
 }

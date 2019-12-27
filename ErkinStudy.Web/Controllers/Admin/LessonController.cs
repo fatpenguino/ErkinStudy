@@ -18,10 +18,10 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson
-        public IActionResult Index(long? paragraphId)
+        public IActionResult Index(long? folderId)
         {
-	        ViewBag.ParagraphId = paragraphId;
-            return paragraphId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.FolderId == paragraphId).AsQueryable()) 
+	        ViewBag.FolderId = folderId;
+            return folderId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.FolderId == folderId).AsQueryable()) 
 										: View(_context.Lessons.Include(x => x.Folder).AsQueryable());
         }
 
@@ -45,9 +45,9 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson/Create
-        public IActionResult Create(long paragraphId)
+        public IActionResult Create(long folderId)
         {
-	        ViewBag.ParagraphId = paragraphId;
+	        ViewBag.FolderId = folderId;
             return View();
         }
 
@@ -63,7 +63,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 				lesson.CreatedAt = DateTime.Now;
 				_context.Add(lesson);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { paragraphId = lesson.FolderId });
+                return RedirectToAction(nameof(Index), new { folderId = lesson.FolderId });
             }
             return View(lesson);
         }
@@ -112,7 +112,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
 	                throw;
                 }
-                return RedirectToAction(nameof(Index), new { paragraphId = lesson.FolderId });
+                return RedirectToAction(nameof(Index), new { folderId = lesson.FolderId });
             }
             return View(lesson);
         }
@@ -142,10 +142,10 @@ namespace ErkinStudy.Web.Controllers.Admin
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var lesson = await _context.Lessons.FindAsync(id);
-            var paragraphId = lesson.FolderId;
+            var folderId = lesson.FolderId;
             _context.Lessons.Remove(lesson);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { paragraphId });
+            return RedirectToAction(nameof(Index), new { folderId });
         }
 
         private bool LessonExists(long id)

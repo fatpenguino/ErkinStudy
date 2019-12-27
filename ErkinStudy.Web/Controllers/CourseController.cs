@@ -16,7 +16,9 @@ namespace ErkinStudy.Web.Controllers
 
 	    public IActionResult Detail(long id)
         {
-            return View();
+            var folder = _context.Folders.Include(x => x.Subject).Include(x => x.Lessons)
+                .FirstOrDefault(x => x.Id == id);
+            return View(folder);
         }
     }
 }

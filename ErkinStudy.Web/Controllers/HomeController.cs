@@ -24,12 +24,12 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var subjects = await _dbContext.Subjects.Where(x => x.IsActive).ToListAsync();
+            var subjects = await _dbContext.Subjects.Include(x => x.Folders).Where(x => x.IsActive).ToListAsync();
             return View(subjects);
         }
         public async Task<IActionResult> Subjects()
         {
-            var subjects = await _dbContext.Subjects.Where(x => x.IsActive).ToListAsync();
+            var subjects = await _dbContext.Subjects.Include(x => x.Folders).Where(x => x.IsActive).ToListAsync();
             return View(subjects);
         }
 

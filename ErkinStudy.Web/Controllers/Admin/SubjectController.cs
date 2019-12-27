@@ -110,7 +110,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(subject);
         }
 
-        // POST: Degree/Delete/5
+        // POST: Folder/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)

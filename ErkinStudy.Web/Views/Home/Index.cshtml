@@ -33,9 +33,9 @@
                 {
                     <div class="list-group col-sm">
                         <a href="#" class="list-group-item list-group-item-action active">@subject.Name</a>
-                        @foreach (var degree in subject.Folders.Where(x => x.IsActive))
+                        @foreach (var folder in subject.Folders.Where(x => x.IsActive))
                         {
-                            <a href="course/detail/@degree.Id" class="list-group-item list-group-item-action">@degree.Name - @degree.Description</a>
+                            <a href="course/detail/@folder.Id" class="list-group-item list-group-item-action">@folder.Name - @folder.Description</a>
                         }
                     </div>
                 }

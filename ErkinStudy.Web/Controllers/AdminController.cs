@@ -52,7 +52,7 @@ namespace ErkinStudy.Web.Controllers
             var model = new UserLessonViewModel();
             var items = new List<SelectListItem>();
             //var user = await _userManager.FindByIdAsync(userId.ToString());
-            var lessons = await _dbContext.Lessons.ToListAsync();
+            var lessons = await _dbContext.Lessons.Include(x => x.Folder).ToListAsync();
             var userLessons = await _dbContext.UserLessons.Where( x => x.UserId == userId).ToListAsync();
             foreach (var lesson in lessons)
             {
