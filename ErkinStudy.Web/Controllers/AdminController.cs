@@ -85,7 +85,7 @@ namespace ErkinStudy.Web.Controllers
             var userOnlineCourse = new UserOnlineCourse {UserId = userId, OnlineCourseId = 1};
             await _dbContext.UserOnlineCourses.AddAsync(userOnlineCourse);
             await _dbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Users));
         }
     }
 }
