@@ -37,7 +37,7 @@ namespace ErkinStudy.Web.Controllers
         {
             try
             {
-                await _emailService.SendEmailAsync(number, "Новый запрос", $"Имя: {name}, Номер: {number}");
+                await _emailService.SendEmailAsync("Новый запрос", $"Имя: {name}, Номер: {number}");
             }
             catch (Exception e)
             {
