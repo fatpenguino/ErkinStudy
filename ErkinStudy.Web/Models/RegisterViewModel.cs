@@ -1,28 +1,32 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ErkinStudy.Web.Models
 {
 	public class RegisterViewModel
 	{
         [Required]
+        [Display(Name = "Логин")]
         public string UserName { get; set; }
 
         [Required]
 		[Phone]
+        [Display(Name = "Телефон")]
         public string PhoneNumber { get; set; }
 
 		[Required]
 		[EmailAddress]
-		public string Email { get; set; }
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
 		[Required]
 		[DataType(DataType.Password)]
-		public string Password { get; set; }
+        [Display(Name = "Құпиясөз")]
+        public string Password { get; set; }
 
 		[Required]
 		[DataType(DataType.Password)]
 		[Compare("Password")]
-		[Display(Name = "Confirm Password")]
+		[Display(Name = "Құпиясөзді қайта теру")]
 		public string ConfirmPassword { get; set; }
 
 	}

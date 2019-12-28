@@ -47,7 +47,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ақпарат қалдырыңыз.</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -55,17 +55,16 @@
             <form asp-action="SendCallRequest" method="post">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Name</label>
+                        <label>Есіміңіз</label>
                         <input name="name" type="text" class="form-control" required />
                     </div>
                     <div class="form-group">
-                        <label name="name">Number</label>
+                        <label name="name">Телефон нөміріңіз</label>
                         <input name="number" type="text" class="form-control" required />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Make request</button>
+                    <button type="submit" class="btn btn-primary">Ақпарат Қалдыру</button>
                 </div>
             </form>
         </div>

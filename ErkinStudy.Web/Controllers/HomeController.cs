@@ -33,15 +33,15 @@ namespace ErkinStudy.Web.Controllers
             return View(subjects);
         }
 
-        public async Task<IActionResult> SendCallRequest(string name, string number)
+        public async Task<IActionResult> SendCallRequest(string name, string number, string type = "Онлайн курс")
         {
             try
             {
-                await _emailService.SendEmailAsync("Новый запрос", $"Имя: {name}, Номер: {number}");
+                await _emailService.SendEmailAsync("Әруақ Әруақ! Жаңа адам.",$"Аты: {name}, Нөмірі: {number}, Таңдауы: {type}");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                TempData["ErrorMessage"] = $"{e.Message}, {e.StackTrace}";
             }
             return RedirectToAction(nameof(Index));
         }

@@ -85,7 +85,7 @@ namespace ErkinStudy.Web.Controllers
 					return RedirectToAction("Login", "Account");
 				}
 
-				ModelState.AddModelError(string.Empty, "Invalid register attempt.");
+				ModelState.AddModelError(string.Empty, result.Errors.ToString());
 				return View(model);
 			}
 
