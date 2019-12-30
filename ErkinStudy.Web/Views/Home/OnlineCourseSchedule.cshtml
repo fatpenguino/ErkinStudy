@@ -6,16 +6,27 @@
 <h1>Курс бағдарламасы</h1>
 <div class="container">
     <div class="row">
-        <div class="col-md-8 youtube-stream">
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/live_stream?channel=12345" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div class="col-md-4">
-            <ul class="list-group">
-                @foreach (var week in Model.OnlineCourseWeeks)
-                {
-                    <li class="list-group-item">@week.Name</li>
-                }
-            </ul>
+        <div class="accordion" id="accordionCourse">
+            @foreach (var week in Model.OnlineCourseWeeks)
+            {
+                <div class="card">
+                    <div class="card-header" id="heading_@week.Id">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
+                                @week.Name
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse_@week.Id" class="collapse" aria-labelledby="collapse_@week.Id" data-parent="#accordionCourse">
+                        <div class="card-body">
+                            @week.Description
+                            <div class="youtube-stream">
+                                <iframe src="@week.StreamUrl" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
