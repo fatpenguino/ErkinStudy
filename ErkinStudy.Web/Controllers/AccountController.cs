@@ -82,6 +82,7 @@ namespace ErkinStudy.Web.Controllers
 				var result = await _userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
+                    TempData["SuccessMessage"] = "Вы успешно зарегистрировались.";
 					return RedirectToAction("Login", "Account");
 				}
 
