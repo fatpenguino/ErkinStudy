@@ -127,3 +127,22 @@ body {
     width: 100%;
     height: 100%;
 }
+.countdownWeek {
+    padding-left: 0;
+    display: inline-block;
+    margin-bottom: 0;
+    float: right;
+}
+
+.countdownWeek li {
+    display: inline-block;
+    font-size: 0.55em;
+    list-style-type: none;
+    padding: 0.5em;
+    text-transform: uppercase;
+}
+
+.countdownWeek li span {
+        display: inline-block;
+        font-size: 1.5rem;
+    }

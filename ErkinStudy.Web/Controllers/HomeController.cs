@@ -32,7 +32,6 @@ namespace ErkinStudy.Web.Controllers
             var subjects = await _dbContext.Subjects.Include(x => x.Folders).Where(x => x.IsActive).ToListAsync();
             return View(subjects);
         }
-
         public async Task<IActionResult> SendCallRequest(string name, string number, string type = "Онлайн курс")
         {
             try

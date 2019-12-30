@@ -5,6 +5,7 @@ using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,12 +23,12 @@ namespace ErkinStudy.Web.Controllers
             _userManager = userManager;
             _dbContext = dbContext;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             return View();
         }
-
+        [Authorize]
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -47,6 +48,7 @@ namespace ErkinStudy.Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> UserLessons(long userId)
         {
             var model = new UserLessonViewModel();
@@ -68,6 +70,7 @@ namespace ErkinStudy.Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> UpdateUserLessons(UserLessonViewModel model)
         {
             foreach (var item in model.SelectListItems)
@@ -80,6 +83,7 @@ namespace ErkinStudy.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
         public async Task<IActionResult> ApproveOnlineCourse(long userId)
         {
             var userOnlineCourse = new UserOnlineCourse {UserId = userId, OnlineCourseId = 1};

@@ -2,6 +2,7 @@
 using ErkinStudy.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ErkinStudy.Infrastructure.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers.Admin
@@ -15,12 +16,14 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Subject
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _dbContext.Subjects.ToListAsync());
         }
 
         // GET: Subject/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -38,6 +41,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Subject/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -46,6 +50,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // POST: Subject/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,IsActive")] Subject subject)
         {
             if (ModelState.IsValid)
@@ -58,6 +63,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Subject/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -77,6 +83,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,IsActive")] Subject subject)
         {
             if (id != subject.Id)
@@ -94,6 +101,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Subject/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -113,6 +121,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // POST: Folder/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
 	        var subject = await _dbContext.Subjects.FindAsync(id);

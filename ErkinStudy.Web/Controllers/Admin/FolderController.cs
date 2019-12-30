@@ -5,6 +5,7 @@ using ErkinStudy.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -18,6 +19,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder
+        [Authorize]
         public IActionResult Index(long? subjectId)
         {
 	        ViewBag.SubjectId = subjectId;
@@ -27,6 +29,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -45,6 +48,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Create
+        [Authorize]
         public IActionResult Create(long subjectId)
         {
 	        ViewBag.SubjectId = subjectId;
@@ -56,6 +60,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Name,Description,Order,SubjectId,IsActive")] Folder folder)
         {
             if (ModelState.IsValid)
@@ -69,6 +74,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -89,6 +95,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,SubjectId,IsActive")] Folder folder)
         {
             if (id != folder.Id)
@@ -106,6 +113,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -126,6 +134,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // POST: Folder/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var folder = await _context.Folders.FindAsync(id);

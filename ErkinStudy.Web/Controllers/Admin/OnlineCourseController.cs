@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities;
 using ErkinStudy.Infrastructure.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -17,12 +18,14 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourse
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.OnlineCourses.ToListAsync());
         }
 
         // GET: OnlineCourse/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -41,6 +44,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourse/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -51,6 +55,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
         {
             if (ModelState.IsValid)
@@ -63,6 +68,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourse/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -83,6 +89,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
         {
             if (id != onlineCourse.Id)
@@ -114,6 +121,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourse/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -134,6 +142,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // POST: OnlineCourse/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var onlineCourse = await _context.OnlineCourses.FindAsync(id);
