@@ -91,6 +91,10 @@ body {
 }
 .jumbotron {
     background-color: white;
+    padding-bottom: 0;
+}
+.jumbotron + .jumbotron {
+    padding: 0;
 }
 .logo {
     line-height: 1;
@@ -124,7 +128,8 @@ body {
     width: 100%;
 }
 .youtube-stream {
-    height: 600px;
+    width: 720px;
+    height: 480px;
 }
 .youtube-stream iframe {
     width: 100%;
@@ -149,6 +154,16 @@ body {
         display: inline-block;
         font-size: 1.5rem;
 }
+.course-info {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+.course-info p {
+    font-size: 14px;
+}
+
+
 @media only screen and (max-width: 600px) {
     .countdownWeek li {
         font-size: 0.55em;
@@ -158,5 +173,9 @@ body {
     .countdownWeek li span {
         display: inline-block;
         font-size: 1.5rem;
+    }
+
+    .youtube-stream {
+        height: 300px;
     }
 }

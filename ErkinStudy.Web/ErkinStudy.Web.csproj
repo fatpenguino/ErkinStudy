@@ -23,4 +23,9 @@
     <ProjectReference Include="..\ErkinStudy.Infrastructure\ErkinStudy.Infrastructure.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
 </Project>

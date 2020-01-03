@@ -45,6 +45,10 @@ namespace ErkinStudy.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> FreeCourse()
+        {
+            return View( await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).FirstOrDefaultAsync(x => x.Id == 3));
+        }
         public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
         {
             var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks)

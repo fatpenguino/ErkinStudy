@@ -1,0 +1,54 @@
+﻿@using System.Globalization
+@using ErkinStudy.Domain.Entities
+@model ErkinStudy.Domain.Entities.OnlineCourse
+@{
+    ViewData["Title"] = "FreeCourse";
+    var week = Model.OnlineCourseWeeks.FirstOrDefault() ?? new OnlineCourseWeek();
+}
+<div class="container">
+    <div class="course-info">
+        <h2>@week.Name </h2>
+        <p>@week.Description</p>
+        @if (week.StartDate > DateTime.Now)
+        {
+            <ul class="countdown mx-auto">
+                <li><span id="days"></span>күн</li>
+                <li><span id="hours"></span>сағат</li>
+                <li><span id="minutes"></span>минут</li>
+                <li><span id="seconds"></span>секунд</li>
+            </ul>
+        }
+        <div class="youtube-stream mx-auto">
+            <iframe src="@week.StreamUrl">
+            </iframe>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    const second = 1000,
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24;
+
+    let countDown = new Date('@week.StartDate.ToString(CultureInfo.InvariantCulture)').getTime(),
+        x = setInterval(function() {
+
+            let now = new Date().getTime(),
+                distance = countDown - now;
+
+            document.getElementById('days').innerText = Math.floor(distance / (day)),
+                document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)),
+                document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
+                document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
+
+            //do something later when date is reached
+            //if (distance < 0) {
+            //  clearInterval(x);
+            //  'IT'S MY BIRTHDAY!;
+            //}
+
+        }, second)
+</script>
