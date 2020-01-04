@@ -12,7 +12,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 	    private readonly AppDbContext _dbContext;
         public QuizController(AppDbContext dbContext)
         {
-	        _dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         // GET: Quiz
