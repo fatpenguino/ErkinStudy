@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ErkinStudy.Domain.Entities
 {
@@ -12,6 +13,7 @@ namespace ErkinStudy.Domain.Entities
         public int Order { get; set; }
         public string StreamUrl { get; set; }
         public virtual OnlineCourse OnlineCourse { get; set; }
+        public virtual ICollection<Homework> Homeworks { get; set; }
 
     }
 }
