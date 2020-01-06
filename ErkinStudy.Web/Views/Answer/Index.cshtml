@@ -1,19 +1,22 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quiz.Question>
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quiz.Answer>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Questions</h1>
+<h1>Answers</h1>
 <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Back</a>
 <p>
-    <a asp-action="Create" asp-route-quizId="@ViewBag.QuizId">Create New</a>
+    <a asp-action="Create" asp-route-questionId="@ViewBag.QuestionId">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCorrect)
             </th>
             <th>Actions</th>
         </tr>
@@ -26,10 +29,12 @@
                 @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.IsCorrect)
+            </td>
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
 	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-controller="Answer" asp-action="Index" asp-route-questionId="@item.Id">Answers</a>
             </td>
         </tr>
     }

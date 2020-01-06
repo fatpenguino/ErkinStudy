@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities;
@@ -10,22 +10,22 @@ using ErkinStudy.Domain.Entities.Quiz;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    public class QuestionController : Controller
+    public class AnswerController : Controller
     {
         private readonly AppDbContext _context;
 
-        public QuestionController(AppDbContext context)
+        public AnswerController(AppDbContext context)
         {
             _context = context;
         }
 
         // GET: Question
         [Authorize]
-        public IActionResult Index(long? quizId)
+        public IActionResult Index(long? questionId)
         {
-            ViewBag.QuizId = quizId;
-            return quizId.HasValue
-                ? View(_context.Questions.Where(x => x.Quiz.Id == quizId))
+            ViewBag.QuestionId = questionId;
+            return questionId.HasValue
+                ? View(_context.Answers.Where(x => x.Question.Id == questionId))
                 : View();
         }
 
@@ -38,7 +38,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var question = await _context.Questions.FindAsync(id.Value);
+            var question = await _context.Answers.FindAsync(id.Value);
             if (question == null)
             {
                 return NotFound();
@@ -49,9 +49,9 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: Question/Create
         [Authorize]
-        public IActionResult Create(long quizId)
+        public IActionResult Create(long questionId)
         {
-            ViewBag.QuizId = quizId;
+            ViewBag.QuestionId = questionId;
             return View();
         }
 
@@ -61,18 +61,18 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Content")] Question question, long? quizId)
+        public async Task<IActionResult> Create([Bind("Content, IsCorrect")] Answer answer, long? questionId)
         {
             if (ModelState.IsValid)
             {
-                var quiz = await _context.Quizzes.FindAsync(quizId);
-                question.Quiz = quiz;
+                var question = await _context.Questions.FindAsync(questionId);
+                answer.Question = question;
 
-                _context.Add(question);
+                _context.Add(answer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { quizId });
+                return RedirectToAction(nameof(Index), new { questionId });
             }
-            return View(question);
+            return View(answer);
         }
 
         // GET: Question/Edit/5
@@ -84,12 +84,12 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var question = await _context.Questions.FindAsync(id);
-            if (question == null)
+            var answer = await _context.Answers.FindAsync(id);
+            if (answer == null)
             {
                 return NotFound();
             }
-            return View(question);
+            return View(answer);
         }
 
         // POST: Question/Edit/5
@@ -98,15 +98,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long quizId, [Bind("Content")] Question question)
+        public async Task<IActionResult> Edit(long quizId, [Bind("Content, IsCorrect")] Answer answer)
         {
             if (ModelState.IsValid)
             {
-                _context.Update(question);
+                _context.Update(answer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { quizId });
             }
-            return View(question);
+            return View(answer);
         }
 
         // GET: Question/Delete/5
@@ -118,14 +118,14 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var question = await _context.Questions
+            var answer = await _context.Answers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
+            if (answer == null)
             {
                 return NotFound();
             }
 
-            return View(question);
+            return View(answer);
         }
 
         // POST: Question/Delete/5
@@ -134,10 +134,10 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var question = await _context.Questions.FindAsync(id);
-            _context.Questions.Remove(question);
+            var answer = await _context.Answers.FindAsync(id);
+            _context.Answers.Remove(answer);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { question.Quiz.Id });
+            return RedirectToAction(nameof(Index), new { answer.Question.Id });
         }
 
     }
