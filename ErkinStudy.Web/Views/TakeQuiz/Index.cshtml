@@ -1,0 +1,27 @@
+@model IEnumerable<ErkinStudy.Domain.Entities.Quiz.Quiz>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Quizzes</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>                
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Quiz" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
