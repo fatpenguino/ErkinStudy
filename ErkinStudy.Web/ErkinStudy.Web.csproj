@@ -6,6 +6,13 @@
     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="wwwroot\Homeworks\**" />
+    <Content Remove="wwwroot\Homeworks\**" />
+    <EmbeddedResource Remove="wwwroot\Homeworks\**" />
+    <None Remove="wwwroot\Homeworks\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0" />

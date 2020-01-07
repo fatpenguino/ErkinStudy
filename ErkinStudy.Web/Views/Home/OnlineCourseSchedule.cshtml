@@ -5,7 +5,7 @@
     var nearestWeek = Model.OnlineCourseWeeks.Where(x => x.StartDate > DateTime.Now).Min(x => x.StartDate);
 }
 
-<h1>Курс бағдарламасы</h1>
+<h2>Курс бағдарламасы</h2>
 <div class="container">
     <div class="row">
         <div class="accordion" id="accordionCourse">
@@ -32,10 +32,21 @@
                         <div class="card-body">
                             @week.Description
                             <div class="youtube-stream mx-auto">
-                                <iframe
-                                    src="@week.StreamUrl">
+                                <iframe src="@week.StreamUrl">
                                 </iframe>
                             </div>
+                            @if (week.Homeworks.Count > 0)
+                            {
+                                <div class="homework">
+                                    <p>Үй жұмысы:</p>
+                                    <div class="homework-items">
+                                        @foreach (var homework in week.Homeworks)
+                                        {
+                                            <a class="btn btn-outline-success" asp-controller="OnlineCourseWeek" asp-action="DownloadHomework" asp-route-id="@homework.Id">@homework.Name</a>
+                                        }
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
