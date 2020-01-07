@@ -20,6 +20,7 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<UserOnlineCourse> UserOnlineCourses { get; set; }
         public DbSet<OnlineCourse> OnlineCourses { get; set; }
         public DbSet<OnlineCourseWeek> OnlineCourseWeeks { get; set; }
+        public DbSet<Homework> Homeworks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
