@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,13 @@ namespace ErkinStudy.Web.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
             
             return View(quiz);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Check(List<long> answerIds)
+        {
+            _logger.Log(LogLevel.Warning, $"SomeThings {answerIds.Count()}", null);
+            return View();
         }
     }
 }
