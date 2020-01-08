@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ErkinStudy.Domain.Entities
 {
@@ -8,6 +9,7 @@ namespace ErkinStudy.Domain.Entities
         public long OnlineCourseWeekId { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
+        public DateTime UploadTime { get; set; }
         public virtual OnlineCourseWeek OnlineCourseWeek { get; set; }
     }
 }

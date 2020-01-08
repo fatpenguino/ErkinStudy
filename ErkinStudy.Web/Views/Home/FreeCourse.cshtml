@@ -9,7 +9,7 @@
     <div class="course-info">
         <h2>@week.Name </h2>
         <p>@week.Description</p>
-        @if (week.StartDate > DateTime.Now)
+        @if (week.StartDate.ToUniversalTime() > DateTime.UtcNow)
         {
             <ul class="countdown mx-auto">
                 <li><span id="days"></span>күн</li>
@@ -19,7 +19,7 @@
             </ul>
         }
         <div class="youtube-stream mx-auto">
-            <iframe src="@week.StreamUrl">
+            <iframe allowfullscreen src="@week.StreamUrl">
             </iframe>
         </div>
 

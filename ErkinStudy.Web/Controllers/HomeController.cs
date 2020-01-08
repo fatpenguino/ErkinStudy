@@ -44,14 +44,13 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
         public async Task<IActionResult> FreeCourse()
         {
             return View( await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).FirstOrDefaultAsync(x => x.Id == 3));
         }
         public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
         {
-            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks)
+            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).ThenInclude(x => x.Homeworks)
                 .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
             return View(onlineCourse);
         }

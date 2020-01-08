@@ -162,7 +162,15 @@ body {
 .course-info p {
     font-size: 14px;
 }
-
+.homework {
+    margin-top: 1em;
+}
+.homework p {
+    margin: 0;
+}
+.homework-items {
+    display: block;
+}
 
 @media only screen and (max-width: 600px) {
     .countdownWeek li {
@@ -177,5 +185,6 @@ body {
 
     .youtube-stream {
         height: 300px;
+        width: 100%;
     }
 }
