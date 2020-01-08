@@ -139,7 +139,6 @@ body {
     padding-left: 0;
     display: inline-block;
     margin-bottom: 0;
-    float: right;
 }
 
 .countdownWeek li {
@@ -171,7 +170,12 @@ body {
 .homework-items {
     display: block;
 }
-
+.nextweek {
+    display: block;
+}
+.schedule-title {
+    margin-top: 0.7em;
+}
 @media only screen and (max-width: 600px) {
     .countdownWeek li {
         font-size: 0.55em;
