@@ -44,6 +44,12 @@
                                 </button>
                                 <div class="btn float-right">@week.StartDate.ToString("dd.MM.yyyy")</div>
                             }
+                            else if (week.StartDate.AddHours(3) < DateTime.Now && isApproved)
+                            {
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
+                                    @week.Name
+                                </button>
+                            }
                             else
                             {
                                 <div class="btn">
@@ -53,12 +59,12 @@
                             }
                         </div>
                     </div>
-                    @if (week == nearestWeek && isApproved)
+                    @if ((week == nearestWeek || week.StartDate.AddHours(3) < DateTime.Now) && isApproved)
                     {
                         <div id="collapse_@week.Id" class="collapse" aria-labelledby="collapse_@week.Id" data-parent="#accordionCourse">
                             <div class="card-body">
                                 @week.Description
-                                <div class="youtube-stream mx-auto">
+                                <div class="youtube-stream mx-auto mt-3">
                                     <iframe src="@week.StreamUrl">
                                     </iframe>
                                 </div>
