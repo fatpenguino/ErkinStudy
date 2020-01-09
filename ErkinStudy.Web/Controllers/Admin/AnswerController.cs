@@ -23,28 +23,17 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public IActionResult Index(long? questionId)
         {
+            if (!questionId.HasValue)
+                return View();
+
+            var quiz = _context.Questions
+                .Include(x => x.Quiz)
+                .FirstOrDefault(x => x.Id == questionId)?
+                .Quiz;
             ViewBag.QuestionId = questionId;
-            return questionId.HasValue
-                ? View(_context.Answers.Where(x => x.Question.Id == questionId))
-                : View();
-        }
-
-        // GET: Question/Details/5
-        [Authorize]
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _context.Answers.FindAsync(id.Value);
-            if (question == null)
-            {
-                return NotFound();
-            }
-
-            return View(question);
+            ViewBag.QuizId = quiz?.Id;
+            
+            return View(_context.Answers.Where(x => x.Question.Id == questionId));
         }
 
         // GET: Question/Create

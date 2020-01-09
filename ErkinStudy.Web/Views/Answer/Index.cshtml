@@ -5,7 +5,7 @@
 }
 
 <h1>Answers</h1>
-<a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Back</a>
+<a asp-controller="Question" asp-action="Index" asp-route-quizId="@ViewBag.QuizId" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-questionId="@ViewBag.QuestionId">Create New</a>
 </p>
@@ -33,8 +33,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }

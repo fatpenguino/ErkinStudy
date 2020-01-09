@@ -22,24 +22,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(await _dbContext.Quizzes.ToListAsync());
         }
 
-        // GET: Quiz/Details/5
-        [Authorize]
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var quiz = await _dbContext.Quizzes.FindAsync(id.Value);
-            if (quiz == null)
-            {
-                return NotFound();
-            }
-
-            return View(quiz);
-        }
-
         // GET: Quiz/Create
         [Authorize]
         public IActionResult Create()
