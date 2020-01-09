@@ -15,7 +15,7 @@ namespace ErkinStudy.Infrastructure.Services
         public bool IsUserApproved(string userId)
         {
             var userLesson =
-                _context.UserLessons.FirstOrDefault(x => x.UserId == long.Parse(userId) && x.LessonId == 1);
+                _context.UserOnlineCourses.FirstOrDefault(x => x.UserId == long.Parse(userId) && x.OnlineCourseId == 1);
             return userLesson != null;
         }
     }

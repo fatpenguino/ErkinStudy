@@ -41,7 +41,7 @@ namespace ErkinStudy.Web.Controllers
                     Email = user.Email,
                     Id = user.Id,
                     UserName = user.UserName,
-                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id)
+                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id && x.OnlineCourseId == 1)
                 };
                 model.Add(item);
             }
