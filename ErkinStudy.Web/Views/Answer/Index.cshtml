@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quiz.Answer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Answers</h1>
+<a asp-controller="Question" asp-action="Index" asp-route-quizId="@ViewBag.QuizId" class="btn btn-primary">Back</a>
+<p>
+    <a asp-action="Create" asp-route-questionId="@ViewBag.QuestionId">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCorrect)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+ @if(Model != null)
+   @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCorrect)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

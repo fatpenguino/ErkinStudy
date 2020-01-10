@@ -4,14 +4,16 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ErkinStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200104172619_AddQuiz")]
+    partial class AddQuiz
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,32 +80,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("Folders");
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Homework", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("OnlineCourseWeekId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UploadTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OnlineCourseWeekId");
-
-                    b.ToTable("Homeworks");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Identity.ApplicationRole", b =>
@@ -575,15 +551,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasOne("ErkinStudy.Domain.Entities.Subject", "Subject")
                         .WithMany("Folders")
                         .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Homework", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.OnlineCourseWeek", "OnlineCourseWeek")
-                        .WithMany("Homeworks")
-                        .HasForeignKey("OnlineCourseWeekId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

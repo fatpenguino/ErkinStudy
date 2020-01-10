@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.UserLesson>
+﻿@using ErkinStudy.Web.Controllers.Admin;
+@model IEnumerable<ErkinStudy.Domain.Entities.UserLesson>
 
 @{
     ViewData["Title"] = "Index";
@@ -37,9 +38,9 @@
                 @Html.DisplayFor(modelItem => item.Lesson.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", nameof(UserLessonController.Edit), new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", nameof(UserLessonController.Details), new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", nameof(UserLessonController.Delete), new { /* id=item.PrimaryKey */ })
             </td>
         </tr>
 }
