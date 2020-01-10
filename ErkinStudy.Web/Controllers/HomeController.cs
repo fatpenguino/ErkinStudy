@@ -36,10 +36,12 @@ namespace ErkinStudy.Web.Controllers
         {
             try
             {
+                _logger.LogInformation($"Отправка уведомлений, данные: {name}, {number}, {type}");
                 await _emailService.SendEmailAsync("Әруақ Әруақ! Жаңа адам.",$"Аты: {name}, Нөмірі: {number}, Таңдауы: {type}");
             }
             catch (Exception e)
             {
+                _logger.LogError($"Ошибка при отправке уведомлений, данные: {name}, {number}, {type}", e);
                 TempData["ErrorMessage"] = $"{e.Message}, {e.StackTrace}";
             }
             return RedirectToAction(nameof(Index));
@@ -62,6 +64,7 @@ namespace ErkinStudy.Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            _logger.LogError($"Ошибка {HttpContext.TraceIdentifier}");
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

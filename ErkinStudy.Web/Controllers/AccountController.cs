@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Web.Models;
@@ -6,110 +7,134 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers
 {
-	public class AccountController : Controller
-	{
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
+    public class AccountController : Controller
+    {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-		public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
-		{
-			_userManager = userManager;
-			_signInManager = signInManager;
+        private readonly ILogger<AccountController> _logger;
+
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+            RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
-		[HttpGet]
-		[AllowAnonymous]
-		public async Task<IActionResult> Login(string returnUrl = null)
-		{
-			// Clear the existing external cookie to ensure a clean login process
-			await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-			ViewData["ReturnUrl"] = returnUrl;
-			return View();
-		}
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(string returnUrl = null)
+        {
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
 
-		[HttpGet]
-		[AllowAnonymous]
-		public async Task<IActionResult> Register(string returnUrl = null)
-		{
-			// Clear the existing external cookie to ensure a clean login process
-			await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-			ViewData["ReturnUrl"] = returnUrl;
-			return View();
-		}
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
-		{
-			ViewData["ReturnUrl"] = returnUrl;
-			if (ModelState.IsValid)
-			{
-				// This doesn't count login failures towards account lockout
-				// To enable password failures to trigger account lockout, set lockoutOnFailure: true
-				var result =
-					await _signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);
-				if (result.Succeeded)
-				{
-					return RedirectToAction("Index", "Home");
-				}
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(string returnUrl = null)
+        {
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
 
-				if (result.IsLockedOut)
-				{
-					return RedirectToAction(nameof(Lockout));
-				}
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            _logger.LogInformation($"Попытка входа пользователя {model.Username}.");
+            if (ModelState.IsValid)
+            {
+                var result =
+                    await _signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"Пользователь {model.Username} успешно вошел в сайт.");
+                    return RedirectToAction("Index", "Home");
+                }
 
-				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-				return View(model);
-			}
+                if (result.IsLockedOut)
+                {
+                    _logger.LogInformation($"Пользователь {model.Username} залочен.");
+                    return RedirectToAction(nameof(Lockout));
+                }
 
-			// If we got this far, something failed, redisplay form
-			return View(model);
-		}
+                var message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                ModelState.AddModelError(string.Empty, message);
+                _logger.LogError($"Ошибка при входе пользователя {model.Username}, {message}");
+                return View(model);
+            }
 
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-		{
-			ViewData["ReturnUrl"] = returnUrl;
-			if (ModelState.IsValid)
-			{
-				var user = new ApplicationUser { Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber };
-				var result = await _userManager.CreateAsync(user, model.Password);
-				if (result.Succeeded)
-				{
-                    TempData["SuccessMessage"] = "Вы успешно зарегистрировались.";
-					return RedirectToAction("Login", "Account");
-				}
+            var modelMessage = string.Join(" | ", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+            _logger.LogError($"Ошибка при входе, кривые данные {model.Username}, {modelMessage}");
+            return View(model);
+        }
 
-				ModelState.AddModelError(string.Empty, result.Errors.ToString());
-				return View(model);
-			}
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            _logger.LogInformation($"Попытка регистраций пользователя {model.UserName}.");
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                    {Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber};
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "Тіркелу сәтті өтті.";
+                    _logger.LogInformation($"Пользователь успешно зарегистрирован. { user.Id} - {user.UserName}");
+                    return RedirectToAction("Login", "Account");
+                }
 
-			// If we got this far, something failed, redisplay form
-			return View(model);
-		}
-		[HttpGet]
-		[AllowAnonymous]
-		public IActionResult Lockout()
-		{
-			return View();
-		}
+                var message = string.Join(" | ", result.Errors
+                    .Select(v => v.Description));
+                ModelState.AddModelError(string.Empty, message);
+                _logger.LogInformation($"Ошибка при регистраций пользователя {model.UserName}, {message}");
+                return View(model);
+            }
+            var modelMessage = string.Join(" | ", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+            _logger.LogError($"Ошибка при регистраций, кривые данные {modelMessage}");
+            return View(model);
+        }
 
-		[Authorize]
-		public async Task<IActionResult> Logout()
-		{
-			await _signInManager.SignOutAsync();
-			return RedirectToAction("Login", "Account");
-		}
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Lockout()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            _logger.LogInformation($"Пользователь {User.Identity.Name} успешно вышел");
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
 
         public IActionResult Seed()
         {
-			AppDbInitializer.SeedUsers(_userManager, _roleManager);
+            AppDbInitializer.SeedUsers(_userManager, _roleManager);
             return View(nameof(Login));
         }
     }
