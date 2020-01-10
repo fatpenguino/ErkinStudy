@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers
@@ -39,11 +39,22 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Check(List<long> answerIds)
+        public async Task<IActionResult> Check(IFormCollection iFormCollection)
         {
-            _logger.Log(LogLevel.Warning, $"SomeThings {answerIds.Count()}", null);
-            return View();
+            int score = 0;
+            string[] questionIds = iFormCollection["questionId"];
+            foreach(var qId in questionIds)
+            {
+                var question = await _dbContext.Questions
+                    .Include(x => x.Answers)
+                    .FirstOrDefaultAsync(x => x.Id == Convert.ToInt64(qId));
+                if (question.Answers.First(x => x.IsCorrect).Id == Convert.ToInt64(iFormCollection[question.Id.ToString()]))
+                {
+                    score++;
+                }
+            }
+
+            return View("Result", score);
         }
     }
 }

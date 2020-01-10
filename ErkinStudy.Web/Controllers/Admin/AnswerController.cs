@@ -19,7 +19,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             _context = context;
         }
 
-        // GET: Question
+        // GET: Answer
         [Authorize]
         public IActionResult Index(long? questionId)
         {
@@ -36,7 +36,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(_context.Answers.Where(x => x.Question.Id == questionId));
         }
 
-        // GET: Question/Create
+        // GET: Answer/Create
         [Authorize]
         public IActionResult Create(long questionId)
         {
@@ -44,7 +44,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View();
         }
 
-        // POST: Question/Create
+        // POST: Answer/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -64,7 +64,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(answer);
         }
 
-        // GET: Question/Edit/5
+        // GET: Answer/Edit/5
         [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
@@ -81,7 +81,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(answer);
         }
 
-        // POST: Question/Edit/5
+        // POST: Answer/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -98,7 +98,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(answer);
         }
 
-        // GET: Question/Delete/5
+        // GET: Answer/Delete/5
         [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
@@ -117,7 +117,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(answer);
         }
 
-        // POST: Question/Delete/5
+        // POST: Answer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
