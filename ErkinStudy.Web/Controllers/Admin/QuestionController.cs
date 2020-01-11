@@ -95,34 +95,28 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: Question/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(long? id)
+        public IActionResult Delete(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var question = await _context.Questions
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var question = _context.Questions
+                .Include(x => x.Quiz)
+                .Include(x => x.Answers)
+                .FirstOrDefault(x => x.Id == id);
             if (question == null)
             {
                 return NotFound();
             }
 
-            return View(question);
-        }
+            var answers = question.Answers;
 
-        // POST: Question/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var question = await _context.Questions.FindAsync(id);
+            _context.Answers.RemoveRange(answers);
             _context.Questions.Remove(question);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { question.Quiz.Id });
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index), new { quizId = question.Quiz.Id });
         }
-
     }
 }

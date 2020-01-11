@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -106,7 +107,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-	        var quiz = await _dbContext.Quizzes.FindAsync(id);
+	        var quiz = await _dbContext.Quizzes
+                .Include(x => x.Questions)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            List<Question> questions = (List<Question>)quiz.Questions;
+
+            questions.ForEach(x => _dbContext.Answers.RemoveRange(x.Answers));
+            _dbContext.Questions.RemoveRange(questions);
            _dbContext.Quizzes.Remove(quiz);
            await _dbContext.SaveChangesAsync();
            return RedirectToAction(nameof(Index));

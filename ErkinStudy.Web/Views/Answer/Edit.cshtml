@@ -1,4 +1,4 @@
-﻿@model ErkinStudy.Domain.Entities.Quiz.Question
+﻿@model ErkinStudy.Domain.Entities.Quiz.Answer
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,7 +6,7 @@
 
 <h1>Edit</h1>
 
-<h4>Question</h4>
+<h4>Answer</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,6 +18,11 @@
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+            <div class="form-group form-check">
+                <input class="form-check-input" asp-for="IsCorrect" />
+                <label asp-for="IsCorrect" class="control-label"></label>
+            </div>
+            <input name="questionId" value="@Model.Question.Id" type="hidden" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -26,7 +31,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-quizId="@Model.Quiz.Id">Back to List</a>
+    <a asp-action="Index" asp-route-questionId="@Model.Question.Id">Back to List</a>
 </div>
 
 @section Scripts {
