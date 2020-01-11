@@ -66,7 +66,9 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var question = await _context.Questions.FindAsync(id);
+            var question = await _context.Questions
+                                .Include(x => x.Quiz)
+                                .FirstOrDefaultAsync(x => x.Id == id);
             if (question == null)
             {
                 return NotFound();
@@ -80,7 +82,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long quizId, [Bind("Content")] Question question)
+        public async Task<IActionResult> Edit(long quizId, [Bind("Id,Content")] Question question)
         {
             if (ModelState.IsValid)
             {

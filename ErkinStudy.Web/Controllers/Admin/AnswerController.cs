@@ -50,7 +50,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Content, IsCorrect")] Answer answer, long? questionId)
+        public async Task<IActionResult> Create([Bind("Content,IsCorrect")] Answer answer, long? questionId)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long quizId, [Bind("Content, IsCorrect")] Answer answer)
+        public async Task<IActionResult> Edit(long quizId, [Bind("Id,Content,IsCorrect")] Answer answer)
         {
             if (ModelState.IsValid)
             {
