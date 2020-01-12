@@ -56,6 +56,12 @@ namespace ErkinStudy.Web.Controllers
                 .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
             return View(onlineCourse);
         }
+
+        public async Task<IActionResult> Tests()
+        {
+            var tests = await _dbContext.Quizzes.Where(x => x.IsActive).ToListAsync();
+            return View(tests);
+        }
         public IActionResult Privacy() 
         {
             return View();
