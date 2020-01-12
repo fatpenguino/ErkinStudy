@@ -73,7 +73,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            var answer = await _context.Answers.FindAsync(id);
+            var answer = await _context.Answers.Include(x => x.Question).FirstOrDefaultAsync(x => x.Id == id);
             if (answer == null)
             {
                 return NotFound();
@@ -87,46 +87,36 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long quizId, [Bind("Id,Content,IsCorrect")] Answer answer)
+        public async Task<IActionResult> Edit([Bind("Id,Content,IsCorrect")] Answer answer, long questionId)
         {
             if (ModelState.IsValid)
             {
                 _context.Update(answer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { quizId });
+                return RedirectToAction(nameof(Index), new { questionId });
             }
             return View(answer);
         }
 
         // GET: Answer/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(long? id)
+        public IActionResult Delete(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var answer = await _context.Answers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var answer = _context.Answers
+                .Include(x => x.Question)
+                .FirstOrDefault(x => x.Id == id);
             if (answer == null)
             {
                 return NotFound();
             }
-
-            return View(answer);
-        }
-
-        // POST: Answer/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var answer = await _context.Answers.FindAsync(id);
             _context.Answers.Remove(answer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { answer.Question.Id });
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index), new { questionId = answer.Question.Id });
         }
 
     }

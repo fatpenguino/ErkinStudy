@@ -18,8 +18,8 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
-                <label asp-for="IsCorrect" class="control-label"></label>
                 <input class="form-check-input" asp-for="IsCorrect" />
+                <label asp-for="IsCorrect" class="control-label"></label>
             </div>
             <input name="questionId" value="@ViewBag.QuestionId" type="hidden" />
             <div class="form-group">
