@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Identity;
+using ErkinStudy.Domain.Entities.Quiz;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,10 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<UserOnlineCourse> UserOnlineCourses { get; set; }
         public DbSet<OnlineCourse> OnlineCourses { get; set; }
         public DbSet<OnlineCourseWeek> OnlineCourseWeeks { get; set; }
+        public DbSet<Homework> Homeworks { get; set; }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

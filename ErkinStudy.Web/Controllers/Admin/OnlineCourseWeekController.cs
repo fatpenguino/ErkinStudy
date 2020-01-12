@@ -1,21 +1,25 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
     public class OnlineCourseWeekController : Controller
     {
         private readonly AppDbContext _context;
-
-        public OnlineCourseWeekController(AppDbContext context)
+        private readonly IWebHostEnvironment _appEnvironment;
+        public OnlineCourseWeekController(AppDbContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: OnlineCourseWeek
@@ -143,6 +147,60 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             return View(onlineCourseWeek);
+        }
+        [Authorize]
+        public async Task<IActionResult> Homeworks(long id)
+        {
+            var homework = await _context.OnlineCourseWeeks.Include(x => x.Homeworks).FirstOrDefaultAsync(x => x.Id == id);
+            return View(homework);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UploadHomework(IFormFile uploadedHomework, long onlineCourseWeekId)
+        {
+            if (uploadedHomework != null)
+            {
+                // путь к папке Homeworks
+                string path = "/Homeworks/" + uploadedHomework.FileName;
+                // сохраняем файл в папку Homeworks в каталоге wwwroot
+                await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await uploadedHomework.CopyToAsync(fileStream);
+                }
+                var homework = new Homework() { Name = uploadedHomework.FileName, Path = path, OnlineCourseWeekId = onlineCourseWeekId, UploadTime = DateTime.UtcNow};
+                _context.Homeworks.Add(homework);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Homeworks", new { id = onlineCourseWeekId });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> DeleteHomework(long id)
+        {
+            var homework = await _context.Homeworks.FirstOrDefaultAsync(x => x.Id == id);
+            var onlineCourseWeekId = homework.OnlineCourseWeekId;
+            _context.Homeworks.Remove(homework);
+            await _context.SaveChangesAsync();
+            try
+            {
+                System.IO.File.Delete(_appEnvironment.WebRootPath + homework.Path);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return RedirectToAction("Homeworks", new { id = onlineCourseWeekId });
+            }
+            return RedirectToAction("Homeworks", new {id = onlineCourseWeekId});
+        }
+
+        [Authorize]
+        public async Task<ActionResult> DownloadHomework(long id)
+        {
+            var homework = await _context.Homeworks.FirstOrDefaultAsync(x => x.Id == id);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + homework.Path);
+            return File(fileBytes, "application/force-download", homework.Name);
         }
 
         // POST: OnlineCourseWeek/Delete/5

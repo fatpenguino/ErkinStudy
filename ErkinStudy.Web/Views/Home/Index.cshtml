@@ -1,12 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@inject  AppDbContext _dbContext;
 @using ErkinStudy.Domain.Entities
+@using ErkinStudy.Domain.Entities.Identity
 @using ErkinStudy.Infrastructure.Context
+@using ErkinStudy.Infrastructure.Services
+@using Microsoft.AspNetCore.Identity
+@inject UserService UserService
+@inject UserManager<ApplicationUser> UserManager
+@inject AppDbContext DbContext
 @model IEnumerable<Subject>
 @{
-    var freeCourse = _dbContext.OnlineCourses.FirstOrDefault(x => x.Id == 3) ?? new OnlineCourse();
+    var freeCourse = DbContext.OnlineCourses.FirstOrDefault(x => x.Id == 3) ?? new OnlineCourse();
+    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User));
 }
 <div class="container">
     <div class="row">
@@ -18,17 +24,24 @@
                     Әр сабақта математикалық сауаттылық үшін білуге міндетті бір тақырып талқыланады, тақырыпқа байланысты есептер шығарылады.
                     Онлайн курс 9 қаңтарда басталады.
                 </p>
-                <ul class="countdown">
+                <ul class="countdown" style="display: none;">
                     <li><span id="days"></span>күн</li>
                     <li><span id="hours"></span>сағат</li>
                     <li><span id="minutes"></span>минут</li>
                     <li><span id="seconds"></span>секунд</li>
                 </ul>
                 <p>
-                    <button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#courseModal">
-                        Онлайн курсты сатып алу
-                    </button>
-                    <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-secondary my-2">Курс бағдарламасы</a>
+                    @if (isApproved)
+                    {
+                        <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-primary my-2">Курс бағдарламасы</a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#courseModal">
+                            Онлайн курсты сатып алу
+                        </button>
+                        <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-secondary my-2">Курс бағдарламасы</a>
+                    }
                 </p>
             </div>
         </section>
@@ -38,9 +51,7 @@
                 <div class="container">
                     <h1>@freeCourse.Name</h1>
                     <p class="lead text-muted">
-                        Математикалық сауаттылықтан ҰБТ-дан 20 балл алу құпиялары небәрі бір айдың ішінде, 12 сабақта түсіндіріледі.
-                        Әр сабақта математикалық сауаттылық үшін білуге міндетті бір тақырып талқыланады, тақырыпқа байланысты есептер шығарылады.
-                        Онлайн курс 9 қаңтарда басталады.
+                        @freeCourse.Description
                     </p>
                     <p>
                         <a asp-action="FreeCourse" class="btn btn-primary my-2">Сабақты көру</a>
@@ -97,8 +108,8 @@
         hour = minute * 60,
         day = hour * 24;
 
-    let countDown = new Date('Jan 09, 2020 00:00:00').getTime(),
-        x = setInterval(function() {
+    let countDown = new Date('Jan 09, 2020 20:00:00').getTime(),
+        x = setInterval(function () {
 
             let now = new Date().getTime(),
                 distance = countDown - now;
@@ -107,7 +118,7 @@
                 document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)),
                 document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
                 document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
-      
+
             //do something later when date is reached
             //if (distance < 0) {
             //  clearInterval(x);

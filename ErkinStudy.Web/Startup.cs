@@ -24,6 +24,7 @@ namespace ErkinStudy.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<EmailService>();
+            services.AddScoped<UserService>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -59,10 +60,9 @@ namespace ErkinStudy.Web
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
 
