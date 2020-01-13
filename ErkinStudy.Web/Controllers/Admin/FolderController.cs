@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -48,6 +49,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public IActionResult Create()
         {
+            ViewData["ParentId"] = new SelectList(_context.Folders, "Id", "Id");
             return View();
         }
 
@@ -57,7 +59,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Name,Description,Order,IsActive")] Folder folder)
+        public async Task<IActionResult> Create([Bind("Name,Description,ParentId,Order,IsActive")] Folder folder)
         {
             if (ModelState.IsValid)
             {
@@ -83,16 +85,14 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
+            ViewData["ParentId"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Id", folder.ParentId);
             return View(folder);
         }
 
-        // POST: Folder/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,IsActive")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,ParentId,Order,IsActive")] Folder folder)
         {
             if (id != folder.Id)
             {
