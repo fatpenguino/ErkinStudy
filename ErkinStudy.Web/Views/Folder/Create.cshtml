@@ -32,7 +32,6 @@
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
             </div>
-            <input asp-for="SubjectId" value="@ViewBag.SubjectId" type="hidden" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -41,7 +40,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-subjectId="@ViewBag.SubjectId">Back to List</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

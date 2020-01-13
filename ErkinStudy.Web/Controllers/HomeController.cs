@@ -24,13 +24,8 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var subjects = await _dbContext.Subjects.Include(x => x.Folders).Where(x => x.IsActive).ToListAsync();
-            return View(subjects);
-        }
-        public async Task<IActionResult> Subjects()
-        {
-            var subjects = await _dbContext.Subjects.Include(x => x.Folders).Where(x => x.IsActive).ToListAsync();
-            return View(subjects);
+            var folders = await _dbContext.Folders.Where(x => x.IsActive).ToListAsync();
+            return View(folders);
         }
         public async Task<IActionResult> SendCallRequest(string name, string number, string type = "Онлайн курс")
         {

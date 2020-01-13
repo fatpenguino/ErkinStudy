@@ -12,7 +12,6 @@ namespace ErkinStudy.Infrastructure.Context
             : base(options)
         {
         }
-        public DbSet<Subject> Subjects { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Content> Contents { get; set; }

@@ -37,4 +37,7 @@
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="http://json.schemastore.org/config" /></VisualStudio></ProjectExtensions>
+
 </Project>

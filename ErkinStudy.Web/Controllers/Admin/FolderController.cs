@@ -20,12 +20,9 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: Folder
         [Authorize]
-        public IActionResult Index(long? subjectId)
+        public IActionResult Index()
         {
-	        ViewBag.SubjectId = subjectId;
-	        return subjectId.HasValue
-		        ? View(_context.Folders.Where(x => x.SubjectId == subjectId).AsQueryable())
-		        : View(_context.Folders.AsQueryable());
+	        return View(_context.Folders.AsQueryable());
         }
 
         // GET: Folder/Details/5
@@ -49,9 +46,8 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: Folder/Create
         [Authorize]
-        public IActionResult Create(long subjectId)
+        public IActionResult Create()
         {
-	        ViewBag.SubjectId = subjectId;
             return View();
         }
 
@@ -61,14 +57,14 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Name,Description,Order,SubjectId,IsActive")] Folder folder)
+        public async Task<IActionResult> Create([Bind("Name,Description,Order,IsActive")] Folder folder)
         {
             if (ModelState.IsValid)
             {
 				folder.CreatedAt = DateTime.Now;
                 _context.Add(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
+                return RedirectToAction(nameof(Index));
             }
             return View(folder);
         }
@@ -96,7 +92,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,SubjectId,IsActive")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,IsActive")] Folder folder)
         {
             if (id != folder.Id)
             {
@@ -107,7 +103,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 _context.Update(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
+                return RedirectToAction(nameof(Index));
             }
             return View(folder);
         }
@@ -140,7 +136,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             var folder = await _context.Folders.FindAsync(id);
             _context.Folders.Remove(folder);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
+            return RedirectToAction(nameof(Index));
         }
 
     }
