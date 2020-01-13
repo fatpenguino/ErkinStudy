@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -26,6 +27,8 @@ namespace ErkinStudy.Web.Controllers
             return View(quizzes);
         }
 
+
+        [Authorize]
         public async Task<IActionResult> Quiz(long? id)
         {
             if (!id.HasValue)
@@ -39,6 +42,8 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
+
+        [Authorize]
         public async Task<IActionResult> Check(IFormCollection iFormCollection)
         {
             int score = 0;
