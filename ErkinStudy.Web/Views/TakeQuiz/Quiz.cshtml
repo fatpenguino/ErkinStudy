@@ -1,0 +1,39 @@
+@model ErkinStudy.Domain.Entities.Quiz.Quiz
+
+@{
+    ViewData["Title"] = "Quiz";
+}
+
+<h1>@Model.Title</h1>
+
+<form asp-action="Check">
+    <div class="form-group">
+        <ol type="1">
+            @foreach (var question in Model.Questions) 
+            {
+                <li>
+                    @Html.DisplayFor(modelItem => question.Content)
+                    <input type="hidden" name="questionId" value="@question.Id">
+                </li>
+                <ol type="a">
+                    @foreach( var ans in question.Answers)
+                    {
+                        <li>
+                            @Html.RadioButton(@question.Id.ToString(), ans.Id, new { @class = "answer answer_@question.Id"}) @ans.Content;
+                        </li>
+                    }
+                </ol>
+            }
+        </ol>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Тексеру" class="btn btn-primary" />
+    </div>
+</form>
+
+<script>
+$(".answer").on("click", () => {
+
+});
+
+</script>

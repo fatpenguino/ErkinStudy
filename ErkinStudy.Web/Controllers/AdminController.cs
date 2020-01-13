@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -17,11 +19,13 @@ namespace ErkinStudy.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppDbContext _dbContext;
+        private readonly ILogger<AdminController> _logger;
 
-        public AdminController(UserManager<ApplicationUser> userManager, AppDbContext dbContext)
+        public AdminController(UserManager<ApplicationUser> userManager, AppDbContext dbContext, ILogger<AdminController> logger)
         {
             _userManager = userManager;
             _dbContext = dbContext;
+            _logger = logger;
         }
         [Authorize]
         public IActionResult Index()
@@ -41,7 +45,7 @@ namespace ErkinStudy.Web.Controllers
                     Email = user.Email,
                     Id = user.Id,
                     UserName = user.UserName,
-                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id)
+                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id && x.OnlineCourseId == 1)
                 };
                 model.Add(item);
             }
@@ -49,46 +53,20 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> UserLessons(long userId)
+        public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 1)
         {
-            var model = new UserLessonViewModel();
-            var items = new List<SelectListItem>();
-            //var user = await _userManager.FindByIdAsync(userId.ToString());
-            var lessons = await _dbContext.Lessons.Include(x => x.Folder).ToListAsync();
-            var userLessons = await _dbContext.UserLessons.Where( x => x.UserId == userId).ToListAsync();
-            foreach (var lesson in lessons)
+            try
             {
-                var item = new SelectListItem
-                {
-                    Text = $"{lesson.Folder.Name} - {lesson.Name}",
-                    Value = lesson.Id.ToString(),
-                    Selected = userLessons.Any(x => x.LessonId == lesson.Id)
-                };
-                items.Add(item);
+                _logger.LogInformation($"Попытка потверждение онлайн курса - {onlineCourseId} для пользователя - {userId}");
+                var userOnlineCourse = new UserOnlineCourse { UserId = userId, OnlineCourseId = onlineCourseId };
+                await _dbContext.UserOnlineCourses.AddAsync(userOnlineCourse);
+                await _dbContext.SaveChangesAsync();
+                _logger.LogInformation($"Онлайн курс - {onlineCourseId} для пользователя - {userId} успешно подтвержден.");
             }
-            model.SelectListItems = items;
-            return View(model);
-        }
-
-        [Authorize]
-        public async Task<IActionResult> UpdateUserLessons(UserLessonViewModel model)
-        {
-            foreach (var item in model.SelectListItems)
+            catch (Exception e)
             {
-                var userLesson = new UserLesson {UserId = model.UserId, LessonId = long.Parse(item.Value)};
-                await _dbContext.UserLessons.AddAsync(userLesson);
+                _logger.LogError($"Ошибка при подтверждений онлайн курса - {onlineCourseId} для пользователя - {userId}", e);
             }
-
-            await _dbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        [Authorize]
-        public async Task<IActionResult> ApproveOnlineCourse(long userId)
-        {
-            var userOnlineCourse = new UserOnlineCourse {UserId = userId, OnlineCourseId = 1};
-            await _dbContext.UserOnlineCourses.AddAsync(userOnlineCourse);
-            await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Users));
         }
     }

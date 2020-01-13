@@ -36,22 +36,23 @@ namespace ErkinStudy.Web.Controllers
         {
             try
             {
+                _logger.LogInformation($"Отправка уведомлений, данные: {name}, {number}, {type}");
                 await _emailService.SendEmailAsync("Әруақ Әруақ! Жаңа адам.",$"Аты: {name}, Нөмірі: {number}, Таңдауы: {type}");
             }
             catch (Exception e)
             {
+                _logger.LogError($"Ошибка при отправке уведомлений, данные: {name}, {number}, {type}", e);
                 TempData["ErrorMessage"] = $"{e.Message}, {e.StackTrace}";
             }
             return RedirectToAction(nameof(Index));
         }
-
         public async Task<IActionResult> FreeCourse()
         {
             return View( await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).FirstOrDefaultAsync(x => x.Id == 3));
         }
         public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
         {
-            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks)
+            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).ThenInclude(x => x.Homeworks)
                 .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
             return View(onlineCourse);
         }
@@ -63,6 +64,7 @@ namespace ErkinStudy.Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            _logger.LogError($"Ошибка {HttpContext.TraceIdentifier}");
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

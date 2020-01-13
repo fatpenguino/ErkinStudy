@@ -1,0 +1,50 @@
+﻿@model ErkinStudy.Domain.Entities.OnlineCourseWeek
+
+@{
+    ViewData["Title"] = "Homeworks";
+}
+<br/>
+<h3>Homeworks for - @Model.Name</h3>
+
+<p>
+    <h3>Choose a file</h3>
+    <form asp-action="UploadHomework" asp-controller="OnlineCourseWeek" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadedHomework" /><br>
+        <input type="hidden" name="onlineCourseWeekId" value="@Model.Id" />
+        <input type="submit" value="Upload" />
+    </form>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Path
+            </th>
+            <th>
+                Upload Time
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Homeworks) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Path)
+            </td>
+            <td>
+                @item.UploadTime.ToLocalTime()
+            </td>
+            <td>
+                <a asp-action="DeleteHomework" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
