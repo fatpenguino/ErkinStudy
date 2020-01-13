@@ -52,6 +52,10 @@ namespace ErkinStudy.Web.Controllers
             return View(onlineCourse);
         }
 
+        public async Task<IActionResult> Folder(long id)
+        {
+            return View(await _dbContext.Folders.Include(x => x.Lessons).FirstOrDefaultAsync(x => x.Id == id));
+        }
         public async Task<IActionResult> Tests()
         {
             var tests = await _dbContext.Quizzes.Where(x => x.IsActive).ToListAsync();

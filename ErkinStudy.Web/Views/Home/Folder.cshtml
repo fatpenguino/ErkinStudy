@@ -1,0 +1,31 @@
+﻿@using ErkinStudy.Infrastructure.Services
+@model ErkinStudy.Domain.Entities.Folder
+@inject FolderService FolderService
+@{
+    ViewData["Title"] = Model.Name;
+    var childs = await FolderService.GetChilds(Model.Id);
+}
+
+<div class="container">
+    <div class="row">
+        <div class="card-list mt-5 mx-auto">
+            @foreach (var folder in childs)
+            {
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <a asp-action="Folder" asp-route-id="@folder.Id" class="card-text text-white">@folder.Name</a>
+                    </div>
+                </div>
+            }
+            @foreach (var lesson in Model.Lessons)
+            {
+                <div class="card text-white bg-secondary mb-3">
+                    <div class="card-body text-center">
+                        <a asp-action="Detail" asp-controller="Col" asp-route-id="@lesson.Id" class="card-text text-white">@lesson.Name</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

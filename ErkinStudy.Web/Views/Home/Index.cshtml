@@ -1,19 +1,30 @@
-﻿@{
+﻿@using ErkinStudy.Infrastructure.Services
+@inject FolderService FolderService;
+@{
     ViewData["Title"] = "Home Page";
+    var folders = await FolderService.GetAll();
 }
 <div class="container">
     <div class="row">
         <div class="card-list mt-5 mx-auto">
             <div class="card text-white bg-primary mb-4">
-               <div class="card-body">
+                <div class="card-body">
                     <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="card-text text-white">Математикалық сауаттылық</a>
                 </div>
             </div>
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body text-center">
-                   <a asp-action="Tests" class="card-text text-white">Тестілеу</a>
+                    <a asp-action="Tests" class="card-text text-white">Тестілеу</a>
                 </div>
             </div>
+            @foreach (var folder in folders.Where(x => x.ParentId == null))
+            {
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <a asp-action="Folder" asp-route-id="@folder.Id" class="card-text text-white">@folder.Name</a>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
