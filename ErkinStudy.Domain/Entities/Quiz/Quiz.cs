@@ -6,6 +6,7 @@ namespace ErkinStudy.Domain.Entities.Quiz
     {
         public long Id { get; set; }
         public string Title { get; set; }
+        public bool IsActive { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
 
         public Quiz()

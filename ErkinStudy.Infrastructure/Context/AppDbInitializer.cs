@@ -13,7 +13,7 @@ namespace ErkinStudy.Infrastructure.Context
             if (roleManager.FindByNameAsync("Admin").Result == null)
             {
                 var role = new ApplicationRole {Name = "Admin", NormalizedName = "Admin".ToUpper()};
-                roleManager.CreateAsync(role);
+                roleManager.CreateAsync(role).Wait();
             }
 
             if (userManager.FindByNameAsync("admin").Result == null)

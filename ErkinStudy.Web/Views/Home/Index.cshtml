@@ -1,129 +1,36 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-@using ErkinStudy.Domain.Entities
-@using ErkinStudy.Domain.Entities.Identity
-@using ErkinStudy.Infrastructure.Context
-@using ErkinStudy.Infrastructure.Services
-@using Microsoft.AspNetCore.Identity
-@inject UserService UserService
-@inject UserManager<ApplicationUser> UserManager
-@inject AppDbContext DbContext
-@model IEnumerable<Subject>
+﻿@using ErkinStudy.Infrastructure.Services
+@inject FolderService FolderService;
 @{
-    var freeCourse = DbContext.OnlineCourses.FirstOrDefault(x => x.Id == 3) ?? new OnlineCourse();
-    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User));
+    ViewData["Title"] = "Home Page";
+    var folders = await FolderService.GetAll();
 }
-<div class="container">
-    <div class="row">
-        <section class="jumbotron text-center">
-            <div class="container">
-                <h1>Математикалық сауаттылық</h1>
-                <p class="lead text-muted">
-                    Математикалық сауаттылықтан ҰБТ-дан 20 балл алу құпиялары небәрі бір айдың ішінде, 12 сабақта түсіндіріледі.
-                    Әр сабақта математикалық сауаттылық үшін білуге міндетті бір тақырып талқыланады, тақырыпқа байланысты есептер шығарылады.
-                    Онлайн курс 9 қаңтарда басталады.
-                </p>
-                <ul class="countdown" style="display: none;">
-                    <li><span id="days"></span>күн</li>
-                    <li><span id="hours"></span>сағат</li>
-                    <li><span id="minutes"></span>минут</li>
-                    <li><span id="seconds"></span>секунд</li>
-                </ul>
-                <p>
-                    @if (isApproved)
-                    {
-                        <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-primary my-2">Курс бағдарламасы</a>
-                    }
-                    else
-                    {
-                        <button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#courseModal">
-                            Онлайн курсты сатып алу
-                        </button>
-                        <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="btn btn-secondary my-2">Курс бағдарламасы</a>
-                    }
-                </p>
-            </div>
-        </section>
-        @if (freeCourse.IsActive)
-        {
-            <section class="jumbotron text-center">
-                <div class="container">
-                    <h1>@freeCourse.Name</h1>
-                    <p class="lead text-muted">
-                        @freeCourse.Description
-                    </p>
-                    <p>
-                        <a asp-action="FreeCourse" class="btn btn-primary my-2">Сабақты көру</a>
-                    </p>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card-list mt-5">
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-primary" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="card-text text-white">Математикалық сауаттылық</a>
+                        </div>
+                    </div>
                 </div>
-            </section>
-        }
-        <div class="container">
-            <div class="row">
-                @foreach (var subject in Model)
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-primary" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a asp-action="Tests" class="card-text text-white">Тестілеу</a>
+                        </div>
+                    </div>
+                </div>
+                @foreach (var folder in folders.Where(x => x.ParentId == null))
                 {
-                    <div class="list-group col-sm">
-                        <a href="#" class="list-group-item list-group-item-action active">@subject.Name</a>
-                        @foreach (var folder in subject.Folders.Where(x => x.IsActive))
-                        {
-                            <a href="course/detail/@folder.Id" class="list-group-item list-group-item-action">@folder.Name - @folder.Description</a>
-                        }
+                    <div class="col-auto mb-3">
+                        <div class="card text-white bg-primary" style="width: 18rem;">
+                            <div class="card-body text-center">
+                                <a asp-action="Folder" asp-route-id="@folder.Id" class="card-text text-white">@folder.Name</a>
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ақпарат қалдырыңыз.</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form asp-action="SendCallRequest" method="post">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Есіміңіз</label>
-                        <input name="name" type="text" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label name="name">Телефон нөміріңіз</label>
-                        <input name="number" type="text" class="form-control" required />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Ақпарат Қалдыру</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<script>
-    const second = 1000,
-        minute = second * 60,
-        hour = minute * 60,
-        day = hour * 24;
-
-    let countDown = new Date('Jan 09, 2020 20:00:00').getTime(),
-        x = setInterval(function () {
-
-            let now = new Date().getTime(),
-                distance = countDown - now;
-
-            document.getElementById('days').innerText = Math.floor(distance / (day)),
-                document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)),
-                document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
-                document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
-
-            //do something later when date is reached
-            //if (distance < 0) {
-            //  clearInterval(x);
-            //  'IT'S MY BIRTHDAY!;
-            //}
-
-        }, second)
-</script>

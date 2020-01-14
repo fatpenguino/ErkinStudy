@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quiz.Quiz>
+@{
+    ViewData["Title"] = "Tests";
+}
+<div class="container">
+    <div class="row">
+        <div class="card-list mt-5 mx-auto">
+            @foreach (var quiz in Model)
+            {
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-text text-white">@quiz.Title</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

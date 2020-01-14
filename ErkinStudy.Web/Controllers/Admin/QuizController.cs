@@ -67,7 +67,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,IsActive")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
