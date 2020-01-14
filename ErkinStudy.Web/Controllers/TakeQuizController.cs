@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using ErkinStudy.Domain.Entities.Quiz;
+using Microsoft.AspNetCore.Identity;
+using ErkinStudy.Domain.Entities.Identity;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -15,10 +18,13 @@ namespace ErkinStudy.Web.Controllers
     {
         private readonly ILogger<TakeQuizController> _logger;
         private readonly AppDbContext _dbContext;
-        public TakeQuizController(ILogger<TakeQuizController> logger, AppDbContext dbContext)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public TakeQuizController(ILogger<TakeQuizController> logger, AppDbContext dbContext,
+            UserManager<ApplicationUser> userManager)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -47,6 +53,7 @@ namespace ErkinStudy.Web.Controllers
         public async Task<IActionResult> Check(IFormCollection iFormCollection)
         {
             int score = 0;
+            string quizId = iFormCollection["quizId"];
             string[] questionIds = iFormCollection["questionId"];
             foreach(var qId in questionIds)
             {
@@ -58,6 +65,17 @@ namespace ErkinStudy.Web.Controllers
                     score++;
                 }
             }
+
+            var scoreDB = new QuizScore
+            {
+                UserId = Convert.ToInt64(_userManager.GetUserId(User)),
+                QuizId = Convert.ToInt64(quizId),
+                TakenTime = DateTime.Now,
+                Point = score
+            };
+
+            _dbContext.QuizScores.Add(scoreDB);
+            _dbContext.SaveChanges();
 
             return View("Result", score);
         }

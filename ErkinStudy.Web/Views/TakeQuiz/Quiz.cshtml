@@ -7,6 +7,7 @@
 <h1>@Model.Title</h1>
 
 <form asp-action="Check">
+    <input type="hidden" name="quizId" value="@Model.Id" />
     <div class="form-group">
         <ol type="1">
             @foreach (var question in Model.Questions) 
