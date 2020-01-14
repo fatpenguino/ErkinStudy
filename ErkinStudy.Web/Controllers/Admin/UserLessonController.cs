@@ -134,17 +134,10 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: UserLessons/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(long userId, long lessonId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var userLesson = await _context.UserLessons
-                .Include(u => u.Lesson)
-                .Include(u => u.User)
-                .FirstOrDefaultAsync(m => m.LessonId == id);
+                .FirstOrDefaultAsync(m => m.LessonId == lessonId && m.UserId == userId);
             if (userLesson == null)
             {
                 return NotFound();
@@ -157,9 +150,10 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> DeleteConfirmed(long userId, long lessonId)
         {
-            var userLesson = await _context.UserLessons.FindAsync(id);
+            var userLesson = await _context.UserLessons
+                .FirstOrDefaultAsync(m => m.LessonId == lessonId && m.UserId == userId);
             _context.UserLessons.Remove(userLesson);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
