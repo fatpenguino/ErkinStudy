@@ -48,13 +48,21 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
+        [HttpPost]
+public JsonResult AjaxTest2([FromBody] string testStr)
+{
+ 
+    return Json("Сервер получил данные: " + testStr);
+ 
+}
 
-        [Authorize]
-        public async Task<IActionResult> Check(IFormCollection iFormCollection)
+
+
+        [HttpPost]
+        public JsonResult Check(string quiz)
         {
             int score = 0;
-            string quizId = iFormCollection["quizId"];
-            string[] questionIds = iFormCollection["questionId"];
+            /*string[] questionIds = iFormCollection["questionId"];
             foreach(var qId in questionIds)
             {
                 var question = await _dbContext.Questions
@@ -65,11 +73,11 @@ namespace ErkinStudy.Web.Controllers
                     score++;
                 }
             }
-
+*/
             var scoreDB = new QuizScore
             {
                 UserId = Convert.ToInt64(_userManager.GetUserId(User)),
-                QuizId = Convert.ToInt64(quizId),
+                QuizId = Convert.ToInt64(quiz),
                 TakenTime = DateTime.Now,
                 Point = score
             };
@@ -77,7 +85,7 @@ namespace ErkinStudy.Web.Controllers
             _dbContext.QuizScores.Add(scoreDB);
             _dbContext.SaveChanges();
 
-            return View("Result", score);
+            return Json("9");
         }
     }
 }
