@@ -14,7 +14,6 @@
             {
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
-                    <input type="hidden" name="questionId" value="@question.Id">
                 </li>
                 <ol type="a">
                     @foreach( var ans in question.Answers)
@@ -39,11 +38,6 @@
 
             let quizId = $("input[name='quizId']").val();
             
-            let questionIds = [];
-            $("input[name='questionId']").each(function() {
-                questionIds.push($(this).val());
-            });
-
             let checkedAnswers = [];
             $(".answer:checked").each(function() {
                 checkedAnswers.push($(this).val());
@@ -51,7 +45,6 @@
 
             let formData = JSON.stringify({
                 'quizId': quizId,
-                'questionIds': questionIds,
                 'checkedAnswers': checkedAnswers
             })
 
@@ -60,7 +53,7 @@
                 type: "POST",
                 url: "@Url.Action("Check", "TakeQuiz")",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({'quiz': 1}),
+                data: formData,
                 dataType: "json",
 
                 success: function (result, status, xhr) {  

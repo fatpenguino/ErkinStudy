@@ -49,31 +49,17 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpPost]
-public JsonResult AjaxTest2([FromBody] string testStr)
-{
- 
-    return Json("Сервер получил данные: " + testStr);
- 
-}
-
-
-
-        [HttpPost]
-        public JsonResult Check(string quiz)
+        public JsonResult Check(string quiz, string[] checkedAnswers)
         {
             int score = 0;
-            /*string[] questionIds = iFormCollection["questionId"];
-            foreach(var qId in questionIds)
+
+            foreach(var ansId in checkedAnswers)
             {
-                var question = await _dbContext.Questions
-                    .Include(x => x.Answers)
-                    .FirstOrDefaultAsync(x => x.Id == Convert.ToInt64(qId));
-                if (question.Answers.First(x => x.IsCorrect).Id == Convert.ToInt64(iFormCollection[question.Id.ToString()]))
-                {
+                var answer = _dbContext.Answers.Find(ansId);
+                if (answer != null && answer.IsCorrect)
                     score++;
-                }
             }
-*/
+
             var scoreDB = new QuizScore
             {
                 UserId = Convert.ToInt64(_userManager.GetUserId(User)),
@@ -85,7 +71,7 @@ public JsonResult AjaxTest2([FromBody] string testStr)
             _dbContext.QuizScores.Add(scoreDB);
             _dbContext.SaveChanges();
 
-            return Json("9");
+            return Json(score);
         }
     }
 }
