@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +33,6 @@ namespace ErkinStudy.Web.Controllers
             var quizzes = await _dbContext.Quizzes.ToListAsync();
             return View(quizzes);
         }
-
-
         [Authorize]
         public async Task<IActionResult> Quiz(long? id)
         {
