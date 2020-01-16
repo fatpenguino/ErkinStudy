@@ -49,7 +49,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Check(string quiz, string[] checkedAnswers)
+        public JsonResult Check(string quizId, string[] checkedAnswers)
         {
             int score = 0;
 
@@ -63,7 +63,7 @@ namespace ErkinStudy.Web.Controllers
             var scoreDB = new QuizScore
             {
                 UserId = Convert.ToInt64(_userManager.GetUserId(User)),
-                QuizId = Convert.ToInt64(quiz),
+                QuizId = Convert.ToInt64(quizId),
                 TakenTime = DateTime.Now,
                 Point = score
             };
