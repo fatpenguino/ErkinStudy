@@ -48,14 +48,20 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
+        public class QuizAnswer
+        {
+            public string quizId { get; set; }
+            public string[] checkedAnswers { get; set; }
+        }
+
         [HttpPost]
-        public JsonResult Check(string quizId, string[] checkedAnswers)
+        public JsonResult Check([FromBody] QuizAnswer quizAnswer)
         {
             int score = 0;
 
-            foreach(var ansId in checkedAnswers)
+            foreach(var ansId in quizAnswer.checkedAnswers)
             {
-                var answer = _dbContext.Answers.Find(ansId);
+                var answer = _dbContext.Answers.Find(Convert.ToInt64(ansId));
                 if (answer != null && answer.IsCorrect)
                     score++;
             }
@@ -63,7 +69,7 @@ namespace ErkinStudy.Web.Controllers
             var scoreDB = new QuizScore
             {
                 UserId = Convert.ToInt64(_userManager.GetUserId(User)),
-                QuizId = Convert.ToInt64(quizId),
+                QuizId = Convert.ToInt64(quizAnswer.quizId),
                 TakenTime = DateTime.Now,
                 Point = score
             };
