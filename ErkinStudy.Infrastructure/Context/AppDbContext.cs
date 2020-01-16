@@ -12,7 +12,6 @@ namespace ErkinStudy.Infrastructure.Context
             : base(options)
         {
         }
-        public DbSet<Subject> Subjects { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Content> Contents { get; set; }
@@ -25,6 +24,7 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<QuizScore> QuizScores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

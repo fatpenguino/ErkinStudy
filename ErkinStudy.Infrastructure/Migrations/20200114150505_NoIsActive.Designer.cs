@@ -4,14 +4,16 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ErkinStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200114150505_NoIsActive")]
+    partial class NoIsActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -404,32 +406,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("Quizzes");
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Quiz.QuizScore", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Point")
-                        .HasColumnType("int");
-
-                    b.Property<long>("QuizId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("TakenTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizScores");
-                });
-
             modelBuilder.Entity("ErkinStudy.Domain.Entities.UserLesson", b =>
                 {
                     b.Property<long>("LessonId")
@@ -627,15 +603,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasOne("ErkinStudy.Domain.Entities.Quiz.Quiz", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizId");
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Quiz.QuizScore", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.UserLesson", b =>

@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ErkinStudy.Domain.Entities.Quiz;
+using Microsoft.AspNetCore.Identity;
+using ErkinStudy.Domain.Entities.Identity;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -15,10 +19,13 @@ namespace ErkinStudy.Web.Controllers
     {
         private readonly ILogger<TakeQuizController> _logger;
         private readonly AppDbContext _dbContext;
-        public TakeQuizController(ILogger<TakeQuizController> logger, AppDbContext dbContext)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public TakeQuizController(ILogger<TakeQuizController> logger, AppDbContext dbContext,
+            UserManager<ApplicationUser> userManager)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -40,22 +47,36 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
-        public async Task<IActionResult> Check(IFormCollection iFormCollection)
+        public class QuizAnswer
+        {
+            public string quizId { get; set; }
+            public string[] checkedAnswers { get; set; }
+        }
+
+        [HttpPost]
+        public JsonResult Check([FromBody] QuizAnswer quizAnswer)
         {
             int score = 0;
-            string[] questionIds = iFormCollection["questionId"];
-            foreach(var qId in questionIds)
+
+            foreach(var ansId in quizAnswer.checkedAnswers)
             {
-                var question = await _dbContext.Questions
-                    .Include(x => x.Answers)
-                    .FirstOrDefaultAsync(x => x.Id == Convert.ToInt64(qId));
-                if (question.Answers.First(x => x.IsCorrect).Id == Convert.ToInt64(iFormCollection[question.Id.ToString()]))
-                {
+                var answer = _dbContext.Answers.Find(Convert.ToInt64(ansId));
+                if (answer != null && answer.IsCorrect)
                     score++;
-                }
             }
 
-            return View("Result", score);
+            var scoreDB = new QuizScore
+            {
+                UserId = Convert.ToInt64(_userManager.GetUserId(User)),
+                QuizId = Convert.ToInt64(quizAnswer.quizId),
+                TakenTime = DateTime.Now,
+                Point = score
+            };
+
+            _dbContext.QuizScores.Add(scoreDB);
+            _dbContext.SaveChanges();
+
+            return Json(score);
         }
     }
 }

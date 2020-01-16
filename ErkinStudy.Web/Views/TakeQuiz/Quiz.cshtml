@@ -7,19 +7,19 @@
 <h1>@Model.Title</h1>
 
 <form asp-action="Check">
+    <input type="hidden" name="quizId" value="@Model.Id" />
     <div class="form-group">
         <ol type="1">
             @foreach (var question in Model.Questions) 
             {
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
-                    <input type="hidden" name="questionId" value="@question.Id">
                 </li>
                 <ol type="a">
                     @foreach( var ans in question.Answers)
                     {
                         <li>
-                            @Html.RadioButton(@question.Id.ToString(), ans.Id, new { @class = "answer answer_@question.Id"}) @ans.Content;
+                            <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" type="radio" name="@question.Id" value="@ans.Id" > @ans.Content
                         </li>
                     }
                 </ol>
@@ -27,13 +27,60 @@
         </ol>
     </div>
     <div class="form-group">
-        <input type="submit" value="Тексеру" class="btn btn-primary" />
+        <input type="button" value="Тексеру" class="btn btn-primary pass_quiz" />
+    </div>
+    <div class="form-group">
+        <p class="quiz_result" style="display: none">Zhinagan balynyz: </p>
+    </div>
+    <div class="form-group">
+        <input type="button" style="display: none" value="Kettik barin tasta" class="btn btn-primary exit_quiz" onclick="@(Url.Action("Index", "Home"))" />
     </div>
 </form>
 
-<script>
-$(".answer").on("click", () => {
+<script type="text/javascript">
+    $(function() {
+        
+        $(".pass_quiz").on("click", function() {
 
-});
+            let quizId = $("input[name='quizId']").val();
+            
+            let checkedAnswers = [];
+            $(".answer:checked").each(function() {
+                checkedAnswers.push($(this).val());
+            });
 
+            let formData = JSON.stringify({
+                'quizId': quizId,
+                'checkedAnswers': checkedAnswers
+            })
+
+            console.log(formData);
+            $.ajax({  
+                type: "POST",
+                url: "@Url.Action("Check", "TakeQuiz")",
+                contentType: "application/json; charset=utf-8",
+                data: formData,
+                dataType: "json",
+
+                success: function (result, status, xhr) {
+
+                    $(".pass_quiz").hide();
+                    $(".exit_quiz").show();
+                    $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
+
+                    $(".answer:checked").each(function() {
+                        if ($(this).hasClass("answer_correct")){
+                            $(this).parent().css("background-color", "#58D68D");
+                        }
+                        else{
+                            $(this).parent().css("background-color", "#FF5733");
+                        }
+                    });
+                },  
+                error: function (xhr, status, error) {    
+                }  
+            });  
+        });
+
+    });
 </script>
