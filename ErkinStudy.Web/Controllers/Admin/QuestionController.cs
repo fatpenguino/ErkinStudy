@@ -25,7 +25,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             ViewBag.QuizId = quizId;
             return quizId.HasValue
-                ? View(_context.Questions.Where(x => x.Quiz.Id == quizId))
+                ? View(_context.Questions.Include(x => x.Answers).Where(x => x.Quiz.Id == quizId))
                 : View();
         }
 

@@ -12,31 +12,37 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
+            <th>N</th>
             <th>
                 @Html.DisplayNameFor(model => model.Content)
             </th>
-            <th>Actions</th>
+            <th>
+                Actions
+            </th>
         </tr>
     </thead>
     <tbody>
- @if(Model != null)
-   @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-	            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-controller="Answer" asp-action="Index" asp-route-questionId="@item.Id">Answers</a>
-            </td>
-        </tr>
-    }
+    @if(Model != null){
+        int i = 0;
+        @foreach (var item in Model) {
+            i++;
+            <tr>
+                @if(item.Answers.Any(x => x.IsCorrect)){
+                    <td>@i</td>
+                }
+                else{
+                    <td style="background-color: coral">NO CORRECT ANSWER</td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                    <a asp-controller="Answer" asp-action="Index" asp-route-questionId="@item.Id">Answers</a>
+                </td>
+            </tr>
+        }
+    }   
     </tbody>
 </table>

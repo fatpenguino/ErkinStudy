@@ -1,14 +1,10 @@
 using System;
-using System.Linq;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using ErkinStudy.Domain.Entities.Quiz;
 using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
