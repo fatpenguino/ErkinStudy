@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using ErkinStudy.Domain.Entities.Quiz;
+using ErkinStudy.Web.Models;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -43,18 +44,20 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Content")] Question question, long? quizId)
+        public async Task<IActionResult> Create([FromBody] QuestionCreateViewModel questionCreateView)
         {
             if (ModelState.IsValid)
             {
-                var quiz = await _context.Quizzes.FindAsync(quizId);
-                question.Quiz = quiz;
-
+                var quiz = await _context.Quizzes.FindAsync(questionCreateView.QuizId);                
+                var question = new Question(){
+                    Quiz = quiz
+                };
+                
                 _context.Add(question);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { quizId });
+                return RedirectToAction(nameof(Index), new { questionCreateView.QuizId });
             }
-            return View(question);
+            return View(new ErrorViewModel());
         }
 
         // GET: Question/Edit/5
