@@ -11,13 +11,25 @@
 
 <form asp-action="Check">
     <input type="hidden" name="quizId" value="@Model.Id" />
-    <div class="form-group">
+    <div class="form-group row">
         <ol type="1">
             @foreach (var question in Model.Questions) 
             {
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
                 </li>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                        @{
+                            if(question.ImagePath != null)
+                            {
+                                <img class="img-fluid" asp-append-version="true" src="@question.ImagePath">
+                            }
+                        }
+                        </div>
+                    </div>
+                </div>
                 <ol type="a">
                     @{
                         var rnd = new Random();
@@ -35,13 +47,13 @@
             }
         </ol>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <input type="button" value="Тексеру" class="btn btn-primary pass_quiz" />
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <p class="quiz_result" style="display: none">Жинаған балыңыз: </p>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <input type="button" 
             style="display: none" 
             value="Кеттік, бәрін таста" 

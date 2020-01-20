@@ -108,7 +108,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var answer = _context.Answers
-                .Include(x => x.Question)
                 .FirstOrDefault(x => x.Id == id);
             if (answer == null)
             {
@@ -116,7 +115,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
             _context.Answers.Remove(answer);
             _context.SaveChanges();
-            return RedirectToAction(nameof(Index), new { questionId = answer.Question.Id });
+            return RedirectToAction(nameof(Index), new { questionId = answer.QuestionId });
         }
 
     }

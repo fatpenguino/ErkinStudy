@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ErkinStudy.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using ErkinStudy.Domain.Entities.Quiz;
 using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
     public class QuestionController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public QuestionController(AppDbContext context)
+        public QuestionController(AppDbContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Question
@@ -44,18 +47,27 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create(QuestionCreateViewModel questionCreateView)
+        public async Task<IActionResult> Create(QuestionViewModel questionViewModel)
         {
             if (ModelState.IsValid)
             {
-                var quiz = await _context.Quizzes.FindAsync(questionCreateView.QuizId);                
+                string path = null;
+                if (questionViewModel.Image != null)
+                {
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + questionViewModel.Image.FileName;
+                    path = "/Questions/" + uniqueFileName;
+                    questionViewModel.Image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
+                }
+                
                 var question = new Question(){
-                    Quiz = quiz
+                    QuizId = questionViewModel.QuizId,
+                    Content = questionViewModel.Content,
+                    ImagePath = path
                 };
                 
                 _context.Add(question);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { questionCreateView.QuizId });
+                return RedirectToAction(nameof(Index), new { question.QuizId });
             }
             return View(new ErrorViewModel());
         }
@@ -70,13 +82,18 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var question = await _context.Questions
-                                .Include(x => x.Quiz)
-                                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (question == null)
             {
                 return NotFound();
             }
-            return View(question);
+            ViewBag.ImageFileName = question.ImagePath;
+            
+            var questionViewModel =  new QuestionViewModel(){
+                QuizId = question.QuizId,
+                Content = question.Content
+            };
+            return View(questionViewModel);
         }
 
         // POST: Question/Edit/5
@@ -85,15 +102,38 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long quizId, [Bind("Id,Content")] Question question)
+        public async Task<IActionResult> Edit(QuestionViewModel questionViewModel)
         {
             if (ModelState.IsValid)
             {
+                var question = _context.Questions.Find(questionViewModel.Id);
+                string path = question.ImagePath;
+
+                if (questionViewModel.Image != null)
+                {
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + questionViewModel.Image.FileName;
+                    path = "/Questions/" + uniqueFileName;
+                    questionViewModel.Image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
+                    
+                    try
+                    {   
+                        System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        return RedirectToAction("Error", "Home");
+                    }
+                }
+                
+                question.Content = questionViewModel.Content;
+                question.ImagePath = path;
+                
                 _context.Update(question);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { quizId });
+                return RedirectToAction(nameof(Index), new { question.QuizId });
             }
-            return View(question);
+            return View(new ErrorViewModel());
         }
 
         // GET: Question/Delete/5
@@ -106,7 +146,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var question = _context.Questions
-                .Include(x => x.Quiz)
                 .Include(x => x.Answers)
                 .FirstOrDefault(x => x.Id == id);
             if (question == null)
@@ -114,12 +153,23 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
+            try
+            {   
+                System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return RedirectToAction("Error", "Home");
+            }
+
             var answers = question.Answers;
 
             _context.Answers.RemoveRange(answers);
             _context.Questions.Remove(question);
             _context.SaveChanges();
-            return RedirectToAction(nameof(Index), new { quizId = question.Quiz.Id });
+            return RedirectToAction(nameof(Index), new { quizId = question.QuizId });
         }
+
     }
 }
