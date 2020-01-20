@@ -9,7 +9,7 @@ namespace ErkinStudy.Web.Models
     {
         [Required]
         public string Content {get; set;}
-        public IFormFile Photo { get; set; }
+        public IFormFile Image { get; set; }
         public long QuizId { get; set; }
 
     }

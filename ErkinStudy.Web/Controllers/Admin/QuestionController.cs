@@ -44,7 +44,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([FromBody] QuestionCreateViewModel questionCreateView)
+        public async Task<IActionResult> Create(QuestionCreateViewModel questionCreateView)
         {
             if (ModelState.IsValid)
             {
