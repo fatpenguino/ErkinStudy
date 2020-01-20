@@ -56,7 +56,10 @@ namespace ErkinStudy.Web.Controllers.Admin
                 {
                     var uniqueFileName = Guid.NewGuid().ToString() + "_" + questionViewModel.Image.FileName;
                     path = "/Questions/" + uniqueFileName;
-                    questionViewModel.Image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await questionViewModel.Image.CopyToAsync(fileStream);
+                    }
                 }
                 
                 var question = new Question(){
