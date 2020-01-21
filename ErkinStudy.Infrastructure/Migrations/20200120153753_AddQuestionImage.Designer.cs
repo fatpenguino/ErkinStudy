@@ -4,14 +4,16 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ErkinStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200120153753_AddQuestionImage")]
+    partial class AddQuestionImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,7 +358,7 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<long>("QuestionId")
+                    b.Property<long?>("QuestionId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -379,7 +381,7 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("QuizId")
+                    b.Property<long?>("QuizId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -622,18 +624,14 @@ namespace ErkinStudy.Infrastructure.Migrations
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Quiz.Question", "Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("QuestionId");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Quiz.Question", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Quiz.Quiz", "Quiz")
                         .WithMany("Questions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("QuizId");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Quiz.QuizScore", b =>

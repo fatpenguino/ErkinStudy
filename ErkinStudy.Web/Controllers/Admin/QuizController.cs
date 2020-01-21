@@ -20,7 +20,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.ToListAsync());
+            return View(await _dbContext.Quizzes.Include(x => x.Questions).ToListAsync());
         }
 
         // GET: Quiz/Create
