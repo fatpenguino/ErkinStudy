@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
+using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -17,14 +19,15 @@ namespace ErkinStudy.Web.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<AccountController> _logger;
-
+        private readonly EmailService _emailService;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger)
+            RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger, EmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -53,20 +56,44 @@ namespace ErkinStudy.Web.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            _logger.LogInformation($"Попытка входа пользователя {model.Username}.");
+            _logger.LogInformation($"Попытка входа пользователя {model.Email}.");
+            if (model.Email.Contains('@'))
+            {
+                const string emailRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+                                          @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+                                          @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                var regex = new Regex(emailRegex);
+                if (!regex.IsMatch(model.Email))
+                {
+                    _logger.LogError($"Email не подходит по регексу {model.Email}");
+                    ModelState.AddModelError("Email", "Email is not valid");
+                }
+            }
             if (ModelState.IsValid)
             {
+                var userName = model.Email;
+                if (userName.Contains('@'))
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user == null)
+                    {
+                        _logger.LogError("Пользователь с таким email не найден");
+                        ModelState.AddModelError(string.Empty, "Пользователь с таким login не найден");
+                        return View(model);
+                    }
+                    userName = user.UserName;
+                }
                 var result =
-                    await _signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);
+                    await _signInManager.PasswordSignInAsync(userName, model.Password, true, false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation($"Пользователь {model.Username} успешно вошел в сайт.");
+                    _logger.LogInformation($"Пользователь {userName} успешно вошел в сайт.");
                     return RedirectToAction("Index", "Home");
                 }
 
                 if (result.IsLockedOut)
                 {
-                    _logger.LogInformation($"Пользователь {model.Username} залочен.");
+                    _logger.LogInformation($"Пользователь {userName} залочен.");
                     return RedirectToAction(nameof(Lockout));
                 }
 
@@ -74,14 +101,14 @@ namespace ErkinStudy.Web.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 ModelState.AddModelError(string.Empty, message);
-                _logger.LogError($"Ошибка при входе пользователя {model.Username}, {message}");
+                _logger.LogError($"Ошибка при входе пользователя {model.Email}, {message}");
                 return View(model);
             }
 
             var modelMessage = string.Join(" | ", ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage));
-            _logger.LogError($"Ошибка при входе, кривые данные {model.Username}, {modelMessage}");
+            _logger.LogError($"Ошибка при входе, кривые данные {model.Email}, {modelMessage}");
             return View(model);
         }
 
@@ -119,6 +146,34 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return View("ForgotPasswordConfirmation");
+                }
+
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
+                await _emailService.SendEmailAsync("Reset Password",
+                    $"Для сброса пароля пройдите по ссылке: <a href='{callbackUrl}'>link</a>", model.Email);
+                return View("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Lockout()
         {
             return View();
@@ -136,6 +191,39 @@ namespace ErkinStudy.Web.Controllers
         {
             AppDbInitializer.SeedUsers(_userManager, _roleManager);
             return View(nameof(Login));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string code = null)
+        {
+            return code == null ? View("Error") : View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return View("ResetPasswordConfirmation");
+            }
+            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return View("ResetPasswordConfirmation");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
         }
     }
 }
