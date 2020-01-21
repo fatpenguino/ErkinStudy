@@ -158,11 +158,11 @@ namespace ErkinStudy.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _logger.LogInformation($"Попытка сброса пароля {model.Email}");
+                _logger.LogInformation($"Попытка восстановления пароля {model.Email}");
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    _logger.LogError($"Ошибка при сбросе пароля, не найден пользователь по такому email {model.Email}");
+                    _logger.LogError($"Ошибка при сбросе восстановления, не найден пользователь по такому email {model.Email}");
                     return View("ForgotPasswordConfirmation");
                 }
                 try
@@ -220,20 +220,23 @@ namespace ErkinStudy.Web.Controllers
             {
                 return View(model);
             }
+            _logger.LogInformation($"Попытка сброса пароля для пользователя {model.Email} по коду {model.Code}");
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
+                _logger.LogError($"Ошибка при сбросе пароля, не найден пользователь по такому email {model.Email}");
                 return View("ResetPasswordConfirmation");
             }
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Пользователь {user.Email} успешно сбросил пароль.");
                 return View("ResetPasswordConfirmation");
             }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            var modelMessage = string.Join(" | ", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+            _logger.LogError($"Ошибка при сбросе пароля для пользователя {model.Email}, {modelMessage}");
             return View(model);
         }
     }
