@@ -118,14 +118,17 @@ namespace ErkinStudy.Web.Controllers.Admin
                     path = "/Questions/" + uniqueFileName;
                     questionViewModel.Image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
                     
-                    try
-                    {   
-                        System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
-                    }
-                    catch (Exception e)
+                    if (question.ImagePath != null)
                     {
-                        Console.WriteLine(e);
-                        return RedirectToAction("Error", "Home");
+                        try
+                        {
+                            System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            return RedirectToAction("Error", "Home");
+                        }
                     }
                 }
                 
@@ -156,14 +159,17 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
-            try
-            {   
-                System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
-            }
-            catch (Exception e)
+            if (question.ImagePath != null)
             {
-                Console.WriteLine(e);
-                return RedirectToAction("Error", "Home");
+                try
+                {   
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return RedirectToAction("Error", "Home");
+                }
             }
 
             var answers = question.Answers;
