@@ -52,6 +52,34 @@ namespace ErkinStudy.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> DeleteUser(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var applicationUser = await _dbContext.Users
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+
+            return View(applicationUser);
+        }
+
+        // POST: ApplicationUsers/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(long id)
+        {
+            var applicationUser = await _dbContext.Users.FindAsync(id);
+            await _userManager.DeleteAsync(applicationUser);
+            await _dbContext.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
         [Authorize]
         public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 1)
         {

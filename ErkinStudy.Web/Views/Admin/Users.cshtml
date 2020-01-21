@@ -39,8 +39,9 @@
                 }
                 else
                 {
-                    <p style="color: green;">Approved</p>
-                }
+                    <a style="color: green;">Approved</a> 
+                } |
+                <a asp-action="DeleteUser" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
