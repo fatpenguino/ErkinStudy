@@ -29,25 +29,20 @@ namespace ErkinStudy.Web
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-                {
-                    options.SignIn.RequireConfirmedAccount = false;
-                    options.User.RequireUniqueEmail = true;
-                    options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
-                })
-                .AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<AppDbContext>();
-            services.Configure<IdentityOptions>(options =>
             {
-                // Default Password settings.
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 3;
                 options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
-            });
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedAccount = false;
+                    options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
+                })
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<AppDbContext>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }

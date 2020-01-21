@@ -5,8 +5,8 @@ namespace ErkinStudy.Web.Models
 	public class LoginViewModel
 	{
 		[Required]
-        [Display(Name = "Логин")]
-		public string Username { get; set; }
+        [Display(Name = "Логин/Email")]
+		public string Email { get; set; }
 
 		[Required]
         [Display(Name = "Құпиясөз")]

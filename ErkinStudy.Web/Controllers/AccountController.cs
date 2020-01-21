@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
@@ -55,20 +56,44 @@ namespace ErkinStudy.Web.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            _logger.LogInformation($"Попытка входа пользователя {model.Username}.");
+            _logger.LogInformation($"Попытка входа пользователя {model.Email}.");
+            if (model.Email.Contains('@'))
+            {
+                const string emailRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+                                          @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+                                          @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                var regex = new Regex(emailRegex);
+                if (!regex.IsMatch(model.Email))
+                {
+                    _logger.LogError($"Email не подходит по регексу {model.Email}");
+                    ModelState.AddModelError("Email", "Email is not valid");
+                }
+            }
             if (ModelState.IsValid)
             {
+                var userName = model.Email;
+                if (userName.Contains('@'))
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user == null)
+                    {
+                        _logger.LogError("Пользователь с таким email не найден");
+                        ModelState.AddModelError(string.Empty, "Пользователь с таким login не найден");
+                        return View(model);
+                    }
+                    userName = user.UserName;
+                }
                 var result =
-                    await _signInManager.PasswordSignInAsync(model.Username, model.Password, true, false);
+                    await _signInManager.PasswordSignInAsync(userName, model.Password, true, false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation($"Пользователь {model.Username} успешно вошел в сайт.");
+                    _logger.LogInformation($"Пользователь {userName} успешно вошел в сайт.");
                     return RedirectToAction("Index", "Home");
                 }
 
                 if (result.IsLockedOut)
                 {
-                    _logger.LogInformation($"Пользователь {model.Username} залочен.");
+                    _logger.LogInformation($"Пользователь {userName} залочен.");
                     return RedirectToAction(nameof(Lockout));
                 }
 
@@ -76,14 +101,14 @@ namespace ErkinStudy.Web.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
                 ModelState.AddModelError(string.Empty, message);
-                _logger.LogError($"Ошибка при входе пользователя {model.Username}, {message}");
+                _logger.LogError($"Ошибка при входе пользователя {model.Email}, {message}");
                 return View(model);
             }
 
             var modelMessage = string.Join(" | ", ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage));
-            _logger.LogError($"Ошибка при входе, кривые данные {model.Username}, {modelMessage}");
+            _logger.LogError($"Ошибка при входе, кривые данные {model.Email}, {modelMessage}");
             return View(model);
         }
 
