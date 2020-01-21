@@ -15,14 +15,15 @@ namespace ErkinStudy.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string subject, string message)
+        public async Task SendEmailAsync(string subject, string message, string to = null)
         {
             using var client = new SmtpClient();
             try
             {
                 var emailMessage = new MimeMessage();
+                to ??= _configuration.GetSection("EmailSettings")["To"];
                 emailMessage.From.Add(new MailboxAddress("ErkinStudy", "info@erkinstudy.kz"));
-                emailMessage.To.Add(new MailboxAddress("", _configuration.GetSection("EmailSettings")["To"]));
+                emailMessage.To.Add(new MailboxAddress("", to));
                 emailMessage.Subject = subject;
                 emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
                 {

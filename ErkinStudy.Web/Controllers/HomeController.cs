@@ -54,7 +54,7 @@ namespace ErkinStudy.Web.Controllers
 
         public async Task<IActionResult> Folder(long id)
         {
-            return View(await _dbContext.Folders.Include(x => x.Lessons).FirstOrDefaultAsync(x => x.Id == id));
+            return View(await _dbContext.Folders.Include(x => x.Lessons).FirstOrDefaultAsync(x => x.Id == id && x.IsActive));
         }
         public async Task<IActionResult> Tests()
         {
