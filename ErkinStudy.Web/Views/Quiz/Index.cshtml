@@ -20,6 +20,9 @@
                 Q amt
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -36,6 +39,9 @@
                     </td>
                     <td>
                         @item.Questions.Count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsActive)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

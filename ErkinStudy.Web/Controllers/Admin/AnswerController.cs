@@ -50,16 +50,16 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Content,IsCorrect")] Answer answer, long? questionId)
+        public async Task<IActionResult> Create(Answer answer)
         {
             if (ModelState.IsValid)
             {
-                var question = await _context.Questions.FindAsync(questionId);
+                var question = await _context.Questions.FindAsync(answer.QuestionId);
                 answer.Question = question;
 
                 _context.Add(answer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { questionId });
+                return RedirectToAction(nameof(Index), new { answer.QuestionId });
             }
             return View(answer);
         }
@@ -87,13 +87,13 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit([Bind("Id,Content,IsCorrect")] Answer answer, long questionId)
+        public async Task<IActionResult> Edit(Answer answer)
         {
             if (ModelState.IsValid)
             {
                 _context.Update(answer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { questionId });
+                return RedirectToAction(nameof(Index), new { answer.QuestionId });
             }
             return View(answer);
         }

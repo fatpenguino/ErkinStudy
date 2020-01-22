@@ -8,26 +8,26 @@
 
 <h4>Folder</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <input class="form-check-input" asp-for="IsCorrect" />
-                <label asp-for="IsCorrect" class="control-label"></label>
-            </div>
-            <input name="questionId" value="@ViewBag.QuestionId" type="hidden" />
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Content" class="col-form-label"></label>
+        <textarea asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
     </div>
-</div>
+    <div class="form-group">
+        <div class="form-check">      
+            <input class="form-check-input" type="checkbox" asp-for="IsCorrect" />
+            <label class="form-check-label" asp-for="IsCorrect"></label>
+        </div>
+    </div>    
+    <div class="form-group">
+        <input asp-for="QuestionId" value="@ViewBag.QuestionId" type="hidden" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
 
 <div>
     <a asp-action="Index" asp-route-questionId="@ViewBag.QuestionId">Back to List</a>
