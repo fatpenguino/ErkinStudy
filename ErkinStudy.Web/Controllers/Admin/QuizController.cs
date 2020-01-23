@@ -5,6 +5,7 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -119,6 +120,13 @@ namespace ErkinStudy.Web.Controllers.Admin
            _dbContext.Quizzes.Remove(quiz);
            await _dbContext.SaveChangesAsync();
            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Scores(long id)
+        {
+            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id).ToListAsync();
+            return View(scores);
         }
     }
 }
