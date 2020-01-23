@@ -123,7 +123,7 @@ namespace ErkinStudy.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
-                    {Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber};
+                    { Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
