@@ -9,12 +9,15 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.UserName)
             </th>
-           <th>
+            <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-           <th>
+            <th>
                 @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
             <th></th>
@@ -23,6 +26,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
@@ -35,12 +41,14 @@
             <td>
                 @if (!item.IsApprovedOnlineCourse)
                 {
-                    <a asp-action="ApproveOnlineCourse" asp-route-userId="@item.Id">Appove Online Course</a> 
+                    <a asp-action="ApproveOnlineCourse" asp-route-userId="@item.Id">Appove Online Course</a>
                 }
                 else
                 {
-                    <p style="color: green;">Approved</p>
+                    <a style="color: green;">Approved</a>
                 }
+                |
+                <a asp-action="DeleteUser" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

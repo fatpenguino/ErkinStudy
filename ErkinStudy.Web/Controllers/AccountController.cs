@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
@@ -122,7 +123,7 @@ namespace ErkinStudy.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
-                    {Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber};
+                    { Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -157,16 +158,26 @@ namespace ErkinStudy.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogInformation($"Попытка восстановления пароля {model.Email}");
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
+                    _logger.LogError($"Ошибка при сбросе восстановления, не найден пользователь по такому email {model.Email}");
                     return View("ForgotPasswordConfirmation");
                 }
-
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
-                await _emailService.SendEmailAsync("Reset Password",
-                    $"Для сброса пароля пройдите по ссылке: <a href='{callbackUrl}'>link</a>", model.Email);
+                try
+                {
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    // Потом переделать в нормальный url генератор.
+                    var callbackUrl = $"https://erkinstudy.kz/Account/ResetPassword?userId={user.Id}&code={code}";
+                    await _emailService.SendEmailAsync("Құпия сөзді қалпына келтіру",
+                        $"Құпия сөзді қалпына келтіру үшін <a href='{callbackUrl}'> сілтемені </a> басыңыз.", model.Email);
+                    _logger.LogInformation($"Отправляем письмо для восстановление для пользователя по ссылке {callbackUrl}");
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка при восстановление пароля для пользователя {model.Email}, {e}");
+                }
                 return View("ForgotPasswordConfirmation");
             }
             return View(model);
@@ -209,20 +220,23 @@ namespace ErkinStudy.Web.Controllers
             {
                 return View(model);
             }
+            _logger.LogInformation($"Попытка сброса пароля для пользователя {model.Email} по коду {model.Code}");
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
+                _logger.LogError($"Ошибка при сбросе пароля, не найден пользователь по такому email {model.Email}");
                 return View("ResetPasswordConfirmation");
             }
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Пользователь {user.Email} успешно сбросил пароль.");
                 return View("ResetPasswordConfirmation");
             }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            var modelMessage = string.Join(" | ", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+            _logger.LogError($"Ошибка при сбросе пароля для пользователя {model.Email}, {modelMessage}");
             return View(model);
         }
     }

@@ -5,6 +5,8 @@ namespace ErkinStudy.Domain.Entities.Identity
 {
     public class ApplicationUser : IdentityUser<long>
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<Payment> AprovedPayments { get; set; }
         public virtual ICollection<UserLesson> UserLessons { get; set; }
