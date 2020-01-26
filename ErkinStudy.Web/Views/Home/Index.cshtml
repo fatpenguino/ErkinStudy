@@ -1,36 +1,28 @@
-﻿@using ErkinStudy.Infrastructure.Services
-@inject FolderService FolderService;
-@{
-    ViewData["Title"] = "Home Page";
-    var folders = await FolderService.GetAll();
+﻿@{
+    ViewData["Title"] = "Erkin Study";
 }
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="card-list mt-5">
-                <div class="col-auto mb-3">
-                    <div class="card text-white bg-primary" style="width: 18rem;">
-                        <div class="card-body text-center">
-                            <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="card-text text-white">Математикалық сауаттылық</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-auto mb-3">
-                    <div class="card text-white bg-primary" style="width: 18rem;">
-                        <div class="card-body text-center">
-                            <a asp-action="Tests" class="card-text text-white">Тестілеу</a>
-                        </div>
-                    </div>
-                </div>
-                @foreach (var folder in folders.Where(x => x.ParentId == null))
-                {
-                    <div class="col-auto mb-3">
-                        <div class="card text-white bg-primary" style="width: 18rem;">
-                            <div class="card-body text-center">
-                                <a asp-action="Folder" asp-route-id="@folder.Id" class="card-text text-white">@folder.Name</a>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="mt-3 text-center">
+            <a asp-action="OnlineCourseSchedule" asp-route-onlineCourseId="1" class="text-center stub">
+            <img src="~/img/Mat.sauattylyq.png"/>
+            </a>
+            <a asp-action="Tests" class="stub">
+                <img src="~/img/Testiley.png" />
+            </a>
+            <a asp-action="Folder" asp-route-id="3" class="stub">
+                <img src="~/img/Matematika_UBT.png" />
+            </a>
+            <a asp-action="Folder" asp-route-id="7" class="stub">
+                <img src="~/img/Geometriya.png" />
+            </a>
+            <a asp-action="Folder" asp-route-id="8" class="stub">
+                <img src="~/img/Algebra.png" />
+            </a>
+            <a asp-action="Folder" asp-route-id="9" class="stub">
+                <img src="~/img/Fizika.png" />
+            </a>
+
         </div>
     </div>
+</div>

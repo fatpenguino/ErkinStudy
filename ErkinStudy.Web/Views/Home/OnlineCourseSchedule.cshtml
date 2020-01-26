@@ -28,11 +28,12 @@
             </div>
             @if (!isApproved)
             {
-                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
-                    Онлайн курсты сатып алу
-                </a>
+             <p class="mb-0">Бағасы: 7000 теңге</p>
+            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
+                Онлайн курсты сатып алу
+            </a>
             }
-        </div>
+</div>
         <div class="accordion" id="accordionCourse">
             @foreach (var week in Model.OnlineCourseWeeks)
             {

@@ -195,3 +195,7 @@ body {
 .card-list {
     font-size: 16px;
 }
+.stub {
+    display: inline-block;
+    margin-top: 20px;
+}
