@@ -57,6 +57,7 @@ namespace ErkinStudy.Web.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            model.Email = model.Email.Replace(" ", "");
             _logger.LogInformation($"Попытка входа пользователя {model.Email}.");
             if (model.Email.Contains('@'))
             {

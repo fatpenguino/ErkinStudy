@@ -1,4 +1,5 @@
-﻿@using ErkinStudy.Domain.Entities.Identity
+﻿@using System.Web
+@using ErkinStudy.Domain.Entities.Identity
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
 @model ErkinStudy.Domain.Entities.Folder
@@ -37,11 +38,11 @@
                             }
                             else if (User.Identity.IsAuthenticated)
                             {
-                                <a asp-controller="Col" asp-action="SendCallRequest" asp-route-id="@lesson.Id" class="card-link">Сатып алу</a>
+                                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {lesson.Name}(Id-{lesson.Id}) сабағын сатып алғым келеді")" class="card-link">Сатып алу</a>
                             }
                             else
                             {
-                            <p class="card-text">Сабакты сатып алу ушин тиркелиниз!</p>
+                            <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
                             }
                         </div>
                     </div>
