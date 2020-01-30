@@ -1,6 +1,6 @@
 ﻿using ErkinStudy.Domain.Entities.Identity;
 
-namespace ErkinStudy.Domain.Entities
+namespace ErkinStudy.Domain.Entities.Lessons
 {
 	public class UserLesson
     {

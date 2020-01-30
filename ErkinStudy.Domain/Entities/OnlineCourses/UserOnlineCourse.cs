@@ -1,6 +1,6 @@
 ﻿using ErkinStudy.Domain.Entities.Identity;
 
-namespace ErkinStudy.Domain.Entities
+namespace ErkinStudy.Domain.Entities.OnlineCourses
 {
 	public class UserOnlineCourse
     {

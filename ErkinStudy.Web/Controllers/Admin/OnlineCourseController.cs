@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities;
+using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 

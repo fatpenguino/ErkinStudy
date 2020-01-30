@@ -1,92 +1,91 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities;
 using ErkinStudy.Infrastructure.Context;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    public class PaymentController : Controller
+    public class CategoriesController : Controller
     {
         private readonly AppDbContext _context;
 
-        public PaymentController(AppDbContext context)
+        public CategoriesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Payment
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var payments = _context.Payments.Include(p => p.User);
-            return View(await payments.ToListAsync());
+            return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: Payment/Details/5
-        public async Task<IActionResult> Details(long? id)
+        // GET: Categories/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var payment = await _context.Payments
-                .Include(p => p.User)
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (payment == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(payment);
+            return View(category);
         }
 
-        // GET: Payment/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Payment/Create
+        // POST: Categories/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,LessonId,CreationTime,Amount,Provider,Status,IsActive")] Payment payment)
+        public async Task<IActionResult> Create([Bind("Id,Name,Color")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(payment);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
-            return View(payment);
+            return View(category);
         }
 
-        // GET: Payment/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+        // GET: Categories/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var payment = await _context.Payments.FindAsync(id);
-            if (payment == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
-            return View(payment);
+            return View(category);
         }
 
-        // POST: Payment/Edit/5
+        // POST: Categories/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,UserId,LessonId,CreationTime,Amount,Provider,Status,IsActive")] Payment payment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Color")] Category category)
         {
-            if (id != payment.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -95,12 +94,12 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {
-                    _context.Update(payment);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaymentExists(payment.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -111,43 +110,41 @@ namespace ErkinStudy.Web.Controllers.Admin
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
-            return View(payment);
+            return View(category);
         }
 
-        // GET: Payment/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        // GET: Categories/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var payment = await _context.Payments
-                .Include(p => p.User)
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (payment == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(payment);
+            return View(category);
         }
 
-        // POST: Payment/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var payment = await _context.Payments.FindAsync(id);
-            _context.Payments.Remove(payment);
+            var category = await _context.Categories.FindAsync(id);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaymentExists(long id)
+        private bool CategoryExists(int id)
         {
-            return _context.Payments.Any(e => e.Id == id);
+            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

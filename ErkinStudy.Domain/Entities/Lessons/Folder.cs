@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ErkinStudy.Domain.Entities
+namespace ErkinStudy.Domain.Entities.Lessons
 {
     public class Folder
     {

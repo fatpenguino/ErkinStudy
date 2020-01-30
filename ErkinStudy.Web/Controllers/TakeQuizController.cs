@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using ErkinStudy.Domain.Entities.Quiz;
 using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
+using ErkinStudy.Domain.Entities.Quizzes;
 
 namespace ErkinStudy.Web.Controllers
 {

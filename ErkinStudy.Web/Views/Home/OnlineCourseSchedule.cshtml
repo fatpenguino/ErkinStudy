@@ -6,7 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserService UserService
 @inject UserManager<ApplicationUser> UserManager
-@model ErkinStudy.Domain.Entities.OnlineCourse
+@model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
 @{
     ViewData["Title"] = "OnlineCourseSchedule";
     var nearestWeek = Model.OnlineCourseWeeks.OrderBy(x => x.StartDate).FirstOrDefault(x => x.StartDate > TimeZoneHelper.ConvertLocalDateTime());

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ErkinStudy.Domain.Entities
+namespace ErkinStudy.Domain.Entities.OnlineCourses
 {
     public class OnlineCourseWeek
     {

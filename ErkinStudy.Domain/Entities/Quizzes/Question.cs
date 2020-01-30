@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ErkinStudy.Domain.Entities.Quiz
+namespace ErkinStudy.Domain.Entities.Quizzes
 {
     public class Question
     {

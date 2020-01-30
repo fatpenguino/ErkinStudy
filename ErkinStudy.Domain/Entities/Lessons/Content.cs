@@ -1,6 +1,6 @@
 ﻿using ErkinStudy.Domain.Enums;
 
-namespace ErkinStudy.Domain.Entities
+namespace ErkinStudy.Domain.Entities.Lessons
 {
     public class Content
     {

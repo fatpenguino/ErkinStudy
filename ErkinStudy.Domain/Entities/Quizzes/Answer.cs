@@ -1,4 +1,4 @@
-namespace ErkinStudy.Domain.Entities.Quiz
+namespace ErkinStudy.Domain.Entities.Quizzes
 {
     public class Answer
     {

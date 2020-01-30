@@ -1,7 +1,7 @@
 using System;
 using ErkinStudy.Domain.Entities.Identity;
 
-namespace ErkinStudy.Domain.Entities.Quiz
+namespace ErkinStudy.Domain.Entities.Quizzes
 {
     public class QuizScore
     {

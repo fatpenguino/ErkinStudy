@@ -1,7 +1,8 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using ErkinStudy.Domain.Entities;
+﻿using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Identity;
-using ErkinStudy.Domain.Entities.Quiz;
+using ErkinStudy.Domain.Entities.Lessons;
+using ErkinStudy.Domain.Entities.OnlineCourses;
+using ErkinStudy.Domain.Entities.Quizzes;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,6 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Folder> Folders { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Content> Contents { get; set; }
-        public DbSet<Payment> Payments { get; set; }
         public DbSet<UserLesson> UserLessons { get; set; }
         public DbSet<UserOnlineCourse> UserOnlineCourses { get; set; }
         public DbSet<OnlineCourse> OnlineCourses { get; set; }
@@ -25,6 +25,8 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<QuizScore> QuizScores { get; set; }
+        public DbSet<UserQuiz> UserQuizzes { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,18 +50,15 @@ namespace ErkinStudy.Infrastructure.Context
                     .WithMany(x => x.UserOnlineCourses)
                     .HasForeignKey(x => x.UserId);
             });
-            modelBuilder.Entity<Payment>(entity =>
+            modelBuilder.Entity<UserQuiz>(entity =>
             {
-                entity.HasKey(x => new {x.Id }); 
+                entity.HasKey(x => new { x.QuizId, x.UserId });
+                entity.HasOne(x => x.Quiz)
+                    .WithMany(x => x.UserQuizzes)
+                    .HasForeignKey(x => x.QuizId);
                 entity.HasOne(x => x.User)
-                    .WithMany(x => x.Payments)
-                    .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(x => x.Approver)
-                    .WithMany(x => x.AprovedPayments)
-                    .HasForeignKey(x => x.ApproverId)
-                    .OnDelete(DeleteBehavior.NoAction);
-              
+                    .WithMany(x => x.UserQuizzes)
+                    .HasForeignKey(x => x.UserId);
             });
             modelBuilder.Entity<ApplicationUser>(entity => { entity.ToTable(name: "Users"); });
 	        modelBuilder.Entity<ApplicationRole>(entity => { entity.ToTable(name: "Roles"); });

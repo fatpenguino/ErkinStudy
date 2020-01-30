@@ -1,6 +1,7 @@
 ﻿@using System.Globalization
 @using ErkinStudy.Domain.Entities
-@model ErkinStudy.Domain.Entities.OnlineCourse
+@using ErkinStudy.Domain.Entities.OnlineCourses
+@model OnlineCourse
 @{
     ViewData["Title"] = "FreeCourse";
     var week = Model.OnlineCourseWeeks.FirstOrDefault() ?? new OnlineCourseWeek();
