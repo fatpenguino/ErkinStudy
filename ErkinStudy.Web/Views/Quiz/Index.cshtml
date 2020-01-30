@@ -12,24 +12,45 @@
 <table class="table">
     <thead>
         <tr>
+            <th>N</th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
-            <th>Actions</th>
+            <th>
+                Q amt
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
+                Actions
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-controller="Question" asp-action="Index" asp-route-quizId="@item.Id">Questions</a>
-            </td>
-        </tr>
-}
+        @{
+            int i = 0;
+            foreach (var item in Model) {
+                i++;
+                <tr>
+                    <td>@i</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @item.Questions.Count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsActive)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-controller="Question" asp-action="Index" asp-route-quizId="@item.Id">Questions</a> |
+                        <a asp-action="Scores" asp-route-id="@item.Id">Scores</a> |
+                        <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@item.Id">Preview</a>
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>

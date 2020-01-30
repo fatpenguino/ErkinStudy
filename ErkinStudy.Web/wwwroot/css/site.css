@@ -97,20 +97,20 @@ body {
     padding: 0;
 }
 .logo {
-    line-height: 1;
-    font-size: 18px;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    line-height: 0;
+    font-size: 20px;
+    font-weight: 700;
 }
 .logo-text {
     display: inline;
     padding: 0;
 }
 .logo-text-first {
-    color: black;
+    color: #c00000;
 }
 .logo-text-second {
-    color: red;
-    margin-left: -4px;
+    color: #1f4e79;
+    margin-left: -5.5px;
 }
 .logo-sabaq {
     color: blue;
@@ -191,4 +191,7 @@ body {
         height: 300px;
         width: 100%;
     }
+}
+.card-list {
+    font-size: 16px;
 }

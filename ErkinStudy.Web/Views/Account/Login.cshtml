@@ -16,9 +16,9 @@
                 <hr/>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Username"></label>
-                    <input asp-for="Username" class="form-control"/>
-                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control"/>
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Password"></label>
@@ -29,10 +29,9 @@
                     <button type="submit" class="btn btn-primary">Кіру</button>
                 </div>
                 <div class="form-group">
-                    @*  <p>
+                    <p>
                          <a asp-action="ForgotPassword">Құпиясөзді ұмытып қалдыңыз ба?</a>
                     </p>
-                    *@
                 </div>
             </form>
         </section>

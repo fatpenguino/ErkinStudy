@@ -1,3 +1,6 @@
+@using ErkinStudy.Domain.Entities.Quiz;
+@using System.Linq;
+
 @model ErkinStudy.Domain.Entities.Quiz.Quiz
 
 @{
@@ -7,33 +10,102 @@
 <h1>@Model.Title</h1>
 
 <form asp-action="Check">
-    <div class="form-group">
+    <input type="hidden" name="quizId" value="@Model.Id" />
+    <div class="form-group row">
         <ol type="1">
             @foreach (var question in Model.Questions) 
             {
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
-                    <input type="hidden" name="questionId" value="@question.Id">
                 </li>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                        @{
+                            if(question.ImagePath != null)
+                            {
+                                <img class="img-fluid" asp-append-version="true" src="@question.ImagePath">
+                            }
+                        }
+                        </div>
+                    </div>
+                </div>
                 <ol type="a">
-                    @foreach( var ans in question.Answers)
-                    {
-                        <li>
-                            @Html.RadioButton(@question.Id.ToString(), ans.Id, new { @class = "answer answer_@question.Id"}) @ans.Content;
-                        </li>
+                    @{
+                        var rnd = new Random();
+                        foreach( var ans in question.Answers.OrderBy(x => rnd.Next()))
+                        {
+                            <li>
+                                <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" 
+                                    type="radio" 
+                                    name="@question.Id" 
+                                    value="@ans.Id" > @ans.Content
+                            </li>
+                        }
                     }
                 </ol>
             }
         </ol>
     </div>
-    <div class="form-group">
-        <input type="submit" value="Тексеру" class="btn btn-primary" />
+    <div class="form-group row">
+        <input type="button" value="Тексеру" class="btn btn-primary pass_quiz" />
+    </div>
+    <div class="form-group row">
+        <p class="quiz_result" style="display: none">Жинаған балыңыз: </p>
+    </div>
+    <div class="form-group row">
+        <input type="button" 
+            style="display: none" 
+            value="Кеттік, бәрін таста" 
+            class="btn btn-primary exit_quiz" 
+            onclick="location.href='@Url.Action("Index", "Home")'" />
     </div>
 </form>
 
-<script>
-$(".answer").on("click", () => {
+<script type="text/javascript">
+    $(function() {
+        
+        $(".pass_quiz").on("click", function() {
 
-});
+            let quizId = $("input[name='quizId']").val();
+            
+            let checkedAnswers = [];
+            $(".answer:checked").each(function() {
+                checkedAnswers.push($(this).val());
+            });
 
+            let formData = JSON.stringify({
+                'quizId': quizId,
+                'checkedAnswers': checkedAnswers
+            })
+
+            console.log(formData);
+            $.ajax({  
+                type: "POST",
+                url: "@Url.Action("Check", "TakeQuiz")",
+                contentType: "application/json; charset=utf-8",
+                data: formData,
+                dataType: "json",
+
+                success: function (result, status, xhr) {
+
+                    $(".pass_quiz").hide();
+                    $(".exit_quiz").show();
+                    $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
+
+                    $(".answer:checked").each(function() {
+                        if ($(this).hasClass("answer_correct")){
+                            $(this).parent().css("background-color", "#58D68D");
+                        }
+                        else{
+                            $(this).parent().css("background-color", "#FF5733");
+                        }
+                    });
+                },  
+                error: function (xhr, status, error) {    
+                }  
+            });  
+        });
+
+    });
 </script>

@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using System.Web
 @using ErkinStudy.Domain.Entities.Identity
 @using ErkinStudy.Infrastructure.Services
 @using ErkinStudy.Web.Helpers
@@ -27,9 +28,9 @@
             </div>
             @if (!isApproved)
             {
-                <button type="button" class="btn btn-primary my-2 mx-auto" data-toggle="modal" data-target="#courseModal">
+                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
                     Онлайн курсты сатып алу
-                </button>
+                </a>
             }
         </div>
         <div class="accordion" id="accordionCourse">
@@ -66,7 +67,7 @@
                             <div class="card-body">
                                 @week.Description
                                 <div class="youtube-stream mx-auto mt-3">
-                                    <iframe src="@week.StreamUrl">
+                                    <iframe src="@week.StreamUrl" allowfullscreen="allowfullscreen">
                                     </iframe>
                                 </div>
                                 @if (week.Homeworks.Count > 0)

@@ -5,6 +5,7 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -20,7 +21,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.ToListAsync());
+            return View(await _dbContext.Quizzes.Include(x => x.Questions).ToListAsync());
         }
 
         // GET: Quiz/Create
@@ -34,7 +35,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Title")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,IsActive")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -119,6 +120,13 @@ namespace ErkinStudy.Web.Controllers.Admin
            _dbContext.Quizzes.Remove(quiz);
            await _dbContext.SaveChangesAsync();
            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Scores(long id)
+        {
+            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id).ToListAsync();
+            return View(scores);
         }
     }
 }

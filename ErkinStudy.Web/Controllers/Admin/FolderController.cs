@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -20,12 +21,9 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: Folder
         [Authorize]
-        public IActionResult Index(long? subjectId)
+        public IActionResult Index()
         {
-	        ViewBag.SubjectId = subjectId;
-	        return subjectId.HasValue
-		        ? View(_context.Folders.Where(x => x.SubjectId == subjectId).AsQueryable())
-		        : View(_context.Folders.AsQueryable());
+	        return View(_context.Folders.AsQueryable());
         }
 
         // GET: Folder/Details/5
@@ -49,9 +47,9 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // GET: Folder/Create
         [Authorize]
-        public IActionResult Create(long subjectId)
+        public IActionResult Create()
         {
-	        ViewBag.SubjectId = subjectId;
+            ViewData["ParentId"] = new SelectList(_context.Folders, "Id", "Id");
             return View();
         }
 
@@ -61,14 +59,14 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Name,Description,Order,SubjectId,IsActive")] Folder folder)
+        public async Task<IActionResult> Create([Bind("Name,Description,ParentId,Order,IsActive")] Folder folder)
         {
             if (ModelState.IsValid)
             {
 				folder.CreatedAt = DateTime.Now;
                 _context.Add(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
+                return RedirectToAction(nameof(Index));
             }
             return View(folder);
         }
@@ -87,16 +85,14 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
+            ViewData["ParentId"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Id", folder.ParentId);
             return View(folder);
         }
 
-        // POST: Folder/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,Order,SubjectId,IsActive")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,ParentId,Order,IsActive")] Folder folder)
         {
             if (id != folder.Id)
             {
@@ -107,7 +103,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 _context.Update(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
+                return RedirectToAction(nameof(Index));
             }
             return View(folder);
         }
@@ -140,7 +136,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             var folder = await _context.Folders.FindAsync(id);
             _context.Folders.Remove(folder);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { subjectId = folder.SubjectId });
+            return RedirectToAction(nameof(Index));
         }
 
     }

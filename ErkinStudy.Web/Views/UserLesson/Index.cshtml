@@ -14,9 +14,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.User)
             </th>
             <th>
@@ -29,18 +26,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.User.UserName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Lesson.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", nameof(UserLessonController.Edit), new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", nameof(UserLessonController.Details), new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", nameof(UserLessonController.Delete), new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", nameof(UserLessonController.Delete), new {  userId = item.UserId, lessonId = item.LessonId })
             </td>
         </tr>
 }

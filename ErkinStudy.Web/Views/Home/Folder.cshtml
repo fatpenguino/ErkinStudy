@@ -1,0 +1,54 @@
+﻿@using System.Web
+@using ErkinStudy.Domain.Entities.Identity
+@using ErkinStudy.Infrastructure.Services
+@using Microsoft.AspNetCore.Identity
+@model ErkinStudy.Domain.Entities.Folder
+@inject FolderService FolderService
+@inject UserManager<ApplicationUser> UserManager
+@inject UserService UserService
+@{
+    ViewData["Title"] = Model.Name;
+    var childs = await FolderService.GetChilds(Model.Id);
+    var userId = User.Identity.IsAuthenticated ? long.Parse(UserManager.GetUserId(User)) : 0;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="card-list mt-5">
+            @foreach (var folder in childs)
+            {
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-primary" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a asp-action="Folder" asp-route-id="@folder.Id" class="card-link text-white">@folder.Name</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @foreach (var lesson in Model.Lessons)
+            {
+                <div class="col-auto mb-3">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@lesson.Name</h5>
+                            <p class="card-text">@lesson.Description Багасы: @lesson.Price тг.</p>
+                            @if (User.Identity.IsAuthenticated && UserService.IsUserHasLesson(userId, lesson.Id))
+                            {
+                                <a asp-controller="Col" asp-action="Detail" asp-route-id="@lesson.Id" class="card-link">Ашу</a>
+                            }
+                            else if (User.Identity.IsAuthenticated)
+                            {
+                                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {lesson.Name}(Id-{lesson.Id}) сабағын сатып алғым келеді")" class="card-link">Сатып алу</a>
+                            }
+                            else
+                            {
+                            <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

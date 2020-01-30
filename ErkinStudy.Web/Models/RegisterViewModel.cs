@@ -9,6 +9,14 @@ namespace ErkinStudy.Web.Models
         public string UserName { get; set; }
 
         [Required]
+        [Display(Name = "Аты")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Тегі")]
+        public string LastName { get; set; }
+
+        [Required]
 		[Phone]
         [Display(Name = "Телефон")]
         public string PhoneNumber { get; set; }
