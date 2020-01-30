@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
-using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -201,7 +200,9 @@ namespace ErkinStudy.Web.Controllers
 
         public IActionResult Seed()
         {
-            AppDbInitializer.SeedUsers(_userManager, _roleManager);
+            //var user = _userManager.FindByNameAsync("moderator").Result;
+            //_userManager.AddToRoleAsync(user, "Moderator").Wait();
+            //AppDbInitializer.SeedUsers(_userManager, _roleManager);
             return View(nameof(Login));
         }
 
