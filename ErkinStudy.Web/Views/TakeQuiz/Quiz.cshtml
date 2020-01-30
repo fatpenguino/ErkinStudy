@@ -17,9 +17,8 @@
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
                 </li>
-                <div class="container">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-10">
                         @{
                             if(question.ImagePath != null)
                             {
@@ -28,7 +27,6 @@
                         }
                         </div>
                     </div>
-                </div>
                 <ol type="a">
                     @{
                         var rnd = new Random();
@@ -47,16 +45,16 @@
         </ol>
     </div>
     <div class="form-group row">
-        <input type="button" value="Тексеру" class="btn btn-primary pass_quiz" />
+        <input type="button" value="Тексеру" class="btn btn-primary mx-auto pass_quiz" />
     </div>
     <div class="form-group row">
-        <p class="quiz_result" style="display: none">Жинаған балыңыз: </p>
+        <p class="mx-auto quiz_result" style="display: none">Жинаған балыңыз: </p>
     </div>
     <div class="form-group row">
         <input type="button" 
             style="display: none" 
             value="Кеттік, бәрін таста" 
-            class="btn btn-primary exit_quiz" 
+            class="btn btn-primary mx-auto exit_quiz" 
             onclick="location.href='@Url.Action("Index", "Home")'" />
     </div>
 </form>
