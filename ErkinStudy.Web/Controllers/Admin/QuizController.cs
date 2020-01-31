@@ -6,15 +6,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
 	public class QuizController : Controller
     {
 	    private readonly AppDbContext _dbContext;
-        public QuizController(AppDbContext dbContext)
+        private readonly IWebHostEnvironment _appEnvironment;
+        public QuizController(AppDbContext dbContext, IWebHostEnvironment appEnvironment)
         {
             _dbContext = dbContext;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Quiz
@@ -102,7 +105,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(quiz);
         }
 
-        // POST: Folder/Delete/5
+        // POST: Quiz/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -114,12 +117,19 @@ namespace ErkinStudy.Web.Controllers.Admin
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             List<Question> questions = (List<Question>)quiz.Questions;
+            QuestionController questionController = new QuestionController(_dbContext, _appEnvironment);
 
-            questions.ForEach(x => _dbContext.Answers.RemoveRange(x.Answers));
-            _dbContext.Questions.RemoveRange(questions);
-           _dbContext.Quizzes.Remove(quiz);
-           await _dbContext.SaveChangesAsync();
-           return RedirectToAction(nameof(Index));
+            try
+            {
+                questions.ForEach(x => questionController.DeleteQuestionWithoutSaveChange(x));
+            }
+            catch
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            _dbContext.Quizzes.Remove(quiz);
+            await _dbContext.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
