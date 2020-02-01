@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Lessons;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -24,8 +24,8 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Index(long? folderId)
         {
 	        ViewBag.FolderId = folderId;
-            return folderId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.FolderId == folderId).AsQueryable()) 
-										: View(_context.Lessons.Include(x => x.Folder).AsQueryable());
+            return folderId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Include(x => x.Category).Where(x => x.FolderId == folderId).AsQueryable()) 
+										: View(_context.Lessons.Include(x => x.Folder).Include(x => x.Category).AsQueryable());
         }
 
         // GET: Lesson/Details/5
@@ -53,6 +53,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Create(long folderId)
         {
 	        ViewBag.FolderId = folderId;
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -62,7 +63,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("FolderId,Name,Description,Order,Price,IsActive")] Lesson lesson)
+        public async Task<IActionResult> Create([Bind("FolderId,Name,Description,CategoryId,Order,Price,IsActive")] Lesson lesson)
         {
             if (ModelState.IsValid)
             {
@@ -88,6 +89,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", lesson.CategoryId);
             return View(lesson);
         }
 
@@ -97,7 +99,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,FolderId,Name,Description,Order,Price,IsActive")] Lesson lesson)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,FolderId,Name,Description,CategoryId,Order,Price,IsActive")] Lesson lesson)
         {
             if (id != lesson.Id)
             {

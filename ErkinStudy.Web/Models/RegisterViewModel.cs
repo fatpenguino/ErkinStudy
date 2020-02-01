@@ -5,8 +5,9 @@ namespace ErkinStudy.Web.Models
 	public class RegisterViewModel
 	{
         [Required]
-        [Display(Name = "Логин")]
-        public string UserName { get; set; }
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required]
         [Display(Name = "Аты")]
@@ -21,12 +22,7 @@ namespace ErkinStudy.Web.Models
         [Display(Name = "Телефон")]
         public string PhoneNumber { get; set; }
 
-		[Required]
-		[EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-		[Required]
+        [Required]
 		[DataType(DataType.Password)]
         [Display(Name = "Құпиясөз")]
         public string Password { get; set; }

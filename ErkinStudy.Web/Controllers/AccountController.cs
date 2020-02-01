@@ -118,24 +118,25 @@ namespace ErkinStudy.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            _logger.LogInformation($"Попытка регистраций пользователя {model.UserName}.");
+            _logger.LogInformation($"Попытка регистраций пользователя {model.Email}.");
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
-                    { Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
+                    { Email = model.Email, UserName = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     TempData["SuccessMessage"] = "Тіркелу сәтті өтті.";
                     _logger.LogInformation($"Пользователь успешно зарегистрирован. { user.Id} - {user.UserName}");
-                    return RedirectToAction("Login", "Account");
+                    await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+                    return RedirectToAction("Index", "Home");
                 }
 
                 var message = string.Join(" | ", result.Errors
                     .Select(v => v.Description));
                 ModelState.AddModelError(string.Empty, message);
-                _logger.LogInformation($"Ошибка при регистраций пользователя {model.UserName}, {message}");
+                _logger.LogInformation($"Ошибка при регистраций пользователя {model.Email}, {message}");
                 return View(model);
             }
             var modelMessage = string.Join(" | ", ModelState.Values
