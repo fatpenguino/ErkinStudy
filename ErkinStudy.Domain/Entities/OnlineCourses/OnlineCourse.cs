@@ -8,6 +8,7 @@ namespace ErkinStudy.Domain.Entities.OnlineCourses
         public long Id { get; set; }
         public string Name { get; set; }
         public int? CategoryId { get; set; }
+        public long? FolderId { get; set; }
         public string Description { get; set; }
         public int NumberOfWeeks { get; set; }
         public long Price { get; set; }

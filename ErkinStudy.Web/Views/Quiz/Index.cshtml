@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
-
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Quizzes</h1>
-
+<h2>Quizzes</h2>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -15,6 +12,12 @@
             <th>N</th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FolderId)
             </th>
             <th>
                 Q amt
@@ -36,6 +39,12 @@
                     <td>@i</td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FolderId)
                     </td>
                     <td>
                         @item.Questions.Count
