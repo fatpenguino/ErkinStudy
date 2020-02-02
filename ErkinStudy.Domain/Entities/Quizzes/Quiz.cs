@@ -6,6 +6,7 @@ namespace ErkinStudy.Domain.Entities.Quizzes
     {
         public long Id { get; set; }
         public int? CategoryId { get; set; }
+        public long? FolderId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }

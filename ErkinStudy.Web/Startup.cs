@@ -26,6 +26,8 @@ namespace ErkinStudy.Web
             services.AddScoped<EmailService>();
             services.AddScoped<UserService>();
             services.AddScoped<FolderService>();
+            services.AddScoped<CourseService>();
+            services.AddScoped<QuizService>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -35,8 +37,6 @@ namespace ErkinStudy.Web
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 3;
-                options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedAccount = false;
                     options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;

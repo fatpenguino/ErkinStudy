@@ -154,11 +154,13 @@ namespace ErkinStudy.Web.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
+
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
+                model.Email = model.Email.Replace(" ", "");
                 _logger.LogInformation($"Попытка восстановления пароля {model.Email}");
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)

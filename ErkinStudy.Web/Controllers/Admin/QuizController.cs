@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using ErkinStudy.Domain.Entities.Quizzes;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -21,13 +22,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.Include(x => x.Questions).ToListAsync());
+            return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).ToListAsync());
         }
 
         // GET: Quiz/Create
         [Authorize]
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name");
+            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id");
             return View();
         }
 
@@ -35,7 +38,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Title,IsActive")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -59,6 +62,8 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name", quiz.CategoryId);
+            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id", quiz.FolderId);
             return View(quiz);
         }
 
@@ -68,7 +73,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,IsActive")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
