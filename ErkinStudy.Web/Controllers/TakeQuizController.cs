@@ -43,6 +43,7 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
+        //нигга лучше вынеси в отдельный модель в папку Models
         public class QuizAnswer
         {
             public string quizId { get; set; }
@@ -50,6 +51,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult Check([FromBody] QuizAnswer quizAnswer)
         {
             int score = 0;

@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities.Quizzes;
 using ErkinStudy.Infrastructure.Context;
@@ -9,11 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers
 {
-    public class UserQuizsController : Controller
+    public class UserQuizController : Controller
     {
         private readonly AppDbContext _context;
 
-        public UserQuizsController(AppDbContext context)
+        public UserQuizController(AppDbContext context)
         {
             _context = context;
         }

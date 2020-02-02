@@ -80,7 +80,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 1)
+        public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 4)
         {
             try
             {

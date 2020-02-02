@@ -10,7 +10,7 @@
 @{
     ViewData["Title"] = "OnlineCourseSchedule";
     var nearestWeek = Model.OnlineCourseWeeks.OrderBy(x => x.StartDate).FirstOrDefault(x => x.StartDate > TimeZoneHelper.ConvertLocalDateTime());
-    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User));
+    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User), Model.Id);
 }
 <div class="container">
     <div class="row">
@@ -28,8 +28,8 @@
             </div>
             @if (!isApproved)
             {
-                <p class="mb-0">Бағасы: 7000 теңге</p>
-                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
+                <p class="mb-0">Бағасы: @Model.Price теңге</p>
+                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {Model.Name} курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
                     Онлайн курсты сатып алу
                 </a>
             }

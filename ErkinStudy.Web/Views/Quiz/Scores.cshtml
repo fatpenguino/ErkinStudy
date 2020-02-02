@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.TakenTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.UserName)
+                @item.User.FirstName @item.User.LastName
             </td>
         </tr>
 }
