@@ -63,11 +63,19 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Tests()
         {
+            List<UserTestsViewModel> userTestsViewModels = new List<UserTestsViewModel>();
             var tests = await _dbContext.Quizzes.Where(x => x.IsActive).ToListAsync();
             var currentUser = await _userManager.GetUserAsync(this.User);
-            var approvedTest = await _dbContext.UserQuizzes.Where(x => x.UserId == currentUser.Id).ToListAsync();
+            
+            if (currentUser == null) //Если незалогиненный пользователь зашел
+            {
+                tests.ForEach(x => userTestsViewModels.Add(
+                new UserTestsViewModel(){ Quiz = x, IsApproved = false}
+                ));
+                return View(userTestsViewModels);
+            }
 
-            List<UserTestsViewModel> userTestsViewModels = new List<UserTestsViewModel>();
+            var approvedTest = await _dbContext.UserQuizzes.Where(x => x.UserId == currentUser.Id).ToListAsync();
             tests.ForEach(x => userTestsViewModels.Add(
                 new UserTestsViewModel(){ Quiz = x, IsApproved = approvedTest.Any(aT => aT.QuizId == x.Id)}
                 ));
