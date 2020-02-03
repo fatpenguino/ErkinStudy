@@ -4,11 +4,11 @@ namespace ErkinStudy.Web.Models
 {
 	public class LoginViewModel
 	{
-		[Required]
+		[Required(ErrorMessage = "Email енгізіңіз")]
         [Display(Name = "Email")]
 		public string Email { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "Құпиясөзді енгізіңіз")]
         [Display(Name = "Құпиясөз")]
         [DataType(DataType.Password)]
 		public string Password { get; set; }

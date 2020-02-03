@@ -43,8 +43,7 @@ namespace ErkinStudy.Web.Controllers
                     PhoneNumber = user.PhoneNumber,
                     Email = user.Email,
                     Id = user.Id,
-                    UserName = user.UserName,
-                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id && x.OnlineCourseId == 1)
+                    UserName = user.UserName
                 };
                 model.Add(item);
             }

@@ -31,7 +31,7 @@ namespace ErkinStudy.Infrastructure.Services
         public string GetFullName(string username)
         {
             var user = _userManager.FindByNameAsync(username).Result;
-            return $"{user.FirstName}";
+            return $"{user?.FirstName}";
         }
     }
 }

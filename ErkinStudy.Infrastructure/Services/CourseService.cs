@@ -19,7 +19,7 @@ namespace ErkinStudy.Infrastructure.Services
 
         public async Task<List<OnlineCourse>> GetByFolderId(long folderId)
         {
-            var courses = await _context.OnlineCourses.Where(x => x.FolderId == folderId).ToListAsync();
+            var courses = await _context.OnlineCourses.Where(x => x.FolderId == folderId && x.IsActive).ToListAsync();
             return courses;
         }
     }

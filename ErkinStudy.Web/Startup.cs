@@ -1,6 +1,7 @@
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.Services;
+using ErkinStudy.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -41,8 +42,10 @@ namespace ErkinStudy.Web
                 options.SignIn.RequireConfirmedAccount = false;
                     options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
                 })
+                .AddErrorDescriber<CustomIdentityErrorDescriber>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<AppDbContext>();
+            services.AddAntiforgery();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }

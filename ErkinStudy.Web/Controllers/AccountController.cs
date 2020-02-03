@@ -67,7 +67,7 @@ namespace ErkinStudy.Web.Controllers
                 if (!regex.IsMatch(model.Email))
                 {
                     _logger.LogError($"Email не подходит по регексу {model.Email}");
-                    ModelState.AddModelError("Email", "Email is not valid");
+                    ModelState.AddModelError(string.Empty, "Email қате терілді.");
                 }
             }
             if (ModelState.IsValid)
@@ -79,7 +79,7 @@ namespace ErkinStudy.Web.Controllers
                     if (user == null)
                     {
                         _logger.LogError("Пользователь с таким email не найден");
-                        ModelState.AddModelError(string.Empty, "Пользователь с таким login не найден");
+                        ModelState.AddModelError(string.Empty, "Мұндай Email табылмады.");
                         return View(model);
                     }
                     userName = user.UserName;
@@ -98,11 +98,9 @@ namespace ErkinStudy.Web.Controllers
                     return RedirectToAction(nameof(Lockout));
                 }
 
-                var message = string.Join(" | ", ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                ModelState.AddModelError(string.Empty, message);
-                _logger.LogError($"Ошибка при входе пользователя {model.Email}, {message}");
+                ModelState.AddModelError(string.Empty, "Email немесе құпиясөз қате терілді.");
+                //потом сделать нормальный error handler
+                _logger.LogError($"Ошибка при входе пользователя {model.Email}, наверное неверный пароль");
                 return View(model);
             }
 

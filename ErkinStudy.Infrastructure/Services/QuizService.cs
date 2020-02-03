@@ -24,7 +24,7 @@ namespace ErkinStudy.Infrastructure.Services
         {
             try
             {
-                var quizzes = await _context.Quizzes.Where(x =>  x.FolderId == folderId).ToListAsync();
+                var quizzes = await _context.Quizzes.Where(x =>  x.FolderId == folderId && x.IsActive).ToListAsync();
                 return quizzes;
             }
             catch (Exception e)
