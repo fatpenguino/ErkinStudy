@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
@@ -29,12 +30,21 @@ namespace ErkinStudy.Web.Controllers
             var quizzes = await _dbContext.Quizzes.ToListAsync();
             return View(quizzes);
         }
+        
         [Authorize]
         public async Task<IActionResult> Quiz(long? id)
         {
             if (!id.HasValue)
                 throw new NotImplementedException();
-                
+
+            var currentUser = await _userManager.GetUserAsync(this.User);
+            var isQuizApproved = await _dbContext.UserQuizzes.Where(x => x.UserId == currentUser.Id && x.QuizId == id).AnyAsync();
+            var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
+
+            if ((!isQuizApproved && shortQuiz.Price != 0)
+                || !shortQuiz.IsActive)
+                return RedirectToAction("Tests", "Home");
+
             var quiz = await _dbContext.Quizzes
                 .Include(x => x.Questions)
                 .ThenInclude(q => q.Answers)
@@ -43,7 +53,7 @@ namespace ErkinStudy.Web.Controllers
             return View(quiz);
         }
 
-        //нигга лучше вынеси в отдельный модель в папку Models
+        //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ Models
         public class QuizAnswer
         {
             public string quizId { get; set; }
