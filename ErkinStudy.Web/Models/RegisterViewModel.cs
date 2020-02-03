@@ -4,34 +4,30 @@ namespace ErkinStudy.Web.Models
 {
 	public class RegisterViewModel
 	{
-        [Required]
-        [Display(Name = "Логин")]
-        public string UserName { get; set; }
+        [Required(ErrorMessage = "Email енгізіңіз")]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Атыңызды енгізіңіз")]
         [Display(Name = "Аты")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Тегіңізді енгізіңіз")]
         [Display(Name = "Тегі")]
         public string LastName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Телефон нөміріңізді енгізіңіз")]
 		[Phone]
         [Display(Name = "Телефон")]
         public string PhoneNumber { get; set; }
 
-		[Required]
-		[EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-		[Required]
+        [Required(ErrorMessage = "Құпиясөзді енгізіңіз")]
 		[DataType(DataType.Password)]
         [Display(Name = "Құпиясөз")]
         public string Password { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "Құпиясөз қайта енгізіңіз")]
 		[DataType(DataType.Password)]
 		[Compare("Password")]
 		[Display(Name = "Құпиясөзді қайта теру")]

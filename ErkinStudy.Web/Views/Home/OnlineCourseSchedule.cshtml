@@ -6,11 +6,11 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserService UserService
 @inject UserManager<ApplicationUser> UserManager
-@model ErkinStudy.Domain.Entities.OnlineCourse
+@model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
 @{
     ViewData["Title"] = "OnlineCourseSchedule";
     var nearestWeek = Model.OnlineCourseWeeks.OrderBy(x => x.StartDate).FirstOrDefault(x => x.StartDate > TimeZoneHelper.ConvertLocalDateTime());
-    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User));
+    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User), Model.Id);
 }
 <div class="container">
     <div class="row">

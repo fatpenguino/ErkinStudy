@@ -1,0 +1,79 @@
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Identity.ApplicationUser>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (item.UserQuizzes.Any(x => x.QuizId == ViewBag.QuizId))
+            {
+                <tr>
+                    <td>
+                        @item.FirstName @item.LastName
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        <a asp-action="Remove" asp-route-userId="@item.Id" asp-route-quizId="@ViewBag.QuizId">Remove</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (item.UserQuizzes.All(x => x.QuizId != ViewBag.QuizId))
+            {
+                <tr>
+                    <td>
+                        @item.FirstName @item.LastName
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        <a asp-action="Approve" asp-route-userId="@item.Id" asp-route-quizId="@ViewBag.QuizId">Approve</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

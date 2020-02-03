@@ -51,11 +51,6 @@ namespace ErkinStudy.Web.Controllers
                 .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
             return View(onlineCourse);
         }
-
-        public async Task<IActionResult> Index2()
-        {
-            return View();
-        }
         public async Task<IActionResult> Folder(long id)
         {
             return View(await _dbContext.Folders.Include(x => x.Lessons).FirstOrDefaultAsync(x => x.Id == id && x.IsActive));

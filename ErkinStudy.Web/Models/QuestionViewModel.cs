@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using ErkinStudy.Domain.Entities.Quiz;
 using Microsoft.AspNetCore.Http;
 
 namespace ErkinStudy.Web.Models

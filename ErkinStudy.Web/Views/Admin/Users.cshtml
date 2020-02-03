@@ -39,15 +39,6 @@
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
-                @if (!item.IsApprovedOnlineCourse)
-                {
-                    <a asp-action="ApproveOnlineCourse" asp-route-userId="@item.Id">Appove Online Course</a>
-                }
-                else
-                {
-                    <a style="color: green;">Approved</a>
-                }
-                |
                 <a asp-action="DeleteUser" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
