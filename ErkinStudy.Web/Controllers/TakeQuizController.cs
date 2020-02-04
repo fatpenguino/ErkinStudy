@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
+using ErkinStudy.Web.Models;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -34,56 +35,66 @@ namespace ErkinStudy.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Quiz(long? id)
         {
-            if (!id.HasValue)
-                throw new NotImplementedException();
+            try
+            {
+                if (!id.HasValue)
+                    throw new NotImplementedException();
 
-            var currentUser = await _userManager.GetUserAsync(this.User);
-            var isQuizApproved = await _dbContext.UserQuizzes.Where(x => x.UserId == currentUser.Id && x.QuizId == id).AnyAsync();
-            var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
+                var currentUser = await _userManager.GetUserAsync(User);
+                var isQuizApproved = await _dbContext.UserQuizzes
+                    .Where(x => x.UserId == currentUser.Id && x.QuizId == id).AnyAsync();
+                var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
 
-            if ((!isQuizApproved && shortQuiz.Price != 0)
-                || !shortQuiz.IsActive)
-                return RedirectToAction("Tests", "Home");
+                if ((!isQuizApproved && shortQuiz.Price != 0)
+                    || !shortQuiz.IsActive)
+                    return RedirectToAction("Tests", "Home");
 
-            var quiz = await _dbContext.Quizzes
-                .Include(x => x.Questions)
-                .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync(x => x.Id == id);
-            
-            return View(quiz);
-        }
+                var quiz = await _dbContext.Quizzes
+                    .Include(x => x.Questions)
+                    .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
-        //����� ����� ������ � ��������� ������ � ����� Models
-        public class QuizAnswer
-        {
-            public string quizId { get; set; }
-            public string[] checkedAnswers { get; set; }
+                return View(quiz);
+            }
+            catch (Exception e)
+            {
+                //we need change it!!!
+                _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id {id}, у пользователя {User.Identity.Name}, {e}");
+                RedirectToAction(nameof(Index));
+            }
+
+            return View();
         }
 
         [HttpPost]
         [Authorize]
-        public JsonResult Check([FromBody] QuizAnswer quizAnswer)
+        public JsonResult Check([FromBody] QuizAnswerViewModel quizAnswer)
         {
             int score = 0;
-
-            foreach(var ansId in quizAnswer.checkedAnswers)
+            try
             {
-                var answer = _dbContext.Answers.Find(Convert.ToInt64(ansId));
-                if (answer != null && answer.IsCorrect)
-                    score++;
+                foreach (var ansId in quizAnswer.CheckedAnswers)
+                {
+                    var answer = _dbContext.Answers.Find(Convert.ToInt64(ansId));
+                    if (answer != null && answer.IsCorrect)
+                        score++;
+                }
+
+                var scoreDb = new QuizScore
+                {
+                    UserId = Convert.ToInt64(_userManager.GetUserId(User)),
+                    QuizId = Convert.ToInt64(quizAnswer.QuizId),
+                    TakenTime = DateTime.Now,
+                    Point = score
+                };
+
+                _dbContext.QuizScores.Add(scoreDb);
+                _dbContext.SaveChanges();
             }
-
-            var scoreDB = new QuizScore
+            catch (Exception e)
             {
-                UserId = Convert.ToInt64(_userManager.GetUserId(User)),
-                QuizId = Convert.ToInt64(quizAnswer.quizId),
-                TakenTime = DateTime.Now,
-                Point = score
-            };
-
-            _dbContext.QuizScores.Add(scoreDB);
-            _dbContext.SaveChanges();
-
+                _logger.LogError($"Произошла ошибка во время проверки Quiz у - {User.Identity.Name}, {e}");
+            }
             return Json(score);
         }
     }
