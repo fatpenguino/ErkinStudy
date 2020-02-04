@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
-using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -68,7 +67,7 @@ namespace ErkinStudy.Web.Controllers
                 if (!regex.IsMatch(model.Email))
                 {
                     _logger.LogError($"Email не подходит по регексу {model.Email}");
-                    ModelState.AddModelError("Email", "Email is not valid");
+                    ModelState.AddModelError(string.Empty, "Email қате терілді.");
                 }
             }
             if (ModelState.IsValid)
@@ -80,7 +79,7 @@ namespace ErkinStudy.Web.Controllers
                     if (user == null)
                     {
                         _logger.LogError("Пользователь с таким email не найден");
-                        ModelState.AddModelError(string.Empty, "Пользователь с таким login не найден");
+                        ModelState.AddModelError(string.Empty, "Мұндай Email табылмады.");
                         return View(model);
                     }
                     userName = user.UserName;
@@ -99,11 +98,9 @@ namespace ErkinStudy.Web.Controllers
                     return RedirectToAction(nameof(Lockout));
                 }
 
-                var message = string.Join(" | ", ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-                ModelState.AddModelError(string.Empty, message);
-                _logger.LogError($"Ошибка при входе пользователя {model.Email}, {message}");
+                ModelState.AddModelError(string.Empty, "Email немесе құпиясөз қате терілді.");
+                //потом сделать нормальный error handler
+                _logger.LogError($"Ошибка при входе пользователя {model.Email}, наверное неверный пароль");
                 return View(model);
             }
 
@@ -119,24 +116,25 @@ namespace ErkinStudy.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            _logger.LogInformation($"Попытка регистраций пользователя {model.UserName}.");
+            _logger.LogInformation($"Попытка регистраций пользователя {model.Email}.");
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
-                    { Email = model.Email, UserName = model.UserName, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
+                    { Email = model.Email, UserName = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     TempData["SuccessMessage"] = "Тіркелу сәтті өтті.";
                     _logger.LogInformation($"Пользователь успешно зарегистрирован. { user.Id} - {user.UserName}");
-                    return RedirectToAction("Login", "Account");
+                    await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+                    return RedirectToAction("Index", "Home");
                 }
 
                 var message = string.Join(" | ", result.Errors
                     .Select(v => v.Description));
                 ModelState.AddModelError(string.Empty, message);
-                _logger.LogInformation($"Ошибка при регистраций пользователя {model.UserName}, {message}");
+                _logger.LogInformation($"Ошибка при регистраций пользователя {model.Email}, {message}");
                 return View(model);
             }
             var modelMessage = string.Join(" | ", ModelState.Values
@@ -154,11 +152,13 @@ namespace ErkinStudy.Web.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
+
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
+                model.Email = model.Email.Replace(" ", "");
                 _logger.LogInformation($"Попытка восстановления пароля {model.Email}");
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
@@ -201,7 +201,9 @@ namespace ErkinStudy.Web.Controllers
 
         public IActionResult Seed()
         {
-            AppDbInitializer.SeedUsers(_userManager, _roleManager);
+            //var user = _userManager.FindByNameAsync("moderator").Result;
+            //_userManager.AddToRoleAsync(user, "Moderator").Wait();
+            //AppDbInitializer.SeedUsers(_userManager, _roleManager);
             return View(nameof(Login));
         }
 

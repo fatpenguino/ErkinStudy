@@ -4,7 +4,7 @@ namespace ErkinStudy.Web.Models
 {
     public class ForgotPasswordViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Email енгізіңіз")]
         [EmailAddress]
         public string Email { get; set; }
     }

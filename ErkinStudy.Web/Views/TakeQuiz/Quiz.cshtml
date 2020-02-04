@@ -1,13 +1,12 @@
-@using ErkinStudy.Domain.Entities.Quiz;
 @using System.Linq;
 
-@model ErkinStudy.Domain.Entities.Quiz.Quiz
+@model ErkinStudy.Domain.Entities.Quizzes.Quiz
 
 @{
     ViewData["Title"] = "Quiz";
 }
 
-<h1>@Model.Title</h1>
+<h2>@Model.Title</h2>
 
 <form asp-action="Check">
     <input type="hidden" name="quizId" value="@Model.Id" />
@@ -18,9 +17,8 @@
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
                 </li>
-                <div class="container">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-10">
                         @{
                             if(question.ImagePath != null)
                             {
@@ -29,7 +27,6 @@
                         }
                         </div>
                     </div>
-                </div>
                 <ol type="a">
                     @{
                         var rnd = new Random();
@@ -48,24 +45,32 @@
         </ol>
     </div>
     <div class="form-group row">
-        <input type="button" value="Тексеру" class="btn btn-primary pass_quiz" />
+        <input type="button" value="Тексеру" class="btn btn-primary mx-auto pass_quiz" />
     </div>
     <div class="form-group row">
-        <p class="quiz_result" style="display: none">Жинаған балыңыз: </p>
+        <p class="mx-auto quiz_result" style="display: none">Жинаған балыңыз: </p>
     </div>
     <div class="form-group row">
         <input type="button" 
             style="display: none" 
             value="Кеттік, бәрін таста" 
-            class="btn btn-primary exit_quiz" 
+            class="btn btn-primary mx-auto exit_quiz" 
             onclick="location.href='@Url.Action("Index", "Home")'" />
     </div>
 </form>
+<div class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+        <div class="loader" >Loading...</div>
+    </div>
+</div>
 
 <script type="text/javascript">
     $(function() {
         
         $(".pass_quiz").on("click", function() {
+
+            $(".modal").modal("show");
+            $(this).attr("disabled", true);
 
             let quizId = $("input[name='quizId']").val();
             
@@ -88,21 +93,25 @@
                 dataType: "json",
 
                 success: function (result, status, xhr) {
-
                     $(".pass_quiz").hide();
                     $(".exit_quiz").show();
+                    $(".modal").modal("hide");
                     $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
 
                     $(".answer:checked").each(function() {
-                        if ($(this).hasClass("answer_correct")){
-                            $(this).parent().css("background-color", "#58D68D");
+                        if (!$(this).hasClass("answer_correct")) {
+                            $(this).parent().addClass("bg-danger");
                         }
-                        else{
-                            $(this).parent().css("background-color", "#FF5733");
+                    });
+                    $(".answer").each(function () {
+                        if ($(this).hasClass("answer_correct")) {
+                            $(this).parent().addClass("bg-success");
                         }
                     });
                 },  
-                error: function (xhr, status, error) {    
+                error: function (xhr, status, error) { 
+                    $(this).attr("disabled", false);
+                    $(".modal").modal("hide");
                 }  
             });  
         });

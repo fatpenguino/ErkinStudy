@@ -1,11 +1,8 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.OnlineCourse>
-
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse>
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Online Courses</h1>
-
+<h2>Online Courses</h2>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -17,6 +14,12 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                FolderId
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NumberOfWeeks)
@@ -44,6 +47,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FolderId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NumberOfWeeks)

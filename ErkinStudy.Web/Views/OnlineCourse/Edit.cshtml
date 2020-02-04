@@ -1,10 +1,8 @@
-﻿@model ErkinStudy.Domain.Entities.OnlineCourse
-
+﻿@model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
 @{
     ViewData["Title"] = "Edit";
 }
-
-<h1>Edit</h1>
+<h2>Edit</h2>
 
 <h4>OnlineCourse</h4>
 <hr />
@@ -14,32 +12,44 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label asp-for="Description"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NumberOfWeeks" class="control-label"></label>
+                <label>Category</label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                    <option value="">No category</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Folder Id</label>
+                <select asp-for="FolderId" class="form-control" asp-items="ViewBag.FolderId">
+                    <option value="">No Folder</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumberOfWeeks"></label>
                 <input asp-for="NumberOfWeeks" class="form-control" />
                 <span asp-validation-for="NumberOfWeeks" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
+                <label asp-for="Price"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
+                <label asp-for="StartDate"></label>
                 <input asp-for="StartDate" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
+                <label asp-for="EndDate"></label>
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>

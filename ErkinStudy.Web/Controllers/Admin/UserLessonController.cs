@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities;
+using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

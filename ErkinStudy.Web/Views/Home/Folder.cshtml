@@ -2,13 +2,17 @@
 @using ErkinStudy.Domain.Entities.Identity
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
-@model ErkinStudy.Domain.Entities.Folder
+@model ErkinStudy.Domain.Entities.Lessons.Folder
 @inject FolderService FolderService
+@inject CourseService CourseService
+@inject QuizService QuizService
 @inject UserManager<ApplicationUser> UserManager
 @inject UserService UserService
 @{
     ViewData["Title"] = Model.Name;
     var childs = await FolderService.GetChilds(Model.Id);
+    var courses = await CourseService.GetByFolderId(Model.Id);
+    var quizzes = await QuizService.GetByFolderId(Model.Id);
     var userId = User.Identity.IsAuthenticated ? long.Parse(UserManager.GetUserId(User)) : 0;
 }
 
@@ -21,6 +25,46 @@
                     <div class="card text-white bg-primary" style="width: 18rem;">
                         <div class="card-body text-center">
                             <a asp-action="Folder" asp-route-id="@folder.Id" class="card-link text-white">@folder.Name</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @foreach (var course in courses)
+            {
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-primary" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a asp-controller="Course" asp-action="Index" asp-route-id="@course.Id" class="card-link text-white">@course.Name</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @foreach (var quiz in quizzes)
+            {
+                if (UserService.IsUserHasQuiz(userId, quiz.Id) || quiz.Price == 0)
+                {
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body text-center">
+                            <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white">@quiz.Title</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card bg-light mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@quiz.Title</h5>
+                            <p class="card-text mb-0">Бағасы: @quiz.Price теңге</p>
+                            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {quiz.Title}(id={quiz.Id}) тестін сатып алғым келеді")" type="button" class="btn btn-primary my-2 mx-auto">
+                                Онлайн тестті сатып алу
+                            </a>
+                        </div>
+                    </div>
+                }
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-primary" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white">@quiz.Title</a>
                         </div>
                     </div>
                 </div>
@@ -42,7 +86,7 @@
                             }
                             else
                             {
-                            <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
+                                <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
                             }
                         </div>
                     </div>

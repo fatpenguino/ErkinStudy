@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Identity;
+using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -43,8 +43,7 @@ namespace ErkinStudy.Web.Controllers
                     PhoneNumber = user.PhoneNumber,
                     Email = user.Email,
                     Id = user.Id,
-                    UserName = user.UserName,
-                    IsApprovedOnlineCourse = _dbContext.UserOnlineCourses.Any(x => x.UserId == user.Id && x.OnlineCourseId == 1)
+                    UserName = user.UserName
                 };
                 model.Add(item);
             }
@@ -80,7 +79,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 1)
+        public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 4)
         {
             try
             {

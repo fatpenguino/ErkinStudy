@@ -6,11 +6,11 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserService UserService
 @inject UserManager<ApplicationUser> UserManager
-@model ErkinStudy.Domain.Entities.OnlineCourse
+@model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
 @{
     ViewData["Title"] = "OnlineCourseSchedule";
     var nearestWeek = Model.OnlineCourseWeeks.OrderBy(x => x.StartDate).FirstOrDefault(x => x.StartDate > TimeZoneHelper.ConvertLocalDateTime());
-    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User));
+    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User), Model.Id);
 }
 <div class="container">
     <div class="row">
@@ -28,11 +28,12 @@
             </div>
             @if (!isApproved)
             {
-                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
-                    Онлайн курсты сатып алу
-                </a>
+             <p class="mb-0">Бағасы: 7000 теңге</p>
+            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
+                Онлайн курсты сатып алу
+            </a>
             }
-        </div>
+</div>
         <div class="accordion" id="accordionCourse">
             @foreach (var week in Model.OnlineCourseWeeks)
             {

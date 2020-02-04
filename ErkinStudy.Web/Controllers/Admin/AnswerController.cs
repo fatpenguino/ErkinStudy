@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
-using ErkinStudy.Domain.Entities.Quiz;
+using ErkinStudy.Domain.Entities.Quizzes;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ErkinStudy.Domain.Entities.Identity;
+﻿using ErkinStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace ErkinStudy.Infrastructure.Context
@@ -15,7 +12,6 @@ namespace ErkinStudy.Infrastructure.Context
                 var role = new ApplicationRole {Name = "Admin", NormalizedName = "Admin".ToUpper()};
                 roleManager.CreateAsync(role).Wait();
             }
-
             if (userManager.FindByNameAsync("admin").Result == null)
             {
                 var user = new ApplicationUser()

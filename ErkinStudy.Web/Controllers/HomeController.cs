@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using ErkinStudy.Domain.Entities.Identity;
+using System.Collections.Generic;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -16,11 +19,14 @@ namespace ErkinStudy.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _dbContext;
         private readonly EmailService _emailService;
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService,
+            UserManager<ApplicationUser> userManager)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index()
         {
@@ -51,18 +57,13 @@ namespace ErkinStudy.Web.Controllers
                 .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
             return View(onlineCourse);
         }
-
-        public async Task<IActionResult> Index2()
-        {
-            return View();
-        }
         public async Task<IActionResult> Folder(long id)
         {
             return View(await _dbContext.Folders.Include(x => x.Lessons).FirstOrDefaultAsync(x => x.Id == id && x.IsActive));
         }
         public async Task<IActionResult> Tests()
         {
-            var tests = await _dbContext.Quizzes.Where(x => x.IsActive).ToListAsync();
+            var tests = await _dbContext.Quizzes.Where(x => x.IsActive).OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
             return View(tests);
         }
         public IActionResult Privacy() 

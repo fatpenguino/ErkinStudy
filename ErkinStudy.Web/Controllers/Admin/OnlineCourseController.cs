@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ErkinStudy.Domain.Entities;
+using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -21,7 +22,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.OnlineCourses.ToListAsync());
+            return View(await _context.OnlineCourses.Include(x => x.Category).ToListAsync());
         }
 
         // GET: OnlineCourse/Details/5
@@ -47,6 +48,8 @@ namespace ErkinStudy.Web.Controllers.Admin
         [Authorize]
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Id");
             return View();
         }
 
@@ -56,7 +59,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,FolderId,CategoryId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
         {
             if (ModelState.IsValid)
             {
@@ -81,6 +84,8 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Id");
             return View(onlineCourse);
         }
 
@@ -90,7 +95,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,FolderId,CategoryId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
         {
             if (id != onlineCourse.Id)
             {

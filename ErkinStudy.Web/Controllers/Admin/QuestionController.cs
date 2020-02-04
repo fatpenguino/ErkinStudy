@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
-using ErkinStudy.Domain.Entities.Quiz;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using ErkinStudy.Domain.Entities.Quizzes;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -159,6 +159,21 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
 
+            try
+            {
+                DeleteQuestionWithoutSaveChange(question);
+            }
+            catch
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index), new { quizId = question.QuizId });
+        }
+
+        public void DeleteQuestionWithoutSaveChange(Question question)
+        {
             if (question.ImagePath != null)
             {
                 try
@@ -168,16 +183,13 @@ namespace ErkinStudy.Web.Controllers.Admin
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    return RedirectToAction("Error", "Home");
+                    throw e;
                 }
             }
 
             var answers = question.Answers;
-
             _context.Answers.RemoveRange(answers);
             _context.Questions.Remove(question);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index), new { quizId = question.QuizId });
         }
 
     }

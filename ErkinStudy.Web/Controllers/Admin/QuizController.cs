@@ -1,33 +1,39 @@
 using System.Threading.Tasks;
-using ErkinStudy.Domain.Entities.Quiz;
 using Microsoft.AspNetCore.Mvc;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using ErkinStudy.Domain.Entities.Quizzes;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
 	public class QuizController : Controller
     {
 	    private readonly AppDbContext _dbContext;
-        public QuizController(AppDbContext dbContext)
+        private readonly IWebHostEnvironment _appEnvironment;
+        public QuizController(AppDbContext dbContext, IWebHostEnvironment appEnvironment)
         {
             _dbContext = dbContext;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Quiz
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.Include(x => x.Questions).ToListAsync());
+            return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).ToListAsync());
         }
 
         // GET: Quiz/Create
         [Authorize]
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name");
+            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id");
             return View();
         }
 
@@ -35,7 +41,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Title,IsActive")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -59,6 +65,8 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name", quiz.CategoryId);
+            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id", quiz.FolderId);
             return View(quiz);
         }
 
@@ -68,7 +76,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,IsActive")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
@@ -102,7 +110,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(quiz);
         }
 
-        // POST: Folder/Delete/5
+        // POST: Quiz/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -114,12 +122,19 @@ namespace ErkinStudy.Web.Controllers.Admin
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             List<Question> questions = (List<Question>)quiz.Questions;
+            QuestionController questionController = new QuestionController(_dbContext, _appEnvironment);
 
-            questions.ForEach(x => _dbContext.Answers.RemoveRange(x.Answers));
-            _dbContext.Questions.RemoveRange(questions);
-           _dbContext.Quizzes.Remove(quiz);
-           await _dbContext.SaveChangesAsync();
-           return RedirectToAction(nameof(Index));
+            try
+            {
+                questions.ForEach(x => questionController.DeleteQuestionWithoutSaveChange(x));
+            }
+            catch
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            _dbContext.Quizzes.Remove(quiz);
+            await _dbContext.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
