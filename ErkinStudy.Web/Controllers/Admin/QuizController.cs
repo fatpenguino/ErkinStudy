@@ -41,7 +41,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -76,7 +76,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
