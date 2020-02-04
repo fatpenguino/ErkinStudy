@@ -58,11 +58,19 @@
             onclick="location.href='@Url.Action("Index", "Home")'" />
     </div>
 </form>
+<div class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+        <div class="loader" >Loading...</div>
+    </div>
+</div>
 
 <script type="text/javascript">
     $(function() {
         
         $(".pass_quiz").on("click", function() {
+
+            $(".modal").modal("show");
+            $(this).attr("disabled", true);
 
             let quizId = $("input[name='quizId']").val();
             
@@ -85,9 +93,9 @@
                 dataType: "json",
 
                 success: function (result, status, xhr) {
-
                     $(".pass_quiz").hide();
                     $(".exit_quiz").show();
+                    $(".modal").modal("hide");
                     $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
 
                     $(".answer:checked").each(function() {
@@ -101,7 +109,9 @@
                         }
                     });
                 },  
-                error: function (xhr, status, error) {    
+                error: function (xhr, status, error) { 
+                    $(this).attr("disabled", false);
+                    $(".modal").modal("hide");
                 }  
             });  
         });

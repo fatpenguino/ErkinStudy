@@ -28,6 +28,11 @@ namespace ErkinStudy.Infrastructure.Services
             return _context.UserLessons.Any(x => x.UserId == userId && x.LessonId == lessonId);
         }
 
+        public bool IsUserHasQuiz(long userId, long quizId)
+        {
+            return _context.UserQuizzes.Any(x => x.UserId == userId && x.QuizId == quizId);
+        }
+
         public string GetFullName(string username)
         {
             var user = _userManager.FindByNameAsync(username).Result;
