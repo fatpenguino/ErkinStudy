@@ -17,15 +17,13 @@ namespace ErkinStudy.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<AccountController> _logger;
         private readonly EmailService _emailService;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger, EmailService emailService)
+            ILogger<AccountController> logger, EmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
             _logger = logger;
             _emailService = emailService;
         }
@@ -83,9 +81,10 @@ namespace ErkinStudy.Web.Controllers
                     }
                     userName = user.UserName;
                 }
-                var usr = await _userManager.FindByEmailAsync(model.Email);
-                await _signInManager.SignInAsync(usr, true);
-                return RedirectToAction("Index", "Home");
+                //mini hack
+                //var usr = await _userManager.FindByEmailAsync(model.Email);
+                //await _signInManager.SignInAsync(usr, true);
+                //return RedirectToAction("Index", "Home");
                 var result =
                     await _signInManager.PasswordSignInAsync(userName, model.Password, true, false);
                 if (result.Succeeded)
