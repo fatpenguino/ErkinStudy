@@ -63,7 +63,7 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Tests()
         {
-            var tests = await _dbContext.Quizzes.Where(x => x.IsActive).ToListAsync();
+            var tests = await _dbContext.Quizzes.Where(x => x.IsActive).OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
             return View(tests);
         }
         public IActionResult Privacy() 
