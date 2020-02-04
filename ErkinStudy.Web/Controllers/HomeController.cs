@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using ErkinStudy.Domain.Entities.Identity;
+using System.Collections.Generic;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -16,11 +19,14 @@ namespace ErkinStudy.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _dbContext;
         private readonly EmailService _emailService;
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService,
+            UserManager<ApplicationUser> userManager)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index()
         {
@@ -57,8 +63,24 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Tests()
         {
+            List<UserTestsViewModel> userTestsViewModels = new List<UserTestsViewModel>();
             var tests = await _dbContext.Quizzes.Where(x => x.IsActive).ToListAsync();
-            return View(tests);
+            var currentUser = await _userManager.GetUserAsync(this.User);
+            
+            if (currentUser == null) //Если незалогиненный пользователь зашел
+            {
+                tests.ForEach(x => userTestsViewModels.Add(
+                new UserTestsViewModel(){ Quiz = x, IsApproved = false}
+                ));
+                return View(userTestsViewModels);
+            }
+
+            var approvedTest = await _dbContext.UserQuizzes.Where(x => x.UserId == currentUser.Id).ToListAsync();
+            tests.ForEach(x => userTestsViewModels.Add(
+                new UserTestsViewModel(){ Quiz = x, IsApproved = approvedTest.Any(aT => aT.QuizId == x.Id)}
+                ));
+
+            return View(userTestsViewModels);
         }
         public IActionResult Privacy() 
         {

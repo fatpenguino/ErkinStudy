@@ -1,17 +1,33 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
+﻿@using System.Web
+@model IEnumerable<ErkinStudy.Web.Models.UserTestsViewModel>
 @{
     ViewData["Title"] = "Tests";
 }
 <div class="container">
     <div class="row">
         <div class="card-list mt-5 mx-auto">
-            @foreach (var quiz in Model)
+            @foreach (var approvedQuiz in Model)
             {
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body text-center">
-                        <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white">@quiz.Title</a>
+                if (approvedQuiz.IsApproved || approvedQuiz.Quiz.Price == 0)
+                {
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body text-center">
+                            <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@approvedQuiz.Quiz.Id" class="card-link text-white">@approvedQuiz.Quiz.Title</a>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="card bg-light mb-3">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@approvedQuiz.Quiz.Title</h5>
+                            <p class="card-text mb-0">Бағасы: @approvedQuiz.Quiz.Price теңге</p>
+                            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {approvedQuiz.Quiz.Title}(id={approvedQuiz.Quiz.Id}) тестін сатып алғым келеді")" type="button" class="btn btn-primary my-2 mx-auto">
+                                Онлайн тестті сатып алу
+                            </a>
+                        </div>
+                    </div>
+                }
             }
         </div>
     </div>
