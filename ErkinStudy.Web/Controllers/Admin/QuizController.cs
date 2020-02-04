@@ -39,7 +39,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Quiz/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
@@ -74,7 +74,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
@@ -112,7 +112,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Quiz/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {

@@ -61,7 +61,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Create([Bind("UserId,OnlineCourseId,IsActive")] UserOnlineCourse userOnlineCourse)
         {
             if (ModelState.IsValid)
@@ -98,7 +98,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(long id, [Bind("UserId,OnlineCourseId,IsActive")] UserOnlineCourse userOnlineCourse)
         {
             if (id != userOnlineCourse.OnlineCourseId)
@@ -149,7 +149,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // POST: UserOnlineCourse/Delete/5
         [HttpPost, ActionName("Delete")]
         [Authorize]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteConfirmed(long userId, long onlineCourseId)
         {
             var userOnlineCourse = await _context.UserOnlineCourses.FirstOrDefaultAsync(x => x.UserId == userId && x.OnlineCourseId == onlineCourseId);

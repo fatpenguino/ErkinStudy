@@ -69,7 +69,7 @@ namespace ErkinStudy.Web.Controllers
 
         // POST: ApplicationUsers/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var applicationUser = await _dbContext.Users.FindAsync(id);

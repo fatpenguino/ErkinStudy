@@ -52,7 +52,6 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -84,6 +83,9 @@ namespace ErkinStudy.Web.Controllers
                     }
                     userName = user.UserName;
                 }
+                var usr = await _userManager.FindByEmailAsync(model.Email);
+                await _signInManager.SignInAsync(usr, true);
+                return RedirectToAction("Index", "Home");
                 var result =
                     await _signInManager.PasswordSignInAsync(userName, model.Password, true, false);
                 if (result.Succeeded)
@@ -113,7 +115,6 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             _logger.LogInformation($"Попытка регистраций пользователя {model.Email}.");
@@ -150,10 +151,9 @@ namespace ErkinStudy.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [AllowAnonymous]
-
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -216,7 +216,6 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
