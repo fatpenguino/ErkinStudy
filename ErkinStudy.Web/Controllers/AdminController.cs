@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers
 {
+    [Authorize(Roles = "Moderator,Admin")]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -26,12 +27,13 @@ namespace ErkinStudy.Web.Controllers
             _dbContext = dbContext;
             _logger = logger;
         }
-        [Authorize]
+        
         public IActionResult Index()
         {
             return View();
         }
-        [Authorize]
+        
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -50,6 +52,7 @@ namespace ErkinStudy.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(long? id)
         {
             if (id == null)
@@ -69,7 +72,7 @@ namespace ErkinStudy.Web.Controllers
 
         // POST: ApplicationUsers/Delete/5
         [HttpPost, ActionName("Delete")]
-        
+        [Authorize(Roles = "Admin")]      
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var applicationUser = await _dbContext.Users.FindAsync(id);
@@ -78,7 +81,7 @@ namespace ErkinStudy.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 4)
         {
             try

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserQuizController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,7 +18,6 @@ namespace ErkinStudy.Web.Controllers
         }
 
         // GET: Users by QuizId
-        [Authorize]
         public async Task<IActionResult> Index(long quizId)
         {
             var users = await _context.Users.Include(x => x.UserQuizzes).ToListAsync();
@@ -26,7 +26,6 @@ namespace ErkinStudy.Web.Controllers
             return View(users);
         }
 
-        [Authorize]
         public async Task<IActionResult> Approve(long quizId, long userId)
         {
             var userQuiz = new UserQuiz()
@@ -41,7 +40,6 @@ namespace ErkinStudy.Web.Controllers
             return RedirectToAction(nameof(Index), new { quizId });
         }
 
-        [Authorize]
         public async Task<IActionResult> Remove(long quizId, long userId)
         {
             var userQuiz = new UserQuiz()

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Admin")]
     public class UserOnlineCourseController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,7 +20,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserOnlineCourse
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.UserOnlineCourses.Include(u => u.OnlineCourse).Include(u => u.User);
@@ -27,7 +27,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserOnlineCourse/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -48,7 +47,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserOnlineCourse/Create
-        [Authorize]
         public IActionResult Create()
         {
             ViewData["OnlineCourseId"] = new SelectList(_context.OnlineCourses, "Id", "Name");
@@ -60,8 +58,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize]
-        
         public async Task<IActionResult> Create([Bind("UserId,OnlineCourseId,IsActive")] UserOnlineCourse userOnlineCourse)
         {
             if (ModelState.IsValid)
@@ -97,8 +93,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize]
-        
         public async Task<IActionResult> Edit(long id, [Bind("UserId,OnlineCourseId,IsActive")] UserOnlineCourse userOnlineCourse)
         {
             if (id != userOnlineCourse.OnlineCourseId)
@@ -131,7 +125,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(userOnlineCourse);
         }
         
-        [Authorize]
         public async Task<IActionResult> Delete(long userId, long courseId)
         {
             var userOnlineCourse = await _context.UserOnlineCourses
@@ -148,8 +141,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: UserOnlineCourse/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize]
-        
         public async Task<IActionResult> DeleteConfirmed(long userId, long onlineCourseId)
         {
             var userOnlineCourse = await _context.UserOnlineCourses.FirstOrDefaultAsync(x => x.UserId == userId && x.OnlineCourseId == onlineCourseId);
