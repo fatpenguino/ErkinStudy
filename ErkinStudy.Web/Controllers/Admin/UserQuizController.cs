@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers
 {
-    [Authorize(Roles = "Moderator,Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserQuizController : Controller
     {
         private readonly AppDbContext _context;

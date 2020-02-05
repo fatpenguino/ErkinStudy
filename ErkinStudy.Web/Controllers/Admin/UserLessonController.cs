@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Moderator,Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserLessonController : Controller
     {
         private readonly AppDbContext _context;
