@@ -33,6 +33,7 @@ namespace ErkinStudy.Web.Controllers
             return View();
         }
         
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -51,6 +52,7 @@ namespace ErkinStudy.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(long? id)
         {
             if (id == null)
@@ -69,7 +71,8 @@ namespace ErkinStudy.Web.Controllers
         }
 
         // POST: ApplicationUsers/Delete/5
-        [HttpPost, ActionName("Delete")]        
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]      
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var applicationUser = await _dbContext.Users.FindAsync(id);
@@ -78,6 +81,7 @@ namespace ErkinStudy.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 4)
         {
             try
