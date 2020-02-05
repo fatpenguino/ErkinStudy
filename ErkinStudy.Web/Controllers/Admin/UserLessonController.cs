@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin")]
     public class UserLessonController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,7 +21,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserLessons
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.UserLessons.Include(u => u.Lesson).Include(u => u.User);
@@ -28,7 +28,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserLessons/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -49,7 +48,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserLessons/Create
-        [Authorize]
         public IActionResult Create()
         {
             ViewData["LessonId"] = new SelectList(_context.Lessons, "Id", "Id");
@@ -61,8 +59,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Create([Bind("UserId,LessonId,IsActive")] UserLesson userLesson)
         {
             if (ModelState.IsValid)
@@ -77,7 +73,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserLessons/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -99,8 +94,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("UserId,LessonId,IsActive")] UserLesson userLesson)
         {
             if (id != userLesson.LessonId)
@@ -134,7 +127,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserLessons/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long userId, long lessonId)
         {
             var userLesson = await _context.UserLessons
@@ -149,8 +141,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: UserLessons/Delete/5
         [HttpPost, ActionName("Delete")]
-        
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long userId, long lessonId)
         {
             var userLesson = await _context.UserLessons

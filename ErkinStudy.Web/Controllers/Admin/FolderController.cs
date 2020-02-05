@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin")]
     public class FolderController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,14 +21,12 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder
-        [Authorize]
         public IActionResult Index()
         {
 	        return View(_context.Folders.AsQueryable());
         }
 
         // GET: Folder/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -46,7 +45,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Create
-        [Authorize]
         public IActionResult Create()
         {
             ViewData["ParentId"] = new SelectList(_context.Folders, "Id", "Id");
@@ -57,8 +55,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Create([Bind("Name,Description,ParentId,Order,IsActive")] Folder folder)
         {
             if (ModelState.IsValid)
@@ -72,7 +68,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -90,8 +85,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,ParentId,Order,IsActive")] Folder folder)
         {
             if (id != folder.Id)
@@ -109,7 +102,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -129,8 +121,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Folder/Delete/5
         [HttpPost, ActionName("Delete")]
-        
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var folder = await _context.Folders.FindAsync(id);

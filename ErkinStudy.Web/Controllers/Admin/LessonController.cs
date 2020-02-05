@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin")]
     public class LessonController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,7 +21,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson
-        [Authorize]
         public IActionResult Index(long? folderId)
         {
 	        ViewBag.FolderId = folderId;
@@ -29,7 +29,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -49,7 +48,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson/Create
-        [Authorize]
         public IActionResult Create(long folderId)
         {
 	        ViewBag.FolderId = folderId;
@@ -61,8 +59,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Create([Bind("FolderId,Name,Description,CategoryId,Order,Price,IsActive")] Lesson lesson)
         {
             if (ModelState.IsValid)
@@ -76,7 +72,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -97,8 +92,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,FolderId,Name,Description,CategoryId,Order,Price,IsActive")] Lesson lesson)
         {
             if (id != lesson.Id)
@@ -128,7 +121,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -149,8 +141,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Lesson/Delete/5
         [HttpPost, ActionName("Delete")]
-        
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var lesson = await _context.Lessons.FindAsync(id);

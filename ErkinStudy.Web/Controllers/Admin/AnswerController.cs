@@ -10,6 +10,7 @@ using ErkinStudy.Domain.Entities.Quizzes;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin")]
     public class AnswerController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,7 +21,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Answer
-        [Authorize]
         public IActionResult Index(long? questionId)
         {
             if (!questionId.HasValue)
@@ -37,7 +37,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Answer/Create
-        [Authorize]
         public IActionResult Create(long questionId)
         {
             ViewBag.QuestionId = questionId;
@@ -48,8 +47,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Create(Answer answer)
         {
             if (ModelState.IsValid)
@@ -65,7 +62,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Answer/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -85,8 +81,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Edit(Answer answer)
         {
             if (ModelState.IsValid)
@@ -99,7 +93,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Answer/Delete/5
-        [Authorize]
         public IActionResult Delete(long? id)
         {
             if (id == null)

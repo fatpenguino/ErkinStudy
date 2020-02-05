@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin")]
 	public class QuizController : Controller
     {
 	    private readonly AppDbContext _dbContext;
@@ -22,14 +23,12 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Quiz
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).ToListAsync());
         }
 
         // GET: Quiz/Create
-        [Authorize]
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name");
@@ -39,8 +38,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Quiz/Create
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (ModelState.IsValid)
@@ -53,7 +50,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Quiz/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -74,8 +70,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (id != quiz.Id)
@@ -93,7 +87,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Quiz/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -112,8 +105,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Quiz/Delete/5
         [HttpPost, ActionName("Delete")]
-        
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
 	        var quiz = await _dbContext.Quizzes
@@ -137,10 +128,10 @@ namespace ErkinStudy.Web.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize]
         public async Task<IActionResult> Scores(long id)
         {
-            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id).ToListAsync();
+            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id)
+                .OrderByDescending(x => x.TakenTime).ToListAsync();
             return View(scores);
         }
     }

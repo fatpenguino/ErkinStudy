@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin")]
     public class OnlineCourseWeekController : Controller
     {
         private readonly AppDbContext _context;
@@ -24,7 +25,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourseWeek
-        [Authorize]
         public IActionResult Index(long? onlineCourseId)
         {
             ViewBag.OnlineCourseId = onlineCourseId;
@@ -33,7 +33,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourseWeek/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -53,7 +52,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourseWeek/Create
-        [Authorize]
         public IActionResult Create(long onlineCourseId)
         {
             ViewBag.OnlineCourseId = onlineCourseId;
@@ -64,8 +62,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,OnlineCourseId,Name,Description,StartDate,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
         {
             if (ModelState.IsValid)
@@ -78,7 +74,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourseWeek/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -98,8 +93,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        
-        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,OnlineCourseId,Name,Description,StartDate,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
         {
             if (id != onlineCourseWeek.Id)
@@ -131,7 +124,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourseWeek/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -149,14 +141,13 @@ namespace ErkinStudy.Web.Controllers.Admin
 
             return View(onlineCourseWeek);
         }
-        [Authorize]
+        
         public async Task<IActionResult> Homeworks(long id)
         {
             var homework = await _context.OnlineCourseWeeks.Include(x => x.Homeworks).FirstOrDefaultAsync(x => x.Id == id);
             return View(homework);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UploadHomework(IFormFile uploadedHomework, long onlineCourseWeekId)
         {
@@ -176,7 +167,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             return RedirectToAction("Homeworks", new { id = onlineCourseWeekId });
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> DeleteHomework(long id)
         {
@@ -196,7 +186,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             return RedirectToAction("Homeworks", new {id = onlineCourseWeekId});
         }
 
-        [Authorize]
         public async Task<ActionResult> DownloadHomework(long id)
         {
             var homework = await _context.Homeworks.FirstOrDefaultAsync(x => x.Id == id);
@@ -206,8 +195,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: OnlineCourseWeek/Delete/5
         [HttpPost, ActionName("Delete")]
-        
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var onlineCourseWeek = await _context.OnlineCourseWeeks.FindAsync(id);
