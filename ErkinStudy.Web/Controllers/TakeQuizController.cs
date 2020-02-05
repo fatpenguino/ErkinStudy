@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
 using ErkinStudy.Web.Models;
+using ErkinStudy.Infrastructure.Services;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -31,6 +32,31 @@ namespace ErkinStudy.Web.Controllers
             var quizzes = await _dbContext.Quizzes.ToListAsync();
             return View(quizzes);
         }
+
+        [Authorize(Roles = "Moderator,Admin")]
+        public async Task<IActionResult> Preview(long? id)
+        {
+            try
+            {
+                if (!id.HasValue)
+                    return NotFound();
+
+                var quiz = await _dbContext.Quizzes
+                    .Include(x => x.Questions)
+                    .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                return View(nameof(Quiz), quiz);
+            }
+            catch (Exception e)
+            {
+                //we need change it!!!
+                _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id={id}, у пользователя {User.Identity.Name}, {e}");
+                RedirectToAction(nameof(Index));
+            }
+
+            return View(nameof(Index));
+        }
         
         [Authorize]
         public async Task<IActionResult> Quiz(long? id)
@@ -41,12 +67,11 @@ namespace ErkinStudy.Web.Controllers
                     throw new NotImplementedException();
 
                 var currentUser = await _userManager.GetUserAsync(User);
-                var isQuizApproved = await _dbContext.UserQuizzes
-                    .Where(x => x.UserId == currentUser.Id && x.QuizId == id).AnyAsync();
+                var userService = new UserService(_dbContext, _userManager);
                 var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
 
-                if ((!isQuizApproved && shortQuiz.Price != 0)
-                    || !shortQuiz.IsActive)
+                if ((!userService.IsUserHasQuiz(currentUser.Id, shortQuiz.Id) 
+                    && shortQuiz.Price != 0) || !shortQuiz.IsActive)
                     return RedirectToAction("Tests", "Home");
 
                 var quiz = await _dbContext.Quizzes
