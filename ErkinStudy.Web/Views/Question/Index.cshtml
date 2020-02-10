@@ -17,6 +17,9 @@
                 @Html.DisplayNameFor(model => model.Content)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Answers)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ImagePath)
             </th>
             <th>
@@ -30,21 +33,19 @@
         @foreach (var item in Model) {
             i++;
             <tr>
-                @if(item.Answers.Any(x => x.IsCorrect)){
-                    <td>@i</td>
-                }
-                else{
-                    <td style="background-color: coral">NO CORRECT ANSWER</td>
-                }
+                <td>@i</td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Content)
                 </td>
+                @if(item.Answers.Any(x => x.IsCorrect)) {
+                    <td>@item.Answers.FirstOrDefault(x => x.IsCorrect).Content</td>
+                }
+                else {
+                    <td style="background-color: coral">NO CORRECT ANSWER</td>
+                }
                 <td>
-                    @{
-                        if(item.ImagePath != null)
-                        {
-                            <img class="h-25" asp-append-version="true" src="@item.ImagePath">
-                        }
+                    @if(item.ImagePath != null) {
+                        <img class="h-25" asp-append-version="true" src="@item.ImagePath">
                     }
                 </td>
                 <td>
