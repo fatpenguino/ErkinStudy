@@ -11,9 +11,11 @@ using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
 using ErkinStudy.Web.Models;
 using ErkinStudy.Infrastructure.Services;
+using System.Collections.Generic;
 
 namespace ErkinStudy.Web.Controllers
 {
+    [Authorize]
     public class TakeQuizController : Controller
     {
         private readonly ILogger<TakeQuizController> _logger;
@@ -58,7 +60,6 @@ namespace ErkinStudy.Web.Controllers
             return View(nameof(Index));
         }
         
-        [Authorize]
         public async Task<IActionResult> Quiz(long? id)
         {
             try
@@ -92,7 +93,6 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult Check([FromBody] QuizAnswerViewModel quizAnswer)
         {
             int score = 0;
@@ -121,6 +121,33 @@ namespace ErkinStudy.Web.Controllers
                 _logger.LogError($"Произошла ошибка во время проверки Quiz у - {User.Identity.Name}, {e}");
             }
             return Json(score);
+        }
+
+        public async Task<IActionResult> Results(long? id)
+        {
+            if (!id.HasValue)
+                throw new NotImplementedException();
+                
+            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id && x.UserId != 1).OrderBy(x => x.TakenTime).ToListAsync();
+
+            var uniqueScore = new Dictionary<long, QuizScore>();
+            foreach(var score in scores)
+            {
+                if (!uniqueScore.ContainsKey(score.UserId))
+                {
+                    uniqueScore.Add(score.UserId, score);
+                }
+            }
+
+            var uniqueScoreList = uniqueScore.Select(x => x.Value).OrderByDescending(x => x.Point).ToList();
+            
+
+            //Вот это было бы крутое решение
+            //var scoresz = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id).OrderBy(x => x.TakenTime).GroupBy(x => x.UserId).Select(x => x.First()).ToListAsync();
+
+
+            return View(uniqueScoreList);
+
         }
     }
 }
