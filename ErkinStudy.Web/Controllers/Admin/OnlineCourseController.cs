@@ -22,7 +22,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: OnlineCourse
         public async Task<IActionResult> Index()
         {
-            return View(await _context.OnlineCourses.Include(x => x.Category).ToListAsync());
+            return View(await _context.OnlineCourses.Include(x => x.Category).OrderByDescending(x => x.IsActive).ToListAsync());
         }
 
         // GET: OnlineCourse/Details/5

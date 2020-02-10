@@ -25,7 +25,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Quiz
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).ToListAsync());
+            return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).OrderByDescending(x => x.IsActive).ToListAsync());
         }
 
         // GET: Quiz/Create
