@@ -35,7 +35,7 @@
             }
         </div>
         <div class="accordion" id="accordionCourse">
-            @foreach (var week in Model.OnlineCourseWeeks)
+            @foreach (var week in Model.OnlineCourseWeeks.OrderBy(x => x.Order))
             {
                 <div class="card">
                     <div class="card-header" id="heading_@week.Id">

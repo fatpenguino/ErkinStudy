@@ -10,7 +10,6 @@ using ErkinStudy.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
-using System.Collections.Generic;
 
 namespace ErkinStudy.Web.Controllers
 {
