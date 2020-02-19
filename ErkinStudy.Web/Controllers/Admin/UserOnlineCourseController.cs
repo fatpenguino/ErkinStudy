@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -13,10 +17,13 @@ namespace ErkinStudy.Web.Controllers.Admin
     public class UserOnlineCourseController : Controller
     {
         private readonly AppDbContext _context;
-
-        public UserOnlineCourseController(AppDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<UserOnlineCourseController> _logger;
+        public UserOnlineCourseController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<UserOnlineCourseController> logger)
         {
             _context = context;
+            _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: UserOnlineCourse
@@ -47,10 +54,9 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: UserOnlineCourse/Create
-        public IActionResult Create()
+        public IActionResult Approve()
         {
             ViewData["OnlineCourseId"] = new SelectList(_context.OnlineCourses, "Id", "Name");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -58,17 +64,29 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("UserId,OnlineCourseId,IsActive")] UserOnlineCourse userOnlineCourse)
+        public async Task<IActionResult> Approve(string userList, long courseId)
         {
-            if (ModelState.IsValid)
+            _logger.LogInformation($"Начинаем потверждение пользователей: {userList}, для курса - {courseId}");
+            var emails = userList.Split(',');
+            foreach (var email in emails)
             {
-                _context.Add(userOnlineCourse);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    var formattedEmail = email.Replace(" ", "").Replace(@"\t","").Replace(@"\n","");
+                    var user = await _userManager.FindByEmailAsync(formattedEmail);
+                    if (user == null) continue;
+                    var userOnlineCourse = new UserOnlineCourse { UserId = user.Id, OnlineCourseId = courseId };
+                    _context.UserOnlineCourses.Add(userOnlineCourse);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка во время подтверждение пользователя {email}, курс - {courseId}, {e}");
+                }
             }
-            ViewData["OnlineCourseId"] = new SelectList(_context.OnlineCourses, "Id", "Id", userOnlineCourse.OnlineCourseId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userOnlineCourse.UserId);
-            return View(userOnlineCourse);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Заканчиваем потверждение пользователей");
+            ViewData["OnlineCourseId"] = new SelectList(_context.OnlineCourses, "Id", "Id", courseId);
+            return RedirectToAction(nameof(Approve));
         }
 
         // GET: UserOnlineCourse/Edit/5
