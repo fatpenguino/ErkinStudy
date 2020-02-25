@@ -84,7 +84,6 @@
                 'checkedAnswers': checkedAnswers
             })
 
-            console.log(formData);
             $.ajax({  
                 type: "POST",
                 url: "@Url.Action("Check", "TakeQuiz")",
@@ -97,16 +96,19 @@
                     $(".exit_quiz").show();
                     $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
 
+                    $(".answer_correct").each(function () {
+                        $(this).parent().addClass('bg-warning');
+                    });
                     $(".answer:checked").each(function() {
-                        if (!$(this).hasClass("answer_correct")) {
-                            $(this).parent().addClass("bg-danger");
+                        if (!$(this).hasClass('answer_correct')) {
+                            $(this).parent().addClass('bg-danger');
+                        }
+                        else {
+                            $(this).parent().removeClass('bg-warning');
+                            $(this).parent().addClass('bg-success');
                         }
                     });
-                    $(".answer").each(function () {
-                        if ($(this).hasClass("answer_correct")) {
-                            $(this).parent().addClass("bg-success");
-                        }
-                    });
+
                     $(".modal").modal("hide");
                 },  
                 error: function (xhr, status, error) { 
