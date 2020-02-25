@@ -3,12 +3,13 @@ using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Domain.Entities.Quizzes;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Infrastructure.Context
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, long> {
+    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, long, IdentityUserClaim<long>, ApplicationUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>> {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
@@ -16,7 +17,7 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Folder> Folders { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Content> Contents { get; set; }
-        public DbSet<UserLesson> UserLessons { get; set; }
+        public DbSet<UserLesson> UserLessons { get; set; }  
         public DbSet<UserOnlineCourse> UserOnlineCourses { get; set; }
         public DbSet<OnlineCourse> OnlineCourses { get; set; }
         public DbSet<OnlineCourseWeek> OnlineCourseWeeks { get; set; }
