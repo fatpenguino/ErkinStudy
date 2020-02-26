@@ -7,6 +7,7 @@ using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -44,106 +45,54 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(resultList);
         }
 
-        // GET: UserRole/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var applicationUserRole = await _context.UserRoles
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (applicationUserRole == null)
-            {
-                return NotFound();
-            }
-
-            return View(applicationUserRole);
-        }
-
         // GET: UserRole/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Username");
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,RoleId")] ApplicationUserRole applicationUserRole)
+        public async Task<IActionResult> Create(long userId, long roleId)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(applicationUserRole);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(applicationUserRole);
+            var userRole = new ApplicationUserRole {RoleId = roleId, UserId = userId};
+            _context.Add(userRole);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
-
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("UserId,RoleId")] ApplicationUserRole applicationUserRole)
-        {
-            if (id != applicationUserRole.UserId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(applicationUserRole);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ApplicationUserRoleExists(applicationUserRole.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(applicationUserRole);
-        }
-
         // GET: UserRole/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(long userId, long roleId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var applicationUserRole = await _context.UserRoles
-                .FirstOrDefaultAsync(m => m.UserId == id);
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.RoleId == roleId);
             if (applicationUserRole == null)
             {
                 return NotFound();
             }
-
-            return View(applicationUserRole);
+            var model = new UserRoleViewModel();
+            var role = await _roleManager.FindByIdAsync(applicationUserRole.RoleId.ToString());
+            var user = await _userManager.FindByIdAsync(applicationUserRole.UserId.ToString());
+            var item = new UserRoleViewModel
+            {
+                UserId = applicationUserRole.UserId,
+                RoleId = applicationUserRole.RoleId,
+                Username = $"{user.LastName} {user.FirstName}",
+                RoleName = role.Name
+            };
+            return View(model);
         }
 
         // POST: UserRole/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> DeleteConfirmed(long userId, long roleId)
         {
-            var applicationUserRole = await _context.UserRoles.FindAsync(id);
+            var applicationUserRole = await _context.UserRoles.FirstOrDefaultAsync(x => x.RoleId == roleId && x.UserId == userId);
             _context.UserRoles.Remove(applicationUserRole);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ApplicationUserRoleExists(long id)
-        {
-            return _context.UserRoles.Any(e => e.UserId == id);
         }
     }
 }
