@@ -23,3 +23,7 @@
 {
     <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Quizzes</a>
 }
+@if (User.IsInRole("Teacher"))
+{
+    <a asp-controller="OnlineCourse" asp-action="Index" class="btn btn-primary">Online Courses</a>
+}

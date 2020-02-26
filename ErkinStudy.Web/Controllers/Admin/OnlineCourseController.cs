@@ -1,28 +1,40 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
+using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Teacher")]
     public class OnlineCourseController : Controller
     {
         private readonly AppDbContext _context;
-
-        public OnlineCourseController(AppDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly CourseService _courseService;
+        public OnlineCourseController(AppDbContext context, UserManager<ApplicationUser> userManager, CourseService courseService)
         {
             _context = context;
+            _userManager = userManager;
+            _courseService = courseService;
         }
 
         // GET: OnlineCourse
         public async Task<IActionResult> Index()
         {
-            return View(await _context.OnlineCourses.Include(x => x.Category).OrderByDescending(x => x.IsActive).ToListAsync());
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (!await _userManager.IsInRoleAsync(user, "Teacher"))
+                return View(await _context.OnlineCourses.Include(x => x.Category).OrderByDescending(x => x.IsActive)
+                    .ToListAsync());
+            var courses = await _courseService.GetCourseByUserId(user.Id);
+            return View(courses);
+
         }
 
         // GET: OnlineCourse/Details/5

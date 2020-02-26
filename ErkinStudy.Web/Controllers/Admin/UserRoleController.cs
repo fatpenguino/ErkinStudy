@@ -71,7 +71,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            var model = new UserRoleViewModel();
             var role = await _roleManager.FindByIdAsync(applicationUserRole.RoleId.ToString());
             var user = await _userManager.FindByIdAsync(applicationUserRole.UserId.ToString());
             var item = new UserRoleViewModel
@@ -81,7 +80,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 Username = $"{user.LastName} {user.FirstName}",
                 RoleName = role.Name
             };
-            return View(model);
+            return View(item);
         }
 
         // POST: UserRole/Delete/5

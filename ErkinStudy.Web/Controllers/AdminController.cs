@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers
 {
-    [Authorize(Roles = "Moderator,Admin")]
+    [Authorize(Roles = "Teacher,Moderator,Admin")]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,7 +32,6 @@ namespace ErkinStudy.Web.Controllers
         {
             return View();
         }
-        
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users()
         {
