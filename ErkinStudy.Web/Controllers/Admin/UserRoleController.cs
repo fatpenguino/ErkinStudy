@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Admin")]
     public class UserRoleController : Controller
     {
         private readonly AppDbContext _context;
@@ -48,17 +50,17 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: UserRole/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Username");
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(long userId, long roleId)
+        public async Task<IActionResult> Create(string email, long roleId)
         {
-            var userRole = new ApplicationUserRole {RoleId = roleId, UserId = userId};
-            _context.Add(userRole);
+            var user = await _userManager.FindByEmailAsync(email);
+            var userRole = new ApplicationUserRole {RoleId = roleId, UserId = user.Id};
+            _context.UserRoles.Add(userRole);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

@@ -25,7 +25,8 @@ namespace ErkinStudy.Infrastructure.Services
 
         public bool IsUserHasLesson(long userId, long lessonId)
         {
-            return _context.UserLessons.Any(x => x.UserId == userId && x.LessonId == lessonId);
+            var lesson = _context.Lessons.FirstOrDefault(x => x.Id == lessonId);
+            return lesson?.Price == 0 || _context.UserLessons.Any(x => x.UserId == userId && x.LessonId == lessonId);
         }
 
         public bool IsUserHasQuiz(long userId, long quizId)

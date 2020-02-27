@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Teacher")]
     public class OnlineCourseWeekController : Controller
     {
         private readonly AppDbContext _context;
