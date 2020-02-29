@@ -95,16 +95,27 @@ namespace ErkinStudy.Web.Controllers
         [HttpPost]
         public JsonResult Check([FromBody] QuizAnswerViewModel quizAnswer)
         {
-            int score = 0;
+            byte score = 0;
+            var quizId = Convert.ToInt32(quizAnswer.QuizId);
+
+            var questions = _dbContext.Questions.Where(x => x.QuizId == quizId).Include(x => x.Answers).ToList();
+            List<long> checkedAnswers = quizAnswer.CheckedAnswers.Select(long.Parse).ToList(); 
+
+            foreach (var question in questions)
+            {
+                var allAns = question.Answers.ToList();
+                var correctAnsId = allAns.Where(x => x.IsCorrect).Select(x => x.Id);
+                var allAnsId = allAns.Select(x => x.Id);
+                if (correctAnsId.Except(checkedAnswers).Any() ||
+                checkedAnswers.Intersect(allAnsId).Count() != correctAnsId.Count())
+                {
+                    continue;
+                }
+                score++;
+            }
+
             try
             {
-                foreach (var ansId in quizAnswer.CheckedAnswers)
-                {
-                    var answer = _dbContext.Answers.Find(Convert.ToInt64(ansId));
-                    if (answer != null && answer.IsCorrect)
-                        score++;
-                }
-
                 var scoreDb = new QuizScore
                 {
                     UserId = Convert.ToInt64(_userManager.GetUserId(User)),

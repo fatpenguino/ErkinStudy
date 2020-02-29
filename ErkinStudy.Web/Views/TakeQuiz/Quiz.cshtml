@@ -30,14 +30,29 @@
                 <ol type="a">
                     @{
                         var rnd = new Random();
-                        foreach( var ans in question.Answers.OrderBy(x => rnd.Next()))
+                        if (question.Answers.Where(x => x.IsCorrect).Count() == 1)
                         {
-                            <li>
-                                <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" 
-                                    type="radio" 
-                                    name="@question.Id" 
-                                    value="@ans.Id" > @ans.Content
-                            </li>
+                            foreach( var ans in question.Answers.OrderBy(x => rnd.Next()))
+                            {
+                                <li>
+                                    <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" 
+                                        type="radio" 
+                                        name="@question.Id" 
+                                        value="@ans.Id" > @ans.Content
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            foreach( var ans in question.Answers.OrderBy(x => rnd.Next()))
+                            {
+                                <li>
+                                    <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" 
+                                        type="checkbox" 
+                                        name="@question.Id" 
+                                        value="@ans.Id" > @ans.Content
+                                </li>
+                            }
                         }
                     }
                 </ol>
