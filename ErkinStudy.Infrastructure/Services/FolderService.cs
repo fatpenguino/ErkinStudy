@@ -24,6 +24,14 @@ namespace ErkinStudy.Infrastructure.Services
             return await _context.Folders.Where(x => x.IsActive).ToListAsync();
         }
 
+        public string GetFolderName(long id)
+        {
+            if (id == -1)
+                return string.Empty;
+            var folder = _context.Folders.Find(id);
+            return folder != null ? folder.Name : string.Empty;
+        }
+
         public async Task<List<Folder>> GetChilds(long id)
         {
             return await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync();

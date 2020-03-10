@@ -10,10 +10,9 @@ namespace ErkinStudy.Domain.Entities.OnlineCourses
         public int? CategoryId { get; set; }
         public long? FolderId { get; set; }
         public string Description { get; set; }
-        public int NumberOfWeeks { get; set; }
         public long Price { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public bool IsActive { get; set; }
         public virtual Category Category { get; set; }
         public virtual ICollection<OnlineCourseWeek> OnlineCourseWeeks { get; set; }

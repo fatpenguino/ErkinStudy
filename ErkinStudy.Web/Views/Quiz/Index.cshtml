@@ -1,4 +1,6 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
+@inject FolderService FolderService
 @{
     ViewData["Title"] = "Index";
 }
@@ -17,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Category)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FolderId)
+                Folder
             </th>
             <th>
                 Q amt
@@ -44,7 +46,7 @@
                         @Html.DisplayFor(modelItem => item.Category.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FolderId)
+                        @FolderService.GetFolderName(item.FolderId ?? -1)
                     </td>
                     <td>
                         @item.Questions.Count

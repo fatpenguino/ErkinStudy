@@ -1,5 +1,6 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Lessons.Folder>
-
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.Lessons.Folder>
+@inject FolderService FolderService
 @{
     ViewData["Title"] = "Index";
 }
@@ -21,7 +22,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParentId)
+                Parent
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Order)
@@ -47,7 +48,7 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParentId)
+                @FolderService.GetFolderName(item.ParentId ?? -1)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Order)

@@ -59,7 +59,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Id");
+            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Name");
             return View();
         }
 
@@ -92,7 +92,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Id");
+            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Name");
             return View(onlineCourse);
         }
 

@@ -20,12 +20,14 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            @*
             <div class="form-group">
                 <label>Category</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
                     <option value="">No category</option>
                 </select>
             </div>
+            *@
             <div class="form-group">
                 <label>Folder Id</label>
                 <select asp-for="FolderId" class="form-control" asp-items="ViewBag.FolderId">
@@ -33,15 +35,11 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="NumberOfWeeks"></label>
-                <input asp-for="NumberOfWeeks" class="form-control" />
-                <span asp-validation-for="NumberOfWeeks" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Price"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            @*
             <div class="form-group">
                 <label asp-for="StartDate"></label>
                 <input asp-for="StartDate" class="form-control" />
@@ -52,6 +50,7 @@
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
+            *@
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)

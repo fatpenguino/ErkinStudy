@@ -32,7 +32,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name");
-            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id");
+            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Name");
             return View();
         }
 
@@ -62,7 +62,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return NotFound();
             }
             ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name", quiz.CategoryId);
-            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id", quiz.FolderId);
+            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
             return View(quiz);
         }
 

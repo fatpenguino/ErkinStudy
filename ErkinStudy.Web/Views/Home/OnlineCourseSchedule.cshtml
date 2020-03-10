@@ -15,6 +15,7 @@
 <div class="container">
     <div class="row">
         <div class="mx-auto mb-2 text-center">
+            @*
             <h3 class="schedule-title">Курс бағдарламасы:</h3>
             <div class="nextweek">
                 Келесі сабақ - @nearestWeek?.Name
@@ -26,6 +27,7 @@
                     <li><span id="seconds"></span>секунд</li>
                 </ul>
             </div>
+            *@
             @if (!isApproved)
             {
              <p class="mb-0">Бағасы: 7000 теңге</p>
@@ -33,7 +35,7 @@
                 Онлайн курсты сатып алу
             </a>
             }
-</div>
+        </div>
         <div class="accordion" id="accordionCourse">
             @foreach (var week in Model.OnlineCourseWeeks)
             {

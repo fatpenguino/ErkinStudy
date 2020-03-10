@@ -47,7 +47,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Folder/Create
         public IActionResult Create()
         {
-            ViewData["ParentId"] = new SelectList(_context.Folders, "Id", "Id");
+            ViewData["ParentId"] = new SelectList(_context.Folders, "Id", "Name");
             return View();
         }
 
@@ -80,7 +80,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["ParentId"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Id", folder.ParentId);
+            ViewData["ParentId"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Name", folder.ParentId);
             return View(folder);
         }
 

@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using System.Web
+﻿@using System.Web
 @using ErkinStudy.Domain.Entities.Identity
 @using ErkinStudy.Infrastructure.Services
 @using ErkinStudy.Web.Helpers
@@ -16,6 +15,7 @@
     <div class="row">
         <div class="mx-auto mb-2 text-center">
             <h3 class="schedule-title">Курс бағдарламасы:</h3>
+            @*
             <div class="nextweek">
                 Келесі сабақ - @nearestWeek?.Name
                 <br>
@@ -26,6 +26,7 @@
                     <li><span id="seconds"></span>секунд</li>
                 </ul>
             </div>
+            *@
             @if (!isApproved)
             {
                 <p class="mb-0">Бағасы: @Model.Price теңге</p>
@@ -91,6 +92,7 @@
         </div>
     </div>
 </div>
+@*
 <script>
     const second = 1000,
         minute = second * 60,
@@ -109,3 +111,4 @@
             },
             second);
 </script>
+*@

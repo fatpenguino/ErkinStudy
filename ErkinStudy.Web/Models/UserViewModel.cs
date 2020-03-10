@@ -1,4 +1,6 @@
-﻿namespace ErkinStudy.Web.Models
+﻿using System;
+
+namespace ErkinStudy.Web.Models
 {
     public class UserViewModel
     {
