@@ -35,12 +35,16 @@ namespace ErkinStudy.Infrastructure.Services
             return _context.UserQuizzes.Any(x => x.UserId == userId && x.QuizId == quizId);
         }
 
-        public string GetFullName(string username)
+        public string GetFullNameByUserName(string username)
         {
             var user = _userManager.FindByNameAsync(username).Result;
             return $"{user?.FirstName}";
         }
-
+        public string GetFullNameByUserId(long id)
+        {
+            var user = _userManager.FindByIdAsync(id.ToString()).Result;
+            return $"{user?.FirstName}";
+        }
         public List<ApplicationUser> GetAllTeachers()
         {
             var teacherRole = _context.Roles.First(x => x.Name == "Teacher");
