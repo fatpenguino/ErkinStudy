@@ -56,9 +56,12 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourse/Create
-        public IActionResult Create()
+        public IActionResult Create(long? folderId)
         {
-            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Name");
+            if (folderId.HasValue)
+                ViewData["FolderId"] = folderId;
+            else
+                ViewData["FolderList"] = new SelectList(_context.Folders, "Id", "Name");
             return View();
         }
 

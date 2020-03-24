@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
+using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,11 @@ namespace ErkinStudy.Infrastructure.Services
         public async Task<List<Folder>> GetChilds(long id)
         {
             return await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync();
+        }
+
+        public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId)
+        {
+            return await _context.Folders.Where(x => x.TeacherId == teacherId).ToListAsync();
         }
     }
 }

@@ -1,0 +1,266 @@
+﻿@using ErkinStudy.Infrastructure.Services
+@inject CourseService CourseService
+@inject QuizService QuizService
+@inject LessonService LessonService
+@inject FolderService FolderService
+@inject UserService UserService
+@model ErkinStudy.Domain.Entities.Lessons.Folder
+@{
+    ViewData["Title"] = "Manage";
+    var courses = await CourseService.GetByFolderId(Model.Id);
+    var quizzes = await QuizService.GetByFolderId(Model.Id);
+    var lessons = await LessonService.GetByFolderId(Model.Id);
+    var childs = await FolderService.GetChilds(Model.Id);
+}
+    <div class="container mt-3">
+        @if (childs.Count > 0)
+        {
+            <h3>Folders</h3>
+            <p>
+                <a asp-action="Create" asp-route-parentId="@Model.Id" asp-route-teacherId="@Model.TeacherId">Create New</a>
+            </p>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Parent
+                    </th>
+                    <th>
+                        Teacher
+                    </th>
+                    <th>
+                        Order
+                    </th>
+                    <th>
+                        Is Active
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var child in childs)
+                {
+                    <tr>
+                        <td>
+                            @child.Name
+                        </td>
+                        <td>
+                            @child.Description
+                        </td>
+                        <td>
+                            @Model.Name
+                        </td>
+                        <td>
+                            @UserService.GetFullNameByUserId(child.TeacherId ?? -1)
+                        </td>
+                        <td>
+                            @child.Order
+                        </td>
+                        <td>
+                            @child.IsActive
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@child.Id">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@child.Id">Delete</a> |
+                            <a asp-action="Manage" asp-route-id="@child.Id">Manage</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        @if (courses.Count > 0)
+        {
+            <div class="mt-3">
+                <h4>Courses</h4>
+                <p>
+                    <a asp-controller="OnlineCourse" asp-action="Create" asp-route-folderId="@Model.Id">Create New Course</a>
+                </p>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Folder
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                Is Active
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var course in courses)
+                        {
+                            <tr>
+                                <td>
+                                    @course.Name
+                                </td>
+                                <td>
+                                    @course.Description
+                                </td>
+                                <td>
+                                    @Model.Name
+                                </td>
+                                <td>
+                                    @course.Price
+                                </td>
+                                <td>
+                                    @course.IsActive
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
+                                    <a asp-controller="OnlineCourseWeek" asp-action="Index" asp-route-onlineCourseId="@course.Id">Weeks</a> |
+                                    <a asp-action="Delete" asp-route-id="@course.Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if (quizzes.Count > 0)
+        {
+            <div>
+                <h4>Quizzes</h4>
+                <p>
+                    <a asp-controller="Quiz" asp-action="Create">Create New Quiz</a>
+                </p>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N</th>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Folder
+                            </th>
+                            <th>
+                                Q amt
+                            </th>
+                            <th>
+                                Is  Active
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (var quiz in quizzes)
+                            {
+                                i++;
+                                <tr>
+                                    <td>@i</td>
+                                    <td>
+                                        @quiz.Title
+                                    </td>
+                                    <td>
+                                        @Model.Name
+                                    </td>
+                                    <td>
+                                        @quiz.Questions.Count
+                                    </td>
+                                    <td>
+                                        @quiz.IsActive
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Quiz" asp-action="Edit" asp-route-id="@quiz.Id">Edit</a> |
+                                        <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.Id">Delete</a> |
+                                        <a asp-controller="Question" asp-action="Index" asp-route-quizId="@quiz.Id">Questions</a> |
+                                        <a asp-controller="Quiz" asp-action="Scores" asp-route-id="@quiz.Id">Scores</a> |
+                                        <a asp-controller="TakeQuiz" asp-action="Preview" asp-route-id="@quiz.Id">Preview</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if (lessons.Count > 0)
+        {
+            <div>
+                <h4>Lessons</h4>
+                <p>
+                    <a asp-action="Create" asp-route-folderId="@ViewBag.FolderId">Create New Lesson</a>
+                </p>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Order
+                            </th>
+                            <th>
+                                Folder
+                            </th>
+                            <th>
+                                Is Active
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lesson in lessons)
+                        {
+                            <tr>
+                                <td>
+                                    @lesson.Name
+                                </td>
+                                <td>
+                                    @lesson.Description
+                                </td>
+                                <td>
+                                    @lesson.Order
+                                </td>
+                                <td>
+                                    @Model.Name
+                                </td>
+                                <td>
+                                    @lesson.IsActive
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@lesson.Id">Edit</a> |
+                                    <a asp-action="Delete" asp-route-id="@lesson.Id">Delete</a> |
+                                    <a asp-controller="Content" asp-action="Index" asp-route-lessonId="@lesson.Id">Contents</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

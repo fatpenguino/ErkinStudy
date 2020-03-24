@@ -29,6 +29,7 @@ namespace ErkinStudy.Web
             services.AddScoped<FolderService>();
             services.AddScoped<CourseService>();
             services.AddScoped<QuizService>();
+            services.AddScoped<LessonService>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

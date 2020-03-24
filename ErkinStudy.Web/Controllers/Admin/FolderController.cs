@@ -1,32 +1,38 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Lessons;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Teacher")]
     public class FolderController : Controller
     {
         private readonly AppDbContext _context;
         private readonly UserService _userService;
+        private readonly FolderService _folderService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public FolderController(AppDbContext context, UserService userService)
+        public FolderController(AppDbContext context, UserService userService, FolderService folderService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userService = userService;
+            _folderService = folderService;
+            _userManager = userManager;
         }
 
         // GET: Folder
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-	        return View(_context.Folders.AsQueryable());
+            return User.IsInRole("Teacher") ? View(await _folderService.GetFoldersByTeacherId(_userManager.FindByNameAsync(User.Identity.Name).Result.Id)) : View(_context.Folders.AsQueryable());
         }
 
         // GET: Folder/Details/5
@@ -48,10 +54,16 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Folder/Create
-        public IActionResult Create()
+        public IActionResult Create(long? parentId, long? teacherId)
         {
-            ViewData["ParentId"] = new SelectList(_context.Folders, "Id", "Name");
-            ViewData["TeacherId"] = new SelectList(_userService.GetAllTeachers(), "Id", "UserName");
+            if (parentId.HasValue)
+                ViewData["ParentId"] = parentId;
+            else
+                ViewData["ParentList"] = new SelectList(_context.Folders, "Id", "Name");
+            if (teacherId.HasValue)
+                ViewData["TeacherId"] = teacherId;
+            else
+                ViewData["TeacherList"] = new SelectList(_userService.GetAllTeachers(), "Id", "UserName");
             return View();
         }
 
@@ -89,6 +101,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(folder);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,FolderId,Order,IsActive")] Folder folder)
         {
@@ -134,5 +147,9 @@ namespace ErkinStudy.Web.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Manage(long id)
+        {
+            return View(await _context.Folders.FindAsync(id));
+        }
     }
 }
