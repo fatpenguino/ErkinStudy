@@ -30,7 +30,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (!await _userManager.IsInRoleAsync(user, "Teacher"))
-                return View(await _context.OnlineCourses.Include(x => x.Category).OrderByDescending(x => x.IsActive)
+                return View(await _context.OnlineCourses.OrderByDescending(x => x.IsActive)
                     .ToListAsync());
             var courses = await _courseService.GetCourseByUserId(user.Id);
             return View(courses);
@@ -58,7 +58,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: OnlineCourse/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Name");
             return View();
         }
@@ -67,7 +66,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,FolderId,CategoryId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,FolderId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +90,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Name");
             return View(onlineCourse);
         }
@@ -100,7 +98,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,FolderId,CategoryId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,FolderId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
         {
             if (id != onlineCourse.Id)
             {

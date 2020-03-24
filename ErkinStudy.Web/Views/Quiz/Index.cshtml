@@ -16,9 +16,6 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
                 Folder
             </th>
             <th>
@@ -41,9 +38,6 @@
                     <td>@i</td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Category.Name)
                     </td>
                     <td>
                         @FolderService.GetFolderName(item.FolderId ?? -1)

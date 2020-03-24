@@ -27,7 +27,6 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Answer> Answers { get; set; }
         public DbSet<QuizScore> QuizScores { get; set; }
         public DbSet<UserQuiz> UserQuizzes { get; set; }
-        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

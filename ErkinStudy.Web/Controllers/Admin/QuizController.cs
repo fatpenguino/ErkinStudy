@@ -25,20 +25,19 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Quiz
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).OrderByDescending(x => x.IsActive).ToListAsync());
+            return View(await _dbContext.Quizzes.Include(x => x.Questions).OrderByDescending(x => x.IsActive).ToListAsync());
         }
 
         // GET: Quiz/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name");
             ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Name");
             return View();
         }
 
         // POST: Quiz/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -61,7 +60,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name", quiz.CategoryId);
             ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
             return View(quiz);
         }
@@ -70,7 +68,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
