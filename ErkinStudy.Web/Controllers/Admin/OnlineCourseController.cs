@@ -26,6 +26,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: OnlineCourse
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -69,13 +70,13 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,FolderId,NumberOfWeeks,Price,StartDate,EndDate,IsActive")] OnlineCourse onlineCourse)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,FolderId,NumberOfWeeks,Price,IsActive")] OnlineCourse onlineCourse)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(onlineCourse);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return onlineCourse.FolderId.HasValue ? RedirectToAction("Manage", "Folder", new { id = onlineCourse.FolderId }) : RedirectToAction(nameof(Index));
             }
             return View(onlineCourse);
         }
@@ -93,7 +94,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["FolderId"] = new SelectList(_context.Folders, "Id", "Name");
+            ViewData["FolderList"] = new SelectList(_context.Folders, "Id", "Name", onlineCourse.FolderId);
             return View(onlineCourse);
         }
 
@@ -121,12 +122,9 @@ namespace ErkinStudy.Web.Controllers.Admin
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Manage", "Folder", new { id = onlineCourse.FolderId });
             }
             return View(onlineCourse);
         }
@@ -156,7 +154,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             var onlineCourse = await _context.OnlineCourses.FindAsync(id);
             _context.OnlineCourses.Remove(onlineCourse);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Manage", "Folder", new { id = onlineCourse.FolderId });
         }
 
         private bool OnlineCourseExists(long id)

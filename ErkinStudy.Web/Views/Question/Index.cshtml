@@ -1,11 +1,13 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Question>
-
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Question>
+@inject QuizService QuizService
 @{
     ViewData["Title"] = "Index";
+    var quiz = QuizService.GetById(ViewBag.QuizId);
 }
 
 <h1>Questions</h1>
-<a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Back</a>
+<a asp-controller="Folder" asp-action="Manage" asp-route-id="@quiz.FolderId" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-quizId="@ViewBag.QuizId">Create New</a>
 </p>
@@ -28,33 +30,38 @@
         </tr>
     </thead>
     <tbody>
-    @if(Model != null){
-        int i = 0;
-        @foreach (var item in Model) {
-            i++;
-            <tr>
-                <td>@i</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                @if(item.Answers.Any(x => x.IsCorrect)) {
-                    <td>@item.Answers.FirstOrDefault(x => x.IsCorrect).Content</td>
-                }
-                else {
-                    <td style="background-color: coral">NO CORRECT ANSWER</td>
-                }
-                <td>
-                    @if(item.ImagePath != null) {
-                        <img class="h-25" asp-append-version="true" src="@item.ImagePath">
+        @if (Model != null)
+        {
+            int i = 0;
+            @foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td>@i</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    @if (item.Answers.Any(x => x.IsCorrect))
+                    {
+                        <td>@item.Answers.FirstOrDefault(x => x.IsCorrect)?.Content</td>
                     }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                    <a asp-controller="Answer" asp-action="Index" asp-route-questionId="@item.Id">Answers</a>
-                </td>
-            </tr>
+                    else
+                    {
+                        <td style="background-color: coral">NO CORRECT ANSWER</td>
+                    }
+                    <td>
+                        @if (item.ImagePath != null)
+                        {
+                            <img class="h-25" asp-append-version="true" src="@item.ImagePath">
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                        <a asp-controller="Answer" asp-action="Index" asp-route-questionId="@item.Id">Answers</a>
+                    </td>
+                </tr>
+            }
         }
-    }   
     </tbody>
 </table>

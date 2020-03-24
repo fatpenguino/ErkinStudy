@@ -7,10 +7,10 @@
 @model ErkinStudy.Domain.Entities.Lessons.Folder
 @{
     ViewData["Title"] = "Manage";
-    var courses = await CourseService.GetByFolderId(Model.Id);
-    var quizzes = await QuizService.GetByFolderId(Model.Id);
-    var lessons = await LessonService.GetByFolderId(Model.Id);
-    var childs = await FolderService.GetChilds(Model.Id);
+    var courses = await CourseService.GetByFolderId(Model.Id, false);
+    var quizzes = await QuizService.GetByFolderId(Model.Id, false);
+    var lessons = await LessonService.GetByFolderId(Model.Id, false);
+    var childs = await FolderService.GetChilds(Model.Id, false);
 }
     <div class="container mt-3">
         @if (childs.Count > 0)
@@ -125,9 +125,9 @@
                                     @course.IsActive
                                 </td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
+                                    <a asp-controller="OnlineCourse" asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
                                     <a asp-controller="OnlineCourseWeek" asp-action="Index" asp-route-onlineCourseId="@course.Id">Weeks</a> |
-                                    <a asp-action="Delete" asp-route-id="@course.Id">Delete</a>
+                                    <a asp-controller="OnlineCourse" asp-action="Delete" asp-route-id="@course.Id">Delete</a>
                                 </td>
                             </tr>
                         }
@@ -140,7 +140,7 @@
             <div>
                 <h4>Quizzes</h4>
                 <p>
-                    <a asp-controller="Quiz" asp-action="Create">Create New Quiz</a>
+                    <a asp-controller="Quiz" asp-action="Create" asp-route-folderId ="@Model.Id">Create New Quiz</a>
                 </p>
                 <table class="table table-bordered">
                     <thead>
@@ -202,7 +202,7 @@
             <div>
                 <h4>Lessons</h4>
                 <p>
-                    <a asp-action="Create" asp-route-folderId="@ViewBag.FolderId">Create New Lesson</a>
+                    <a asp-controller="Lesson" asp-action="Create" asp-route-folderId="@Model.Id">Create New Lesson</a>
                 </p>
                 <table class="table table-bordered">
                     <thead>
@@ -247,8 +247,8 @@
                                     @lesson.IsActive
                                 </td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@lesson.Id">Edit</a> |
-                                    <a asp-action="Delete" asp-route-id="@lesson.Id">Delete</a> |
+                                    <a asp-controller="Lesson" asp-action="Edit" asp-route-id="@lesson.Id">Edit</a> |
+                                    <a asp-controller="Lesson" asp-action="Delete" asp-route-id="@lesson.Id">Delete</a> |
                                     <a asp-controller="Content" asp-action="Index" asp-route-lessonId="@lesson.Id">Contents</a>
                                 </td>
                             </tr>

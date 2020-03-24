@@ -6,11 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Teacher")]
     public class LessonController : Controller
     {
         private readonly AppDbContext _context;
@@ -21,6 +20,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson
+        [Authorize(Roles = "Admin")]
         public IActionResult Index(long? folderId)
         {
 	        ViewBag.FolderId = folderId;
@@ -65,7 +65,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 				lesson.CreatedAt = DateTime.Now;
 				_context.Add(lesson);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { folderId = lesson.FolderId });
+                return RedirectToAction("Manage","Folder", new { id = lesson.FolderId });
             }
             return View(lesson);
         }
@@ -113,7 +113,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
 	                throw;
                 }
-                return RedirectToAction(nameof(Index), new { folderId = lesson.FolderId });
+                return RedirectToAction("Manage","Folder", new { id = lesson.FolderId });
             }
             return View(lesson);
         }
@@ -142,10 +142,9 @@ namespace ErkinStudy.Web.Controllers.Admin
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var lesson = await _context.Lessons.FindAsync(id);
-            var folderId = lesson.FolderId;
             _context.Lessons.Remove(lesson);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { folderId });
+            return RedirectToAction("Manage", "Folder", new { id = lesson.FolderId });
         }
 
         private bool LessonExists(long id)

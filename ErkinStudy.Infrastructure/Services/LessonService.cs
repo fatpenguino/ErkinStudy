@@ -19,9 +19,14 @@ namespace ErkinStudy.Infrastructure.Services
              _logger = logger;
          }
 
-         public async Task<List<Lesson>> GetByFolderId(long folderId)
+         public async Task<List<Lesson>> GetByFolderId(long folderId, bool active = true)
          {
-             return await _context.Lessons.Where(x => x.FolderId == folderId).ToListAsync();
+             return active ? await _context.Lessons.Where(x => x.FolderId == folderId && x.IsActive).ToListAsync() : await _context.Lessons.Where(x => x.FolderId == folderId).ToListAsync();
+         }
+
+         public async Task<Lesson> GetById(long lessonId)
+         {
+             return  await _context.Lessons.FindAsync(lessonId);
          }
      }
 }

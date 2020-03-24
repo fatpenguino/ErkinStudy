@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Admin";
 }
-<br/>
+<br />
 <h3>Admin Page</h3>
 @if (User.IsInRole("Admin"))
 {
@@ -10,8 +10,6 @@
     <a asp-controller="OnlineCourse" asp-action="Index" class="btn btn-primary">Online Courses</a>
 
     <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Quizzes</a>
-
-    <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Categories</a>
 
     <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">Users Management</a>
 
@@ -27,5 +25,5 @@
 }
 @if (User.IsInRole("Teacher"))
 {
-    <a asp-controller="OnlineCourse" asp-action="Index" class="btn btn-primary">Online Courses</a>
+    <a asp-controller="Folder" asp-action="Index" class="btn btn-primary">Folders</a>
 }

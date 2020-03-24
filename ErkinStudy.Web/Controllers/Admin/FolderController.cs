@@ -96,14 +96,13 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["ParentId"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Name", folder.ParentId);
-            ViewData["TeacherId"] = new SelectList(_userService.GetAllTeachers(), "Id", "UserName",folder.TeacherId);
+            ViewData["ParentList"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Name", folder.ParentId);
+            ViewData["TeacherList"] = new SelectList(_userService.GetAllTeachers(), "Id", "UserName",folder.TeacherId);
             return View(folder);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,FolderId,Order,IsActive")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,IsActive")] Folder folder)
         {
             if (id != folder.Id)
             {

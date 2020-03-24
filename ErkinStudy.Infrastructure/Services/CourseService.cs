@@ -18,15 +18,19 @@ namespace ErkinStudy.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<List<OnlineCourse>> GetByFolderId(long folderId)
+        public async Task<List<OnlineCourse>> GetByFolderId(long folderId, bool active = true)
         {
-            var courses = await _context.OnlineCourses.Where(x => x.FolderId == folderId && x.IsActive).ToListAsync();
-            return courses;
+            return active ? await _context.OnlineCourses.Where(x => x.FolderId == folderId && x.IsActive).ToListAsync() : await _context.OnlineCourses.Where(x => x.FolderId == folderId).ToListAsync();
         }
 
         public async Task<List<OnlineCourse>> GetCourseByUserId(long userId)
         {
             return await _context.UserOnlineCourses.Include(x => x.OnlineCourse).Where(x => x.UserId == userId).Select(x => x.OnlineCourse).ToListAsync();
+        }
+
+        public async Task<OnlineCourse> GetById(long id)
+        {
+            return await _context.OnlineCourses.FindAsync(id);
         }
     }
 }

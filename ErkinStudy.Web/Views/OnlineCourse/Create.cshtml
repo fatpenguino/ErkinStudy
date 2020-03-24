@@ -27,17 +27,12 @@
             else
             {
                 <div class="form-group">
-                    <label>Folder Id</label>
+                    <label>Folder</label>
                     <select asp-for="FolderId" class="form-control" asp-items="ViewBag.FolderId">
                         <option value="">No Folder</option>
                     </select>
                 </div>
             }
-            <div class="form-group">
-                <label asp-for="Price"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
@@ -51,7 +46,14 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @if (ViewBag.FolderId != null)
+    {
+        <a asp-controller="Folder" asp-action="Manage" asp-route-id="@ViewBag.FolderId">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {

@@ -1,12 +1,15 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourseWeek>
-
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourseWeek>
+@inject CourseService CourseService
 @{
     ViewData["Title"] = "Index";
+    var course = CourseService.GetById(ViewBag.OnlineCourseId);
 }
 
-<h1>Weeks</h1>
+<h3>Weeks</h3>
 
 <p>
+    <a asp-controller="Folder" asp-action="Manage" asp-route-id="@course.FolderId" class="btn btn-primary">Back</a>
     <a asp-action="Create" asp-route-onlineCourseId="@ViewBag.OnlineCourseId">Create New</a>
 </p>
 <table class="table">

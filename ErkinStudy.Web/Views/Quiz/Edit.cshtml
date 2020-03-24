@@ -19,21 +19,23 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Price" class="col-form-label"></label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-    <div class="form-group">
         <label asp-for="Order" class="col-form-label"></label>
         <input asp-for="Order" class="form-control" />
         <span asp-validation-for="Order" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label>Folder Id</label>
-        <select asp-for="FolderId" class="form-control" asp-items="ViewBag.FolderId">
-            <option value="">No Folder</option>
-        </select>
-    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group">
+            <label>Folder Id</label>
+            <select asp-for="FolderId" class="form-control" asp-items="ViewBag.FolderList">
+                <option value="">No Folder</option>
+            </select>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="FolderId" value="@Model.FolderId" />
+    }
     <div class="form-group">
         <div class="form-check">
             <input class="form-check-input" type="checkbox" asp-for="IsActive" />
@@ -48,7 +50,14 @@
     </div>
 </form>
 <div>
-    <a asp-action="Index">Back to List</a>
+    @if (Model.FolderId.HasValue)
+    {
+        <a asp-controller="Folder" asp-action="Manage" asp-route-id="@Model.FolderId">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {

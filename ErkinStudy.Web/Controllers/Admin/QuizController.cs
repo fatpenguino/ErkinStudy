@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Moderator,Admin")]
+    [Authorize(Roles = "Moderator,Admin,Teacher")]
 	public class QuizController : Controller
     {
 	    private readonly AppDbContext _dbContext;
@@ -23,15 +23,19 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Quiz
+        [Authorize(Roles = "Admin,Moderator")]
         public async Task<IActionResult> Index()
         {
             return View(await _dbContext.Quizzes.Include(x => x.Questions).OrderByDescending(x => x.IsActive).ToListAsync());
         }
 
         // GET: Quiz/Create
-        public IActionResult Create()
+        public IActionResult Create(long? folderId)
         {
-            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Name");
+            if (folderId.HasValue)
+                ViewData["FolderId"] = folderId;
+            else
+                ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
             return View();
         }
 
@@ -43,7 +47,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 await _dbContext.Quizzes.AddAsync(quiz);
                 await _dbContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return quiz.FolderId.HasValue ? RedirectToAction("Manage", "Folder", new { id = quiz.FolderId }) : RedirectToAction(nameof(Index));
             }
             return View(quiz);
         }
@@ -60,7 +64,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
             return View(quiz);
         }
 
@@ -79,7 +83,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 _dbContext.Quizzes.Update(quiz);
                 await _dbContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Manage", "Folder", new { id = quiz.FolderId });
             }
             return View(quiz);
         }
@@ -123,7 +127,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
             _dbContext.Quizzes.Remove(quiz);
             await _dbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Manage", "Folder", new { id = quiz.FolderId });
         }
 
         public async Task<IActionResult> Scores(long id)

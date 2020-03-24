@@ -33,11 +33,11 @@ namespace ErkinStudy.Infrastructure.Services
             return folder != null ? folder.Name : string.Empty;
         }
 
-        public async Task<List<Folder>> GetChilds(long id)
+        public async Task<List<Folder>> GetChilds(long id, bool active = true)
         {
-            return await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync();
+            return active ? await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync() : await _context.Folders.Where(x => x.ParentId == id).ToListAsync();
         }
-
+        
         public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId)
         {
             return await _context.Folders.Where(x => x.TeacherId == teacherId).ToListAsync();
