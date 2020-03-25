@@ -71,9 +71,9 @@ namespace ErkinStudy.Web.Controllers
                 var userService = new UserService(_dbContext, _userManager);
                 var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
 
-                if ((!userService.IsUserHasQuiz(currentUser.Id, shortQuiz.Id) 
-                    && shortQuiz.Price != 0) || !shortQuiz.IsActive)
-                    return RedirectToAction("Tests", "Home");
+                //if ((!userService.IsUserHasQuiz(currentUser.Id, shortQuiz.Id) 
+                //    && shortQuiz.Price != 0) || !shortQuiz.IsActive)
+                //    return RedirectToAction("Tests", "Home");
 
                 var quiz = await _dbContext.Quizzes
                     .Include(x => x.Questions)

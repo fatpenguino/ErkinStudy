@@ -17,24 +17,6 @@ namespace ErkinStudy.Infrastructure.Services
             _userManager = userManager;
         }
 
-        public bool IsUserApproved(string userId, long courseId)
-        {
-            var userCourse =
-                _context.UserOnlineCourses.FirstOrDefault(x => x.UserId == long.Parse(userId) && x.OnlineCourseId == courseId);
-            return userCourse != null;
-        }
-
-        public bool IsUserHasLesson(long userId, long lessonId)
-        {
-            var lesson = _context.Lessons.FirstOrDefault(x => x.Id == lessonId);
-            return lesson?.Price == 0 || _context.UserLessons.Any(x => x.UserId == userId && x.LessonId == lessonId);
-        }
-
-        public bool IsUserHasQuiz(long userId, long quizId)
-        {
-            return _context.UserQuizzes.Any(x => x.UserId == userId && x.QuizId == quizId);
-        }
-
         public string GetFullNameByUserName(string username)
         {
             var user = _userManager.FindByNameAsync(username).Result;

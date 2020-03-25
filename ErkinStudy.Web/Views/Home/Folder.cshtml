@@ -41,9 +41,7 @@
             }
             @foreach (var quiz in quizzes)
             {
-                if (UserService.IsUserHasQuiz(userId, quiz.Id) || quiz.Price == 0)
-                {
-                    <div class="col-auto mb-3">
+                <div class="col-auto mb-3">
                         <div class="card text-white bg-primary" style="width: 18rem;">
                             <div class="card-body text-center">
                                 <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white">@quiz.Title</a>
@@ -51,9 +49,7 @@
                             </div>
                         </div>
                     </div>
-                }
-                else
-                {
+            
                     <div class="card bg-light mb-3">
                         <div class="card-body text-center">
                             <h5 class="card-title">@quiz.Title</h5>
@@ -63,7 +59,7 @@
                             </a>
                         </div>
                     </div>
-                }
+                
             }
             @foreach (var lesson in Model.Lessons)
             {
@@ -72,18 +68,11 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">@lesson.Name</h5>
                             <p class="card-text">@lesson.Description Багасы: @lesson.Price тг.</p>
-                            @if (User.Identity.IsAuthenticated && UserService.IsUserHasLesson(userId, lesson.Id))
-                            {
+                            
                                 <a asp-controller="Col" asp-action="Detail" asp-route-id="@lesson.Id" class="card-link">Ашу</a>
-                            }
-                            else if (User.Identity.IsAuthenticated)
-                            {
+
                                 <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {lesson.Name}(Id-{lesson.Id}) сабағын сатып алғым келеді")" class="card-link">Сатып алу</a>
-                            }
-                            else
-                            {
-                                <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
-                            }
+                            <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
                         </div>
                     </div>
                 </div>

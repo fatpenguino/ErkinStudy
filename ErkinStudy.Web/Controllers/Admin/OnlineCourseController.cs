@@ -33,8 +33,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             if (!await _userManager.IsInRoleAsync(user, "Teacher"))
                 return View(await _context.OnlineCourses.OrderByDescending(x => x.IsActive)
                     .ToListAsync());
-            var courses = await _courseService.GetCourseByUserId(user.Id);
-            return View(courses);
+            return View(_context.OnlineCourses);
 
         }
 

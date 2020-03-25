@@ -15,7 +15,6 @@ namespace ErkinStudy.Domain.Entities.Lessons
         public bool IsActive { get; set; }
         public virtual Folder Folder { get; set; }
         public virtual ICollection<Content> Contents { get; set; }
-        public virtual ICollection<UserLesson> UserLessons { get; set; }
 
     }
 }

@@ -150,5 +150,30 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             return View(await _context.Folders.FindAsync(id));
         }
+
+        public async Task<IActionResult> ApprovedUsers(long id)
+        {
+            ViewData["FolderId"] = id;
+            return View(await _folderService.GetApprovedUsers(id));
+        }
+
+        public IActionResult ApproveUser(long folderId, string users)
+        {
+            var userList = users.Split(',');
+            foreach (var userEmail in userList)
+            {
+                var user =  _userManager.FindByEmailAsync(userEmail.Trim()).Result;
+                if (user == null)
+                    continue;
+                _folderService.ApproveUser(folderId, user.Id);
+            }
+            return RedirectToAction(nameof(Manage), new {id = folderId});
+        }
+
+        public IActionResult DeleteApprovedUser(long folderId, long userId)
+        {
+            _folderService.DeleteUser(folderId, userId);
+            return RedirectToAction(nameof(Manage), new { id = folderId });
+        }
     }
 }

@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Lessons.UserFolder>
+
+@{
+    ViewData["Title"] = "ApprovedUsers";
+}
+
+<h4>Approved Users</h4>
+<form asp-action="ApproveUser">
+    <div class="form-group">
+        <label>Users:</label>
+        <textarea class="form-control" name="users" rows="3"></textarea>
+    </div>
+    <input name="folderId" type="hidden" value="@ViewBag.FolderId" />
+    <div class="form-group">
+        <input type="submit" value="Approve" class="btn btn-primary" />
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Folder)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Folder.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { userId = item.UserId, folderId = item.FolderId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Manage" asp-route-id="@ViewBag.FolderId">Back to List</a>
+</div>

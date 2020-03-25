@@ -16,7 +16,7 @@
         <div class="card-list mt-5 mx-auto">
             @foreach (var quiz in Model)
             {
-                if (UserService.IsUserHasQuiz(userId, quiz.Id) || quiz.Price == 0)
+                @*if (UserService.IsUserHasQuiz(userId, quiz.Id) || quiz.Price == 0)
                 {
                     <div class="card text-white bg-primary mb-3">
                         <div class="card-body text-center">
@@ -36,7 +36,7 @@
                             </a>
                         </div>
                     </div>
-                }
+                }*@
             }
         </div>
     </div>

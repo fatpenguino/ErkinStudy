@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
-using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,48 @@ namespace ErkinStudy.Infrastructure.Services
         public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId)
         {
             return await _context.Folders.Where(x => x.TeacherId == teacherId).ToListAsync();
+        }
+
+        public async Task<List<UserFolder>> GetApprovedUsers(long folderId)
+        {
+            return await _context.UserFolders.Include(x => x.Folder).Include(x => x.User).Where(x => x.FolderId == folderId)
+                .ToListAsync();
+        }
+
+        public void ApproveUser(long folderId, long userId)
+        {
+            try
+            {
+                if (_context.UserFolders.Any(x => x.FolderId == folderId && x.UserId == userId))
+                    _logger.LogError($"Ошибка при потверждение пользователя {userId} для папки {folderId}, Ex: уже есть такой пользователь и папка");
+                var userFolder = new UserFolder() {UserId = userId, FolderId = folderId};
+                _context.UserFolders.Add(userFolder); 
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при потверждение пользователя {userId} для папки {folderId}, {e}");
+            }
+        }
+
+        public void DeleteUser(long folderId, long userId)
+        {
+            try
+            {
+                var userFolder =
+                    _context.UserFolders.FirstOrDefault(x => x.FolderId == folderId && x.UserId == userId);
+                if (userFolder != null)
+                {
+                    _context.UserFolders.Remove(userFolder);
+                    _context.SaveChanges();
+                }
+                else 
+                    _logger.LogError($"Ошибка при удаление пользователя {userId} для папки {folderId}, Ex: уже есть такой пользователь и папка");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при удаление пользователя {userId} для папки {folderId}, {e}");
+            }
         }
     }
 }

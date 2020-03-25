@@ -9,7 +9,8 @@
 @{
     ViewData["Title"] = "OnlineCourseSchedule";
     var nearestWeek = Model.OnlineCourseWeeks.OrderBy(x => x.StartDate).FirstOrDefault(x => x.StartDate > TimeZoneHelper.ConvertLocalDateTime());
-    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User), Model.Id);
+    //var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User), Model.Id);
+    var isApproved = true;
 }
 <div class="container">
     <div class="row">

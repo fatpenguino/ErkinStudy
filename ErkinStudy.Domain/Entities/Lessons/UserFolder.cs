@@ -2,11 +2,11 @@
 
 namespace ErkinStudy.Domain.Entities.Lessons
 {
-	public class UserLesson
+	public class UserFolder
     {
 	    public long UserId { get; set; }
-        public long LessonId { get; set; }
+        public long FolderId { get; set; }
         public virtual ApplicationUser User { get; set; }
-        public virtual Lesson Lesson { get; set; }
+        public virtual Folder Folder { get; set; }
     }
 }

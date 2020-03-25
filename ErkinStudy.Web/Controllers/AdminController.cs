@@ -78,23 +78,5 @@ namespace ErkinStudy.Web.Controllers
             await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ApproveOnlineCourse(long userId, long onlineCourseId = 4)
-        {
-            try
-            {
-                _logger.LogInformation($"Попытка потверждение онлайн курса - {onlineCourseId} для пользователя - {userId}");
-                var userOnlineCourse = new UserOnlineCourse { UserId = userId, OnlineCourseId = onlineCourseId };
-                await _dbContext.UserOnlineCourses.AddAsync(userOnlineCourse);
-                await _dbContext.SaveChangesAsync();
-                _logger.LogInformation($"Онлайн курс - {onlineCourseId} для пользователя - {userId} успешно подтвержден.");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Ошибка при подтверждений онлайн курса - {onlineCourseId} для пользователя - {userId}", e);
-            }
-            return RedirectToAction(nameof(Users));
-        }
     }
 }
