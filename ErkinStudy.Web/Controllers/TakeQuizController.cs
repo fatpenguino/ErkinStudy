@@ -68,7 +68,6 @@ namespace ErkinStudy.Web.Controllers
                     throw new NotImplementedException();
 
                 var currentUser = await _userManager.GetUserAsync(User);
-                var userService = new UserService(_dbContext, _userManager);
                 var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
 
                 //if ((!userService.IsUserHasQuiz(currentUser.Id, shortQuiz.Id) 

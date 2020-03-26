@@ -1,5 +1,6 @@
 ﻿@using System.Web
 @using ErkinStudy.Domain.Entities.Identity
+@using ErkinStudy.Domain.Entities.Lessons
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
 @model ErkinStudy.Domain.Entities.Lessons.Folder
@@ -24,7 +25,16 @@
                 <div class="col-auto mb-3">
                     <div class="card text-white bg-primary" style="width: 18rem;">
                         <div class="card-body text-center">
-                            <a asp-action="Folder" asp-route-id="@folder.Id" class="card-link text-white">@folder.Name</a>
+                            @if (folder.Price == 0 || FolderService.IsUserHasAccess(folder.Id, userId))
+                            {
+                                <a asp-action="Folder" asp-route-id="@folder.Id" class="card-link text-white">@folder.Name</a>
+                            }
+                            else
+                            {
+                                <a href="https://wa.me/@UserService.GetUserPhone(folder.TeacherId ?? -1)?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {folder.Name} курсына тіркелгім келеді")" class="card-link text-white">
+                                    @folder.Name
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -49,30 +59,15 @@
                             </div>
                         </div>
                     </div>
-            
-                    <div class="card bg-light mb-3">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@quiz.Title</h5>
-                            <p class="card-text mb-0">Бағасы: @quiz.Price теңге</p>
-                            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {quiz.Title}(id={quiz.Id}) тестін сатып алғым келеді")" type="button" class="btn btn-primary my-2 mx-auto">
-                                Онлайн тестті сатып алу
-                            </a>
-                        </div>
-                    </div>
-                
             }
-            @foreach (var lesson in Model.Lessons)
+            @foreach (var lesson in Model.Lessons ?? new List<Lesson>())
             {
                 <div class="col-auto mb-3">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body text-center">
                             <h5 class="card-title">@lesson.Name</h5>
-                            <p class="card-text">@lesson.Description Багасы: @lesson.Price тг.</p>
-                            
-                                <a asp-controller="Col" asp-action="Detail" asp-route-id="@lesson.Id" class="card-link">Ашу</a>
-
-                                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {lesson.Name}(Id-{lesson.Id}) сабағын сатып алғым келеді")" class="card-link">Сатып алу</a>
-                            <p class="card-text">Сабақты сатып алу ушін тіркеліңіз!</p>
+                            <p class="card-text">@lesson.Description</p>
+                            <a asp-controller="Col" asp-action="Detail" asp-route-id="@lesson.Id" class="card-link">Ашу</a>
                         </div>
                     </div>
                 </div>

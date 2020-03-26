@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace ErkinStudy.Infrastructure.Services
 {
@@ -10,11 +12,12 @@ namespace ErkinStudy.Infrastructure.Services
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public UserService(AppDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly IConfiguration _configuration;
+        public UserService(AppDbContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         public string GetFullNameByUserName(string username)
@@ -32,6 +35,12 @@ namespace ErkinStudy.Infrastructure.Services
             var teacherRole = _context.Roles.First(x => x.Name == "Teacher");
             var userRoles = _context.UserRoles.Where(x => x.RoleId == teacherRole.Id);
             return _context.Users.Where(x => userRoles.Any(r => r.UserId == x.Id)).ToList();
+        }
+
+        public string GetUserPhone(long userId)
+        {
+            var user = _userManager.FindByIdAsync(userId.ToString()).Result;
+                return user == null ? _configuration.GetSection("DefaultSettings")["Phone"] : user.PhoneNumber.Replace("+","").Replace(" ","");
         }
     }
 }

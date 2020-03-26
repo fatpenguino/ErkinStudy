@@ -1,11 +1,10 @@
-﻿@using System.Web
-@using ErkinStudy.Infrastructure.Services
+﻿@using ErkinStudy.Infrastructure.Services
 @using ErkinStudy.Domain.Entities.Identity
 @using Microsoft.AspNetCore.Identity
 
 @inject UserService UserService
 @inject UserManager<ApplicationUser> UserManager
-
+@inject FolderService FolderService
 @model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
 @{
     ViewData["Title"] = "Tests";
@@ -16,27 +15,12 @@
         <div class="card-list mt-5 mx-auto">
             @foreach (var quiz in Model)
             {
-                @*if (UserService.IsUserHasQuiz(userId, quiz.Id) || quiz.Price == 0)
-                {
-                    <div class="card text-white bg-primary mb-3">
-                        <div class="card-body text-center">
-                            <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white">@quiz.Title</a>
-                            <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
-                        </div>
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body text-center">
+                        <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white">@quiz.Title</a>
+                        <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
                     </div>
-                }
-                else
-                {
-                    <div class="card bg-light mb-3">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@quiz.Title</h5>
-                            <p class="card-text mb-0">Бағасы: @quiz.Price теңге</p>
-                            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {quiz.Title}(id={quiz.Id}) тестін сатып алғым келеді")" type="button" class="btn btn-primary my-2 mx-auto">
-                                Онлайн тестті сатып алу
-                            </a>
-                        </div>
-                    </div>
-                }*@
+                </div>
             }
         </div>
     </div>

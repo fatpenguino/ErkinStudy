@@ -41,7 +41,7 @@ namespace ErkinStudy.Infrastructure.Services
         
         public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId)
         {
-            return await _context.Folders.Where(x => x.TeacherId == teacherId).ToListAsync();
+            return await _context.Folders.Include(x => x.Lessons).Where(x => x.TeacherId == teacherId).ToListAsync();
         }
 
         public async Task<List<UserFolder>> GetApprovedUsers(long folderId)
@@ -85,5 +85,23 @@ namespace ErkinStudy.Infrastructure.Services
                 _logger.LogError($"Ошибка при удаление пользователя {userId} для папки {folderId}, {e}");
             }
         }
+
+        public bool IsUserHasAccess(long folderId, long userId)
+        {
+            var folder = _context.Folders.Include(x => x.UserFolders).FirstOrDefault(x => x.Id == folderId);
+            if (folder == null)
+                return false;
+            if (folder.UserFolders.Any(x => x.UserId == userId))
+                return true;
+
+            return folder.ParentId.HasValue && IsUserHasAccess(folder.ParentId.Value, userId);
+        }
+
+        public long GetFolderPrice(long id)
+        {
+            return _context.Folders.FirstOrDefault(x => x.Id == id)?.Price ?? 0;
+        }
+
     }
+
 }

@@ -11,7 +11,6 @@ namespace ErkinStudy.Domain.Entities.Lessons
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public uint Order { get; set; }
-        public int Price { get; set; }
         public bool IsActive { get; set; }
         public virtual Folder Folder { get; set; }
         public virtual ICollection<Content> Contents { get; set; }
