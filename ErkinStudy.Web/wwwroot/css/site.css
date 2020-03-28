@@ -59,8 +59,8 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
 .footer {
   position: absolute;
@@ -106,10 +106,10 @@ body {
     padding: 0;
 }
 .logo-text-first {
-    color: #c00000;
+    color: #f67e7d;
 }
 .logo-text-second {
-    color: #1f4e79;
+    color: #5a819e;
     margin-left: -5.5px;
 }
 .logo-sabaq {
@@ -267,3 +267,9 @@ body {
 }
 
   /*END SIMPLE LOADER*/
+
+.folder-button {
+    border-radius: 0;
+    font-family: Lora;
+    background-color: #66a1d2 !important;
+}
