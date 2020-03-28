@@ -273,3 +273,9 @@ body {
     font-family: Lora;
     background-color: #66a1d2 !important;
 }
+.table-plain tbody tr,
+.table-plain tbody tr:hover,
+.table-plain tbody td {
+    background-color: transparent;
+    border: none;
+}

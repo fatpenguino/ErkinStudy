@@ -3,13 +3,13 @@
 @inject CourseService CourseService
 @{
     ViewData["Title"] = "Index";
-    var course = CourseService.GetById(ViewBag.OnlineCourseId);
+    var course = Model.First()?.OnlineCourse;
 }
 
 <h3>Weeks</h3>
 
+<a asp-controller="Folder" asp-action="Manage" asp-route-id="@course?.FolderId" class="btn btn-primary">Back</a>
 <p>
-    <a asp-controller="Folder" asp-action="Manage" asp-route-id="@course.FolderId" class="btn btn-primary">Back</a>
     <a asp-action="Create" asp-route-onlineCourseId="@ViewBag.OnlineCourseId">Create New</a>
 </p>
 <table class="table">
@@ -37,33 +37,34 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Order)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StreamUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OnlineCourse.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Homeworks" asp-route-id="@item.Id">Homeworks</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Order)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StreamUrl)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OnlineCourse.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Homeworks" asp-route-id="@item.Id">Homeworks</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

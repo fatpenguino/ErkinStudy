@@ -39,9 +39,13 @@ namespace ErkinStudy.Infrastructure.Services
             return active ? await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync() : await _context.Folders.Where(x => x.ParentId == id).ToListAsync();
         }
         
-        public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId)
+        public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId, bool withParent = false)
         {
-            return await _context.Folders.Include(x => x.Lessons).Where(x => x.TeacherId == teacherId).ToListAsync();
+            return withParent
+                ? await _context.Folders.Where(x => x.ParentId.HasValue).Include(x => x.Lessons)
+                    .Where(x => x.TeacherId == teacherId).ToListAsync()
+                : await _context.Folders.Where(x => !x.ParentId.HasValue).Include(x => x.Lessons)
+                    .Where(x => x.TeacherId == teacherId).ToListAsync();
         }
 
         public async Task<List<UserFolder>> GetApprovedUsers(long folderId)

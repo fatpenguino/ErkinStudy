@@ -26,7 +26,7 @@ namespace ErkinStudy.Infrastructure.Services
             {
                 var quizzes = active ? await _context.Quizzes.Where(x =>  x.FolderId == folderId && x.IsActive)
                     .OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync() : await _context.Quizzes.Where(x => x.FolderId == folderId)
-                    .OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
+                    .OrderBy(x => x.Order).ThenBy(x => x.IsActive ? 0 : 1).ThenBy(x => x.Title).ToListAsync();
                 return quizzes;
             }
             catch (Exception e)
