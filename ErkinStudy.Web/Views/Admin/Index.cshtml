@@ -7,21 +7,11 @@
 {
     <a asp-controller="Folder" asp-action="Index" class="btn btn-primary">Folders</a>
 
-    <a asp-controller="OnlineCourse" asp-action="Index" class="btn btn-primary">Online Courses</a>
-
     <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Quizzes</a>
 
     <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">Users Management</a>
 
-    <a asp-controller="UserLesson" asp-action="Index" class="btn btn-primary">Users Lessons</a>
-
-    <a asp-controller="UserOnlineCourse" asp-action="Index" class="btn btn-primary">Users Courses</a>
-
     <a asp-controller="UserRole" asp-action="Index" class="btn btn-primary">User Roles</a>
-}
-@if (User.IsInRole("Moderator"))
-{
-    <a asp-controller="Quiz" asp-action="Index" class="btn btn-primary">Quizzes</a>
 }
 @if (User.IsInRole("Teacher"))
 {

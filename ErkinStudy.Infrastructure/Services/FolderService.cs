@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Infrastructure.Context;
@@ -39,9 +38,13 @@ namespace ErkinStudy.Infrastructure.Services
             return active ? await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync() : await _context.Folders.Where(x => x.ParentId == id).ToListAsync();
         }
         
-        public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId)
+        public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId, bool withParent = false)
         {
-            return await _context.Folders.Include(x => x.Lessons).Where(x => x.TeacherId == teacherId).ToListAsync();
+            return withParent
+                ? await _context.Folders.Where(x => x.ParentId.HasValue).Include(x => x.Lessons)
+                    .Where(x => x.TeacherId == teacherId).ToListAsync()
+                : await _context.Folders.Where(x => !x.ParentId.HasValue).Include(x => x.Lessons)
+                    .Where(x => x.TeacherId == teacherId).ToListAsync();
         }
 
         public async Task<List<UserFolder>> GetApprovedUsers(long folderId)
@@ -91,7 +94,7 @@ namespace ErkinStudy.Infrastructure.Services
             var folder = _context.Folders.Include(x => x.UserFolders).FirstOrDefault(x => x.Id == folderId);
             if (folder == null)
                 return false;
-            if (folder.UserFolders.Any(x => x.UserId == userId))
+            if (folder.UserFolders.Any(x => x.UserId == userId) || folder.TeacherId == userId)
                 return true;
 
             return folder.ParentId.HasValue && IsUserHasAccess(folder.ParentId.Value, userId);

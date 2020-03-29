@@ -3,11 +3,11 @@
 @inject QuizService QuizService
 @{
     ViewData["Title"] = "Index";
-    var quiz = QuizService.GetById(ViewBag.QuizId);
+    long folderId = Model.Any() ? Model.First().Quiz.FolderId : QuizService.GetById(ViewBag.QuizId).Result.FolderId;
 }
 
 <h1>Questions</h1>
-<a asp-controller="Folder" asp-action="Manage" asp-route-id="@quiz.FolderId" class="btn btn-primary">Back</a>
+<a asp-controller="Folder" asp-action="Manage" asp-route-id="@folderId" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-quizId="@ViewBag.QuizId">Create New</a>
 </p>

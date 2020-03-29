@@ -3,11 +3,11 @@
 @inject LessonService LessonService
 @{
     ViewData["Title"] = "Content List";
-    var lesson = await LessonService.GetById(ViewBag.LessonId);
+    var folderId = Model.Any() ? Model.First().Lesson.FolderId : await LessonService.GetById(ViewBag.LessonId).Result.FolderId;
 }
 
 <h3>Contents</h3>
-<a asp-controller="Folder" asp-action="Manage" asp-route-id="@lesson.FolderId" class="btn btn-primary">Back</a>
+<a asp-controller="Folder" asp-action="Manage" asp-route-id="@folderId" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-lessonId="@ViewBag.LessonId">Create New</a>
 </p>

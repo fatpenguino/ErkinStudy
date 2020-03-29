@@ -32,7 +32,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Folder
         public async Task<IActionResult> Index()
         {
-            return User.IsInRole("Teacher") ? View(await _folderService.GetFoldersByTeacherId(_userManager.FindByNameAsync(User.Identity.Name).Result.Id)) : View(_context.Folders.Include(x =>x.Lessons).AsQueryable());
+            return User.IsInRole("Teacher") ? View(await _folderService.GetFoldersByTeacherId(_userManager.FindByNameAsync(User.Identity.Name).Result.Id, true)) : View(_context.Folders.Where(x => !x.ParentId.HasValue).Include(x =>x.Lessons).AsQueryable());
         }
 
         // GET: Folder/Details/5
@@ -77,8 +77,9 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
 				folder.CreatedAt = DateTime.Now;
                 _context.Add(folder);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync(); 
+                return folder.ParentId.HasValue ? RedirectToAction(nameof(Manage), new { id = folder.ParentId }) : RedirectToAction(nameof(Index));
+
             }
             return View(folder);
         }
@@ -113,7 +114,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 _context.Update(folder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return folder.ParentId.HasValue ? RedirectToAction(nameof(Manage), new {id = folder.ParentId}) : RedirectToAction(nameof(Index));
             }
             return View(folder);
         }

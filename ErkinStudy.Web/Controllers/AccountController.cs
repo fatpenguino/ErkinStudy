@@ -206,7 +206,7 @@ namespace ErkinStudy.Web.Controllers
             //_userManager.AddToRoleAsync(user, "Moderator").Wait();
             //AppDbInitializer.SeedUsers(_userManager, _roleManager);
             var role = new ApplicationRole();
-            role.Name = "Teacher";
+            role.Name = "Moderator";
             _roleManager.CreateAsync(role).Wait();
             return View(nameof(Login));
         }
