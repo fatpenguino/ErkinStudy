@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using ErkinStudy.Domain.Entities.Identity;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -18,14 +16,21 @@ namespace ErkinStudy.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _dbContext;
         private readonly EmailService _emailService;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService,
-            UserManager<ApplicationUser> userManager)
+        private readonly FolderService _folderService;
+        private readonly QuizService _quizService;
+        private readonly LessonService _lessonService;
+        private readonly CourseService _courseService;
+
+
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, LessonService lessonService, FolderService folderService, QuizService quizService)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
-            _userManager = userManager;
+            _courseService = courseService;
+            _lessonService = lessonService;
+            _folderService = folderService;
+            _quizService = quizService;
         }
         public async Task<IActionResult> Index()
         {
@@ -46,10 +51,6 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> FreeCourse()
-        {
-            return View( await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).FirstOrDefaultAsync(x => x.Id == 3));
-        }
         public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
         {
             var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).ThenInclude(x => x.Homeworks)
@@ -58,6 +59,16 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Folder(long id)
         {
+            var childs = await _folderService.GetChilds(id);
+            var courses = await _courseService.GetByFolderId(id);
+            var quizzes = await _quizService.GetByFolderId(id);
+            var lessons = await _lessonService.GetByFolderId(id);
+            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0 && lessons.Count == 0)
+               return RedirectToAction("Index", "Course",new { onlineCourseId = courses.First().Id});
+            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1 && lessons.Count == 0)
+               return RedirectToAction("Quiz","TakeQuiz", new { id = quizzes.First().Id });
+            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 0 && lessons.Count == 1)
+               return RedirectToAction("Detail","Col", new { id = lessons.First().Id });
             return View(await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive));
         }
         public async Task<IActionResult> Tests()

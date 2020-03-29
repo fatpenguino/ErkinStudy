@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Infrastructure.Context;
@@ -95,7 +94,7 @@ namespace ErkinStudy.Infrastructure.Services
             var folder = _context.Folders.Include(x => x.UserFolders).FirstOrDefault(x => x.Id == folderId);
             if (folder == null)
                 return false;
-            if (folder.UserFolders.Any(x => x.UserId == userId))
+            if (folder.UserFolders.Any(x => x.UserId == userId) || folder.TeacherId == userId)
                 return true;
 
             return folder.ParentId.HasValue && IsUserHasAccess(folder.ParentId.Value, userId);

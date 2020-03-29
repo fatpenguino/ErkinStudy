@@ -3,12 +3,12 @@
 @inject CourseService CourseService
 @{
     ViewData["Title"] = "Index";
-    var course = Model.First()?.OnlineCourse;
+    var folderId = Model.Any() ? Model.First()?.OnlineCourse.FolderId : CourseService.GetById(ViewBag.OnlineCourseId).Result.FolderId;
 }
 
 <h3>Weeks</h3>
 
-<a asp-controller="Folder" asp-action="Manage" asp-route-id="@course?.FolderId" class="btn btn-primary">Back</a>
+<a asp-controller="Folder" asp-action="Manage" asp-route-id="@folderId" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-onlineCourseId="@ViewBag.OnlineCourseId">Create New</a>
 </p>
