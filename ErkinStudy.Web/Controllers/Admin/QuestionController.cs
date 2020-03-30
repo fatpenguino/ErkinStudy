@@ -12,7 +12,7 @@ using ErkinStudy.Domain.Entities.Quizzes;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Moderator,Admin")]
+    [Authorize(Roles = "Moderator,Admin,Teacher")]
     public class QuestionController : Controller
     {
         private readonly AppDbContext _context;
