@@ -64,7 +64,7 @@ namespace ErkinStudy.Web.Controllers
             var quizzes = await _quizService.GetByFolderId(id);
             var lessons = await _lessonService.GetByFolderId(id);
             if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0 && lessons.Count == 0)
-               return RedirectToAction("Index", "Course",new { onlineCourseId = courses.First().Id});
+               return RedirectToAction("Index", "Course",new { id = courses.First().Id});
             if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1 && lessons.Count == 0)
                return RedirectToAction("Quiz","TakeQuiz", new { id = quizzes.First().Id });
             if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 0 && lessons.Count == 1)

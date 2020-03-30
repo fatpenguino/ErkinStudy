@@ -35,7 +35,7 @@ namespace ErkinStudy.Web.Controllers
             return View(quizzes);
         }
 
-        [Authorize(Roles = "Moderator,Admin")]
+        [Authorize(Roles = "Moderator,Admin,Teacher")]
         public async Task<IActionResult> Preview(long? id)
         {
             try
