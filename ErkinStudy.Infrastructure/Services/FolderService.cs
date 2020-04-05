@@ -42,9 +42,9 @@ namespace ErkinStudy.Infrastructure.Services
         {
             return withParent
                 ? await _context.Folders.Where(x => x.ParentId.HasValue).Include(x => x.Lessons)
-                    .Where(x => x.TeacherId == teacherId).ToListAsync()
+                    .Where(x => x.TeacherId == teacherId).OrderBy(x => x.Order).ToListAsync()
                 : await _context.Folders.Where(x => !x.ParentId.HasValue).Include(x => x.Lessons)
-                    .Where(x => x.TeacherId == teacherId).ToListAsync();
+                    .Where(x => x.TeacherId == teacherId).OrderBy(x => x.Order).ToListAsync();
         }
 
         public async Task<List<UserFolder>> GetApprovedUsers(long folderId)

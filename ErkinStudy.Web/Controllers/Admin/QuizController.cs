@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ErkinStudy.Infrastructure.Context;
@@ -8,6 +9,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using ErkinStudy.Domain.Entities.Quizzes;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -16,17 +18,19 @@ namespace ErkinStudy.Web.Controllers.Admin
     {
 	    private readonly AppDbContext _dbContext;
         private readonly IWebHostEnvironment _appEnvironment;
-        public QuizController(AppDbContext dbContext, IWebHostEnvironment appEnvironment)
+        private readonly ILogger<QuizController> _logger;
+        public QuizController(AppDbContext dbContext, IWebHostEnvironment appEnvironment, ILogger<QuizController> logger)
         {
             _dbContext = dbContext;
             _appEnvironment = appEnvironment;
+            _logger = logger;
         }
 
         // GET: Quiz
-        [Authorize(Roles = "Admin,Moderator")]
+        [Authorize(Roles = "Admin,Moderator,Teacher")]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.Include(x => x.Questions).OrderByDescending(x => x.IsActive).ToListAsync());
+            return View(await _dbContext.Quizzes.OrderByDescending(x => x.IsActive).ToListAsync());
         }
 
         // GET: Quiz/Create
@@ -115,11 +119,9 @@ namespace ErkinStudy.Web.Controllers.Admin
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             List<Question> questions = (List<Question>)quiz.Questions;
-            QuestionController questionController = new QuestionController(_dbContext, _appEnvironment);
-
             try
             {
-                questions.ForEach(x => questionController.DeleteQuestionWithoutSaveChange(x));
+                questions.ForEach(DeleteQuestionWithoutSaveChange);
             }
             catch
             {
@@ -135,6 +137,25 @@ namespace ErkinStudy.Web.Controllers.Admin
             var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id)
                 .OrderByDescending(x => x.TakenTime).ToListAsync();
             return View(scores);
+        }
+
+        public void DeleteQuestionWithoutSaveChange(Question question)
+        {
+            if (question.ImagePath != null)
+            {
+                try
+                {
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка при удалений question - {question.Id}, {e}");
+                }
+            }
+
+            var answers = question.Answers;
+            _dbContext.Answers.RemoveRange(answers);
+            _dbContext.Questions.Remove(question);
         }
     }
 }

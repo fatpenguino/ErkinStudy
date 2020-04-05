@@ -28,7 +28,6 @@
         </div>
         <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionFolder">
             <div class="card-body">
-                <h4>Folders</h4>
                 <p>
                     <a asp-action="Create" asp-route-parentId="@Model.Id" asp-route-teacherId="@Model.TeacherId">Create New</a>
                 </p>
@@ -100,9 +99,8 @@
                 </button>
             </h2>
         </div>
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree">
             <div class="card-body">
-                <h4>Courses</h4>
                 <p>
                     <a asp-controller="OnlineCourse" asp-action="Create" asp-route-folderId="@Model.Id">Create New Course</a>
                 </p>
@@ -166,9 +164,8 @@
                 </button>
             </h2>
         </div>
-        <div id="collapseFour" class="collapse" aria-labelledby="headingFour">
+        <div id="collapseFour" class="collapse show" aria-labelledby="headingFour">
             <div class="card-body">
-                <h4>Quizzes</h4>
                 <p>
                     <a asp-controller="Quiz" asp-action="Create" asp-route-folderId="@Model.Id">Create New Quiz</a>
                 </p>
@@ -236,9 +233,8 @@
                 </button>
             </h2>
         </div>
-        <div id="collapseFive" class="collapse" aria-labelledby="headingFive">
+        <div id="collapseFive" class="collapse show" aria-labelledby="headingFive">
             <div class="card-body">
-                <h4>Lessons</h4>
                 <p>
                     <a asp-controller="Lesson" asp-action="Create" asp-route-folderId="@Model.Id">Create New Lesson</a>
                 </p>
@@ -307,7 +303,7 @@
         </h2>
     </div>
 
-    <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
         <div class="card-body">
             <form asp-action="ApproveUser">
                 <div class="form-group">
@@ -319,36 +315,45 @@
                     <input type="submit" value="Approve" class="btn btn-primary" />
                 </div>
             </form>
-            <h4>Approved Users</h4>
             <table class="table">
                 <thead>
-                <tr>
-                    <th>
-                        User Email
-                    </th>
-                    <th>
-                        Folder
-                    </th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th>
+                            N
+                        </th>
+                        <th>
+                            User Email
+                        </th>
+                        <th>
+                            Folder
+                        </th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach (var user in users)
-                {
-                    <tr>
-                        <td>
-                            @user.User.UserName
-                        </td>
-                        <td>
-                            @user.Folder.Name
-                        </td>
-                        <td>
-                            @Html.ActionLink("Delete", "DeleteApprovedUser", new { userId = user.UserId, folderId = user.FolderId })
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+                    @{
+                        int j = 0;
+                        foreach (var user in users.OrderBy(x => x.User.UserName))
+                        {
+                            j++;
+                            <tr>
+                                <td>
+                                    @j
+                                </td>
+                                <td>
+                                    @user.User.UserName
+                                </td>
+                                <td>
+                                    @user.Folder.Name
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Delete", "DeleteApprovedUser", new { userId = user.UserId, folderId = user.FolderId })
+                                </td>
+                            </tr>
+                    }
+                    }
+                    </tbody>
+                </table>
         </div>
     </div>
 </div>

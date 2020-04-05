@@ -25,7 +25,7 @@
                 <div class="col-auto mb-3">
                     <div class="card text-white bg-primary" style="width: 18rem;">
                         <div class="card-body text-center folder-button">
-                            @if (folder.Price == 0 || FolderService.IsUserHasAccess(folder.Id, userId))
+                            @if (folder.Price == 0 || User.IsInRole("Admin") || FolderService.IsUserHasAccess(folder.Id, userId))
                             {
                                 <a asp-action="Folder" asp-route-id="@folder.Id" class="card-link text-white folder-button">@folder.Name</a>
                             }

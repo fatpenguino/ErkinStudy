@@ -73,9 +73,9 @@
 </div>
 
 <div>
-    @if (@Model.ParentId.HasValue)
+    @if (Model.ParentId.HasValue)
     {
-        <a asp-action="Manage" asp-route-id="@ViewBag.ParentId">Back to List</a>
+        <a asp-action="Manage" asp-route-id="@Model.ParentId">Back to List</a>
     }
     else
     {
