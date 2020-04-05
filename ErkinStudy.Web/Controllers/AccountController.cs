@@ -92,6 +92,8 @@ namespace ErkinStudy.Web.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation($"Пользователь {userName} успешно вошел в сайт.");
+                    if (!string.IsNullOrWhiteSpace(returnUrl))
+                        return Redirect(returnUrl);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -130,7 +132,9 @@ namespace ErkinStudy.Web.Controllers
                     TempData["SuccessMessage"] = "Тіркелу сәтті өтті.";
                     _logger.LogInformation($"Пользователь успешно зарегистрирован. { user.Id} - {user.UserName}");
                     await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                    return RedirectToAction("Index", "Home");
+                    if (!string.IsNullOrWhiteSpace(returnUrl))
+                        return Redirect(returnUrl);
+                    RedirectToAction("Index","Home");
                 }
 
                 var message = string.Join(" | ", result.Errors
@@ -239,9 +243,12 @@ namespace ErkinStudy.Web.Controllers
                 _logger.LogInformation($"Пользователь {user.Email} успешно сбросил пароль.");
                 return View("ResetPasswordConfirmation");
             }
+            var message = string.Join(" | ", result.Errors
+                .Select(v => v.Description));
             var modelMessage = string.Join(" | ", ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage));
+            ModelState.AddModelError(string.Empty, message);
             _logger.LogError($"Ошибка при сбросе пароля для пользователя {model.Email}, {modelMessage}");
             return View(model);
         }
