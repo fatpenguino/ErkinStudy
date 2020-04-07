@@ -27,13 +27,13 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Кіру</button>
+                    <a asp-action="Register" class="btn btn-primary" asp-route-returnurl="@ViewData["ReturnUrl"]">Сайтқа тіркелу</a>
                 </div>
                 <div class="form-group">
                     <p>
                         <a asp-action="ForgotPassword">Құпиясөзді ұмытып қалдыңыз ба?</a>
                     </p>
                     <p>
-                        <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Тіркелу</a>
                     </p>
                 </div>
             </form>

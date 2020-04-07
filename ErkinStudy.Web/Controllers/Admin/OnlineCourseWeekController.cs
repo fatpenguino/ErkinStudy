@@ -9,6 +9,7 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -17,10 +18,12 @@ namespace ErkinStudy.Web.Controllers.Admin
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _appEnvironment;
-        public OnlineCourseWeekController(AppDbContext context, IWebHostEnvironment appEnvironment)
+        private readonly ILogger<OnlineCourseWeekController> _logger;
+        public OnlineCourseWeekController(AppDbContext context, IWebHostEnvironment appEnvironment, ILogger<OnlineCourseWeekController> logger)
         {
             _context = context;
             _appEnvironment = appEnvironment;
+            _logger = logger;
         }
 
         // GET: OnlineCourseWeek
@@ -152,16 +155,23 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             if (uploadedHomework != null)
             {
-                // путь к папке Homeworks
-                string path = "/Homeworks/" + uploadedHomework.FileName;
-                // сохраняем файл в папку Homeworks в каталоге wwwroot
-                await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                try
                 {
-                    await uploadedHomework.CopyToAsync(fileStream);
+                    // путь к папке Homeworks
+                    string path = "/Homeworks/" + uploadedHomework.FileName;
+                    // сохраняем файл в папку Homeworks в каталоге wwwroot
+                    await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await uploadedHomework.CopyToAsync(fileStream);
+                    }
+                    var homework = new Homework() { Name = uploadedHomework.FileName, Path = path, OnlineCourseWeekId = onlineCourseWeekId, UploadTime = DateTime.UtcNow };
+                    _context.Homeworks.Add(homework);
+                    await _context.SaveChangesAsync();
                 }
-                var homework = new Homework() { Name = uploadedHomework.FileName, Path = path, OnlineCourseWeekId = onlineCourseWeekId, UploadTime = DateTime.UtcNow};
-                _context.Homeworks.Add(homework);
-                await _context.SaveChangesAsync();
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка при загрузке файла homework- {e}");
+                }
             }
             return RedirectToAction("Homeworks", new { id = onlineCourseWeekId });
         }
