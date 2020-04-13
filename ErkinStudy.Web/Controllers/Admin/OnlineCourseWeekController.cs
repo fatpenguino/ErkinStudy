@@ -64,7 +64,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,OnlineCourseId,Name,Description,StartDate,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
+        public async Task<IActionResult> Create([Bind("Id,OnlineCourseId,Name,Description,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,OnlineCourseId,Name,Description,StartDate,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,OnlineCourseId,Name,Description,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
         {
             if (id != onlineCourseWeek.Id)
             {
