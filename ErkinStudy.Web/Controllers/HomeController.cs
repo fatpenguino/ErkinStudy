@@ -80,7 +80,23 @@ namespace ErkinStudy.Web.Controllers
         {
             return View();
         }
-
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Contact(string name, string email, string subject, string message)
+        {
+            try
+            {
+                await _emailService.SendEmailAsync(subject, $"Пообщаться: Аты - {name}, Email - {email}, Message: {message}");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка во время отправки из формы контактов, {e}");
+            }
+            return RedirectToAction("Index");
+        }
         public IActionResult Offer()
         {
             return View();
