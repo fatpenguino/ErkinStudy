@@ -71,6 +71,9 @@ namespace ErkinStudy.Web.Controllers.Admin
                         ImagePath = path
                     };
 
+                    questionViewModel.Answers.ForEach(x => x.Question = question);
+                    question.Answers = questionViewModel.Answers;
+
                     _context.Add(question);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index), new { question.QuizId });
@@ -92,6 +95,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             var question = await _context.Questions
+                .Include(x => x.Answers)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (question == null)
             {
@@ -101,7 +105,8 @@ namespace ErkinStudy.Web.Controllers.Admin
             
             var questionViewModel =  new QuestionViewModel(){
                 QuizId = question.QuizId,
-                Content = question.Content
+                Content = question.Content,
+                Answers = question.Answers.ToList()
             };
             return View(questionViewModel);
         }
@@ -142,6 +147,9 @@ namespace ErkinStudy.Web.Controllers.Admin
                     question.Content = questionViewModel.Content;
                     question.ImagePath = path;
 
+                    questionViewModel.Answers.ForEach(x => x.Question = question);
+                    question.Answers = questionViewModel.Answers;
+
                     _context.Update(question);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index), new { question.QuizId });
@@ -153,6 +161,14 @@ namespace ErkinStudy.Web.Controllers.Admin
                 }
             }
             return View(questionViewModel);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public ActionResult AddAnswer([Bind("Answers,Id")] QuestionViewModel question)
+        {
+            question.Answers.Add(new Answer(){ QuestionId = question.Id });
+            return PartialView("Answer", question);
         }
 
         // GET: Question/Delete/5
