@@ -71,7 +71,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Name,Description,ParentId,TeacherId,Order,Price,IsActive")] Folder folder)
+        public async Task<IActionResult> Create([Bind("Name,Description,ParentId,TeacherId,Order,Price,IsActive,LandingPage,EnableLanding")] Folder folder)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,Price,IsActive")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,Price,IsActive,LandingPage,EnableLanding")] Folder folder)
         {
             if (id != folder.Id)
             {

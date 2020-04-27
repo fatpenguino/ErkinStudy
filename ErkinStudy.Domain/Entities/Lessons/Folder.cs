@@ -14,6 +14,8 @@ namespace ErkinStudy.Domain.Entities.Lessons
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
         public long Price { get; set; }
+        public string LandingPage { get; set; }
+        public bool EnableLanding { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; }
         public virtual ICollection<UserFolder> UserFolders { get; set; }
     }

@@ -44,6 +44,11 @@
                         <option value="">No teacher</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label asp-for="LandingPage"></label>
+                    <textarea asp-for="LandingPage"  class="form-control" cols="2"></textarea>
+                    <span asp-validation-for="LandingPage" class="text-danger"></span>
+                </div>
             }
             else
             {
@@ -63,6 +68,11 @@
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div> 
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="EnableLanding" /> @Html.DisplayNameFor(model => model.EnableLanding)
                 </label>
             </div>
             <div class="form-group">

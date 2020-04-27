@@ -107,5 +107,10 @@ namespace ErkinStudy.Web.Controllers
             _logger.LogError($"Ошибка {HttpContext.TraceIdentifier}");
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public async Task<IActionResult> Landing(long id)
+        {
+            return View(await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id));
+        }
     }
 }
