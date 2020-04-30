@@ -1,9 +1,33 @@
-﻿@model ErkinStudy.Domain.Entities.Lessons.Folder
+﻿@model LandingViewModel
 @{
-    ViewData["Title"] = "Landing";
+    ViewData["Title"] = Model.Name;
 }
-<div class="container mt-2">
-    <div class="row">
-        @Html.Raw(Model.LandingPage)
+<section class="jumbotron text-center p-3 mb-0">
+    <div class="container">
+        <h2>@Model.Name</h2>
+        <p class="lead text-muted">@Model.Description</p>
+    </div>
+</section>
+
+<div class="pb-5">
+    <div class="landing-body row">
+        <div class="landing-media col-md-6">
+            @if (Model.Media.Type == MediaType.Image)
+            {
+                <img src="@Model.Media.Path" class="img-fluid" alt="">
+            }
+            else
+            {
+                <iframe src="@Model.Media.Path" allowfullscreen="allowfullscreen">
+                </iframe>
+            }
+        </div>
+        <div class="landing-content col-md-6">
+            <div class="landing-text text-justify p-1">
+                @Model.Text
+            </div>
+            <p class="landing-price mt-1">Багасы: @Model.Price т.</p>
+            <a class="btn btn-primary text-white">Сатып алу</a>
+        </div>
     </div>
 </div>

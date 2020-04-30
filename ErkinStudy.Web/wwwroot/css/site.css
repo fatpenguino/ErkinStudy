@@ -329,4 +329,28 @@ body {
     font-size: 24px;
 }
 
-/*END MOBILE*/
+.landing-body {
+}
+.landing-media {
+}
+.landing-media img {
+}
+
+.landing-media iframe{
+    width: inherit;
+    height: 100%;
+}
+@media only screen and (max-width: 600px) {
+    .landing-media img {
+        padding: 0 10px 20px 10px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: block !important;
+    }
+
+    .landing-media iframe {
+        width: inherit;
+        height: 200px;
+    }
+
+}
