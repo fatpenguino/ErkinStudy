@@ -13,6 +13,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="LandingPage" value="@Model.LandingPage" />
             <div class="form-group">
                 <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control" />
@@ -44,17 +45,11 @@
                         <option value="">No teacher</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label asp-for="LandingPage"></label>
-                    <textarea asp-for="LandingPage"  class="form-control" cols="2"></textarea>
-                    <span asp-validation-for="LandingPage" class="text-danger"></span>
-                </div>
             }
             else
             {
                 <input asp-for="TeacherId" type="hidden" value="@Model.TeacherId" />
             }
-
             <div class="form-group">
                 <label asp-for="Order"></label>
                 <input asp-for="Order" class="form-control" />
@@ -69,12 +64,19 @@
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
-            </div> 
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="EnableLanding" /> @Html.DisplayNameFor(model => model.EnableLanding)
-                </label>
             </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="EnableLanding" /> @Html.DisplayNameFor(model => model.EnableLanding)
+                    </label>
+                </div>
+            }
+            else
+            {
+                <input class="form-check-input" asp-for="EnableLanding" value="@Model.EnableLanding" />
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

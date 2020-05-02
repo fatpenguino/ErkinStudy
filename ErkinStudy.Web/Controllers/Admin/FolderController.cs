@@ -151,7 +151,31 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             return View(await _context.Folders.FindAsync(id));
         }
-
+        public async Task<IActionResult> Landing(long id)
+        {
+            return View(await _context.Folders.FindAsync(id));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Landing(long id, [Bind("Id,LandingPage,EnableLanding")] Folder model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                var folder = _context.Folders.FirstOrDefault(x => x.Id == model.Id);
+                if (folder != null)
+                {
+                    folder.LandingPage = model.LandingPage;
+                    folder.EnableLanding = model.EnableLanding;
+                    _context.Update(folder);
+                    await _context.SaveChangesAsync();
+                    return model.ParentId.HasValue ? RedirectToAction(nameof(Manage), new { id = model.ParentId }) : RedirectToAction(nameof(Index));
+                }
+            }
+            return View(model);
+        }
         public async Task<IActionResult> ApprovedUsers(long id)
         {
             ViewData["FolderId"] = id;

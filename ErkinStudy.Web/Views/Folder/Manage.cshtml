@@ -82,7 +82,12 @@
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@child.Id">Edit</a> |
                                     <a asp-action="Delete" asp-route-id="@child.Id">Delete</a> |
-                                    <a asp-action="Manage" asp-route-id="@child.Id">Manage</a>
+                                    <a asp-action="Manage" asp-route-id="@child.Id">Manage</a> 
+                                    @if (child.EnableLanding)
+                                    {
+                                        @: |
+                                        <a asp-action="Landing" asp-route-id="@child.Id">Landing Page</a>
+                                    }
                                 </td>
                             </tr>
                         }

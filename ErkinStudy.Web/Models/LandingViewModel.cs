@@ -7,7 +7,7 @@
         public string Description { get; set; }
         public string Text { get; set; }
         public long Price { get; set; }
-        public long TeacherId { get; set; }
+        public long? TeacherId { get; set; }
         public LandingMedia Media { get; set; }
     }
 

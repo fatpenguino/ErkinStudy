@@ -1,4 +1,7 @@
-﻿@model LandingViewModel
+﻿@using System.Web
+@using ErkinStudy.Infrastructure.Services
+@model LandingViewModel
+@inject UserService UserService
 @{
     ViewData["Title"] = Model.Name;
 }
@@ -27,7 +30,7 @@
                 @Model.Text
             </div>
             <p class="landing-price mt-1">Багасы: @Model.Price т.</p>
-            <a class="btn btn-primary text-white">Сатып алу</a>
+            <a href="https://wa.me/@UserService.GetUserPhone(Model.TeacherId ?? -1)?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {Model.Name} курсына тіркелгім келеді")" class="btn btn-primary text-white">Сатып алу</a>
         </div>
     </div>
 </div>
