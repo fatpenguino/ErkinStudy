@@ -7,11 +7,14 @@ namespace ErkinStudy.Domain.Entities.Lessons
     {
 	    public long Id { get; set; }
         public long? ParentId { get; set; }
+        public long? TeacherId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public uint Order { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
+        public long Price { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; }
+        public virtual ICollection<UserFolder> UserFolders { get; set; }
     }
 }

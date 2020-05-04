@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Admin,Teacher")]
     public class LessonController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,16 +20,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index(long? folderId)
         {
 	        ViewBag.FolderId = folderId;
-            return folderId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Include(x => x.Category).Where(x => x.FolderId == folderId).AsQueryable()) 
-										: View(_context.Lessons.Include(x => x.Folder).Include(x => x.Category).AsQueryable());
+            return folderId.HasValue ? View(_context.Lessons.Include(l => l.Folder).Where(x => x.FolderId == folderId).AsQueryable()) 
+										: View(_context.Lessons.Include(x => x.Folder).AsQueryable());
         }
 
         // GET: Lesson/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -49,11 +48,9 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Lesson/Create
-        [Authorize]
         public IActionResult Create(long folderId)
         {
 	        ViewBag.FolderId = folderId;
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -61,22 +58,19 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Create([Bind("FolderId,Name,Description,CategoryId,Order,Price,IsActive")] Lesson lesson)
+        public async Task<IActionResult> Create([Bind("FolderId,Name,Description,Order,Price,IsActive")] Lesson lesson)
         {
             if (ModelState.IsValid)
             {
 				lesson.CreatedAt = DateTime.Now;
 				_context.Add(lesson);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { folderId = lesson.FolderId });
+                return RedirectToAction("Manage","Folder", new { id = lesson.FolderId });
             }
             return View(lesson);
         }
 
         // GET: Lesson/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -89,7 +83,6 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", lesson.CategoryId);
             return View(lesson);
         }
 
@@ -97,9 +90,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,FolderId,Name,Description,CategoryId,Order,Price,IsActive")] Lesson lesson)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,FolderId,Name,Description,Order,Price,IsActive")] Lesson lesson)
         {
             if (id != lesson.Id)
             {
@@ -122,13 +113,12 @@ namespace ErkinStudy.Web.Controllers.Admin
 
 	                throw;
                 }
-                return RedirectToAction(nameof(Index), new { folderId = lesson.FolderId });
+                return RedirectToAction("Manage","Folder", new { id = lesson.FolderId });
             }
             return View(lesson);
         }
 
         // GET: Lesson/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -149,15 +139,12 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Lesson/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var lesson = await _context.Lessons.FindAsync(id);
-            var folderId = lesson.FolderId;
             _context.Lessons.Remove(lesson);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { folderId });
+            return RedirectToAction("Manage", "Folder", new { id = lesson.FolderId });
         }
 
         private bool LessonExists(long id)

@@ -19,7 +19,13 @@
                 @Html.DisplayNameFor(model => model.TakenTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                User Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Phone
             </th>
             <th></th>
         </tr>
@@ -38,6 +44,12 @@
             </td>
             <td>
                 @item.User.FirstName @item.User.LastName
+            </td>
+            <td>
+                @item.User.Email
+            </td>
+            <td>
+                @item.User.PhoneNumber
             </td>
         </tr>
 }

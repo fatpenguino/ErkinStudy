@@ -1,0 +1,35 @@
+﻿@model IEnumerable<UserRoleViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<br/>
+<h3>User Roles</h3>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>UserId</th>
+            <th>User Name</th>
+            <th>RoleId</th>
+            <th>Role Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.UserId</td>
+            <td>@item.Username</td>
+            <td>@item.RoleId</td>
+            <td>@item.RoleName</td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", new {roleId = item.RoleId, userId = item.UserId})
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

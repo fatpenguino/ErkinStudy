@@ -17,17 +17,17 @@ namespace ErkinStudy.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<AccountController> _logger;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly EmailService _emailService;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger, EmailService emailService)
+            ILogger<AccountController> logger, EmailService emailService, RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
             _logger = logger;
             _emailService = emailService;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -52,7 +52,6 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -84,11 +83,17 @@ namespace ErkinStudy.Web.Controllers
                     }
                     userName = user.UserName;
                 }
+                //mini hack
+                //var usr = await _userManager.FindByEmailAsync(model.Email);
+                //await _signInManager.SignInAsync(usr, true);
+                //return RedirectToAction("Index", "Home");
                 var result =
                     await _signInManager.PasswordSignInAsync(userName, model.Password, true, false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation($"Пользователь {userName} успешно вошел в сайт.");
+                    if (!string.IsNullOrWhiteSpace(returnUrl))
+                        return Redirect(returnUrl);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -113,7 +118,6 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             _logger.LogInformation($"Попытка регистраций пользователя {model.Email}.");
@@ -128,7 +132,9 @@ namespace ErkinStudy.Web.Controllers
                     TempData["SuccessMessage"] = "Тіркелу сәтті өтті.";
                     _logger.LogInformation($"Пользователь успешно зарегистрирован. { user.Id} - {user.UserName}");
                     await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                    return RedirectToAction("Index", "Home");
+                    if (!string.IsNullOrWhiteSpace(returnUrl))
+                        return Redirect(returnUrl);
+                    RedirectToAction("Index","Home");
                 }
 
                 var message = string.Join(" | ", result.Errors
@@ -150,10 +156,9 @@ namespace ErkinStudy.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [AllowAnonymous]
-
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -170,7 +175,7 @@ namespace ErkinStudy.Web.Controllers
                 {
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                     // Потом переделать в нормальный url генератор.
-                    var callbackUrl = $"https://erkinstudy.kz/Account/ResetPassword?userId={user.Id}&code={code}";
+                    var callbackUrl = $"https://bolme.kz/Account/ResetPassword?userId={user.Id}&code={code}";
                     await _emailService.SendEmailAsync("Құпия сөзді қалпына келтіру",
                         $"Құпия сөзді қалпына келтіру үшін <a href='{callbackUrl}'> сілтемені </a> басыңыз.", model.Email);
                     _logger.LogInformation($"Отправляем письмо для восстановление для пользователя по ссылке {callbackUrl}");
@@ -204,6 +209,9 @@ namespace ErkinStudy.Web.Controllers
             //var user = _userManager.FindByNameAsync("moderator").Result;
             //_userManager.AddToRoleAsync(user, "Moderator").Wait();
             //AppDbInitializer.SeedUsers(_userManager, _roleManager);
+            var role = new ApplicationRole();
+            role.Name = "Moderator";
+            _roleManager.CreateAsync(role).Wait();
             return View(nameof(Login));
         }
 
@@ -216,7 +224,6 @@ namespace ErkinStudy.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -236,9 +243,12 @@ namespace ErkinStudy.Web.Controllers
                 _logger.LogInformation($"Пользователь {user.Email} успешно сбросил пароль.");
                 return View("ResetPasswordConfirmation");
             }
+            var message = string.Join(" | ", result.Errors
+                .Select(v => v.Description));
             var modelMessage = string.Join(" | ", ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage));
+            ModelState.AddModelError(string.Empty, message);
             _logger.LogError($"Ошибка при сбросе пароля для пользователя {model.Email}, {modelMessage}");
             return View(model);
         }

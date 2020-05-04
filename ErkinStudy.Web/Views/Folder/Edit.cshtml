@@ -23,16 +23,42 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ParentId"></label>
-                <select asp-for="ParentId" class="form-control" asp-items="ViewBag.ParentId">
-                    <option value="">No parent</option>
-                </select>
-            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label>Parent</label>
+                    <select asp-for="ParentId" class="form-control" asp-items="ViewBag.ParentList">
+                        <option value="">No parent</option>
+                    </select>
+                </div>
+            }
+            else
+            {
+                <input asp-for="ParentId" type="hidden" value="@Model.ParentId" />
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label>Teacher</label>
+                    <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherList">
+                        <option value="">No teacher</option>
+                    </select>
+                </div>
+            }
+            else
+            {
+                <input asp-for="TeacherId" type="hidden" value="@Model.TeacherId" />
+            }
+
             <div class="form-group">
                 <label asp-for="Order"></label>
                 <input asp-for="Order" class="form-control" />
                 <span asp-validation-for="Order" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -47,7 +73,14 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @if (Model.ParentId.HasValue)
+    {
+        <a asp-action="Manage" asp-route-id="@Model.ParentId">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {

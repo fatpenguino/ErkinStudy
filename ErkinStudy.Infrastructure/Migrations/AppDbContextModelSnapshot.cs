@@ -19,24 +19,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Identity.ApplicationRole", b =>
                 {
                     b.Property<long>("Id")
@@ -139,6 +121,21 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Identity.ApplicationUserRole", b =>
+                {
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.Content", b =>
                 {
                     b.Property<long>("Id")
@@ -193,6 +190,12 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<long?>("ParentId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TeacherId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("Folders");
@@ -204,9 +207,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -226,31 +226,26 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<long>("Order")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("FolderId");
 
                     b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.UserLesson", b =>
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.UserFolder", b =>
                 {
-                    b.Property<long>("LessonId")
+                    b.Property<long>("FolderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("LessonId", "UserId");
+                    b.HasKey("FolderId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLessons");
+                    b.ToTable("UserFolders");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.OnlineCourses.Homework", b =>
@@ -286,13 +281,10 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<long?>("FolderId")
@@ -304,18 +296,13 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumberOfWeeks")
-                        .HasColumnType("int");
-
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("OnlineCourses");
                 });
@@ -350,24 +337,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasIndex("OnlineCourseId");
 
                     b.ToTable("OnlineCourseWeeks");
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.OnlineCourses.UserOnlineCourse", b =>
-                {
-                    b.Property<long>("OnlineCourseId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("OnlineCourseId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserOnlineCourses");
                 });
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Quizzes.Answer", b =>
@@ -423,14 +392,11 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("FolderId")
                         .HasColumnType("bigint");
-                        
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -438,15 +404,10 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Quizzes");
                 });
@@ -475,21 +436,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("QuizScores");
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Quizzes.UserQuiz", b =>
-                {
-                    b.Property<long>("QuizId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("QuizId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserQuizzes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -559,21 +505,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.Property<long>("UserId")
@@ -593,6 +524,21 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Identity.ApplicationUserRole", b =>
+                {
+                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.Content", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Lessons.Lesson", "Lesson")
@@ -604,10 +550,6 @@ namespace ErkinStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.Lesson", b =>
                 {
-                    b.HasOne("ErkinStudy.Domain.Entities.Category", "Category")
-                        .WithMany("Lessons")
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("ErkinStudy.Domain.Entities.Lessons.Folder", "Folder")
                         .WithMany("Lessons")
                         .HasForeignKey("FolderId")
@@ -615,16 +557,16 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.UserLesson", b =>
+            modelBuilder.Entity("ErkinStudy.Domain.Entities.Lessons.UserFolder", b =>
                 {
-                    b.HasOne("ErkinStudy.Domain.Entities.Lessons.Lesson", "Lesson")
-                        .WithMany("UserLessons")
-                        .HasForeignKey("LessonId")
+                    b.HasOne("ErkinStudy.Domain.Entities.Lessons.Folder", "Folder")
+                        .WithMany("UserFolders")
+                        .HasForeignKey("FolderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
-                        .WithMany("UserLessons")
+                        .WithMany("UserFolders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -639,33 +581,11 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.Category", "Category")
-                        .WithMany("OnlineCourses")
-                        .HasForeignKey("CategoryId");
-                });
-
             modelBuilder.Entity("ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourseWeek", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse", "OnlineCourse")
                         .WithMany("OnlineCourseWeeks")
                         .HasForeignKey("OnlineCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.OnlineCourses.UserOnlineCourse", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse", "OnlineCourse")
-                        .WithMany("UserOnlineCourses")
-                        .HasForeignKey("OnlineCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
-                        .WithMany("UserOnlineCourses")
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -688,32 +608,10 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Quizzes.Quiz", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.Category", "Category")
-                        .WithMany("Quizzes")
-                        .HasForeignKey("CategoryId");
-                });
-
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Quizzes.QuizScore", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Quizzes.UserQuiz", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.Quizzes.Quiz", "Quiz")
-                        .WithMany("UserQuizzes")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
-                        .WithMany("UserQuizzes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -739,21 +637,6 @@ namespace ErkinStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
-                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")

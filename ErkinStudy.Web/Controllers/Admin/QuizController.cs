@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ErkinStudy.Infrastructure.Context;
@@ -8,52 +9,54 @@ using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using ErkinStudy.Domain.Entities.Quizzes;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Moderator,Admin,Teacher")]
 	public class QuizController : Controller
     {
 	    private readonly AppDbContext _dbContext;
         private readonly IWebHostEnvironment _appEnvironment;
-        public QuizController(AppDbContext dbContext, IWebHostEnvironment appEnvironment)
+        private readonly ILogger<QuizController> _logger;
+        public QuizController(AppDbContext dbContext, IWebHostEnvironment appEnvironment, ILogger<QuizController> logger)
         {
             _dbContext = dbContext;
             _appEnvironment = appEnvironment;
+            _logger = logger;
         }
 
         // GET: Quiz
-        [Authorize]
+        [Authorize(Roles = "Admin,Moderator,Teacher")]
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Quizzes.Include(x => x.Questions).Include(x => x.Category).ToListAsync());
+            return View(await _dbContext.Quizzes.OrderByDescending(x => x.IsActive).ToListAsync());
         }
 
         // GET: Quiz/Create
-        [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(long? folderId)
         {
-            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name");
-            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id");
+            if (folderId.HasValue)
+                ViewData["FolderId"] = folderId;
+            else
+                ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
             return View();
         }
 
         // POST: Quiz/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
                 await _dbContext.Quizzes.AddAsync(quiz);
                 await _dbContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return quiz.FolderId.HasValue ? RedirectToAction("Manage", "Folder", new { id = quiz.FolderId }) : RedirectToAction(nameof(Index));
             }
             return View(quiz);
         }
 
         // GET: Quiz/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -65,8 +68,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_dbContext.Categories, "Id", "Name", quiz.CategoryId);
-            ViewData["FolderId"] = new SelectList(_dbContext.Folders, "Id", "Id", quiz.FolderId);
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
             return View(quiz);
         }
 
@@ -74,9 +76,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,CategoryId,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
@@ -87,13 +87,12 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 _dbContext.Quizzes.Update(quiz);
                 await _dbContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Manage", "Folder", new { id = quiz.FolderId });
             }
             return View(quiz);
         }
 
         // GET: Quiz/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -112,8 +111,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Quiz/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
 	        var quiz = await _dbContext.Quizzes
@@ -122,11 +119,9 @@ namespace ErkinStudy.Web.Controllers.Admin
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             List<Question> questions = (List<Question>)quiz.Questions;
-            QuestionController questionController = new QuestionController(_dbContext, _appEnvironment);
-
             try
             {
-                questions.ForEach(x => questionController.DeleteQuestionWithoutSaveChange(x));
+                questions.ForEach(DeleteQuestionWithoutSaveChange);
             }
             catch
             {
@@ -134,14 +129,33 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
             _dbContext.Quizzes.Remove(quiz);
             await _dbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Manage", "Folder", new { id = quiz.FolderId });
         }
 
-        [Authorize]
         public async Task<IActionResult> Scores(long id)
         {
-            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id).ToListAsync();
+            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id)
+                .OrderByDescending(x => x.TakenTime).ToListAsync();
             return View(scores);
+        }
+
+        public void DeleteQuestionWithoutSaveChange(Question question)
+        {
+            if (question.ImagePath != null)
+            {
+                try
+                {
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка при удалений question - {question.Id}, {e}");
+                }
+            }
+
+            var answers = question.Answers;
+            _dbContext.Answers.RemoveRange(answers);
+            _dbContext.Questions.Remove(question);
         }
     }
 }
