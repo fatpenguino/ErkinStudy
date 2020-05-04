@@ -332,6 +332,7 @@ body {
 .landing-body {
 }
 .landing-media {
+    min-height: 300px;
 }
 .landing-media img {
 }
@@ -348,6 +349,9 @@ body {
         display: block !important;
     }
 
+    .landing-media {
+        min-height: inherit;
+    }
     .landing-media iframe {
         width: inherit;
         height: 200px;

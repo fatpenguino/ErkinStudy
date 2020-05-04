@@ -27,7 +27,7 @@
         </div>
         <div class="landing-content col-md-6">
             <div class="landing-text text-justify p-1">
-                @Model.Text
+              @Html.Raw(Model.Text)
             </div>
             <p class="landing-price mt-1">Багасы: @Model.Price т.</p>
             <a href="https://wa.me/@UserService.GetUserPhone(Model.TeacherId ?? -1)?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {Model.Name} курсына тіркелгім келеді")" class="btn btn-primary text-white">Сатып алу</a>

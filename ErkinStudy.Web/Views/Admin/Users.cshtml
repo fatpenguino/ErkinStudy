@@ -4,8 +4,13 @@
     ViewData["Title"] = "Users";
 }
 
-<h1>Users</h1>
-<table class="table">
+<h3 class="mt-2 mb-0">Users</h3>
+<p class="font-weight-bold mb-0">Total: @ViewBag.UserCount </p>
+<a asp-action="Users" asp-route-count="101">100</a>
+<a asp-action="Users" asp-route-count="200">200</a>
+<a asp-action="Users" asp-route-count="300">300</a>
+<a asp-action="Users" asp-route-count="-1">All</a>
+<table class="table mt-1">
     <thead>
         <tr>
             <th>
@@ -24,7 +29,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -42,6 +48,6 @@
                 <a asp-action="DeleteUser" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>

@@ -37,9 +37,10 @@ namespace ErkinStudy.Web.Controllers
             return View();
         }
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Users()
+        public async Task<IActionResult> Users(int count = 50)
         {
-            var users = await _userManager.Users.ToListAsync();
+            ViewData["UserCount"] = _dbContext.Users.Count();
+            var users = count == -1 ? await _userManager.Users.OrderByDescending(x => x.Id).ToListAsync() : await _userManager.Users.OrderByDescending(x => x.Id).Take(count).ToListAsync();
             var model = new List<UserViewModel>();
             foreach (var user in users)
             {
