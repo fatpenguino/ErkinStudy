@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Хабарласу";
+}
+<div class="container mt-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Бізбен хабарласу</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mt-1">
+                    @*<div>
+                        Company:  <a href="https://hostriver.ro">HostRiver</a>
+                    </div>
+                    <div>
+                        Address: <a href="#">4435 Berkshire Circle Knoxville</a>
+                    </div>*@
+                    <div>
+                        Телефон:  <a href="tel:+77078120435">+7(707)812-04-35</a>
+                    </div>
+
+                    <div>
+                        Email:  <a href="mailto:info@bolme.kz">info@bolme.kz</a>
+                    </div>
+                    @*<div>
+                        Program: <a href="#">Mon to Sat: 09:30 AM - 10.30 PM</a>
+                    </div>*@
+                </div>
+                <!-- contact form -->
+                <div class="col-md-6 mt-3">
+                    <form role="form" method="post" id="contactForm" name="contact-form" data-toggle="validator" asp-action="Contact">
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label for="name">Атыңыз</label>
+                            <input class="form-control" id="name" type="text" name="name" required data-error="Атыңызды енгізіңіз!">
+                        </div>
+                        <!-- email -->
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input class="form-control" id="email" type="email" name="email" required data-error="Email-ды енгізіңіз!">
+                        </div>
+                        <!-- Subject -->
+                        <div class="form-group">
+                            <label for="msg_subject">Тақырып</label>
+                            <input class="form-control" id="msg_subject" type="text" name="subject" required data-error="Тақырыбыңызды енгізіңіз!">
+                        </div>
+                        <!-- Message -->
+                        <div class="form-group">
+                            <label for="message">Хабарлама</label>
+                            <textarea class="form-control" rows="3" id="message" name="message" required data-error="Хабарламаңызды енгізіңіз!"></textarea>
+                        </div>
+                        <!-- Form Submit -->
+                        <div class="form-group mt-2">
+                            <button class="btn btn-primary" type="submit" id="form-submit">Жіберу</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>

@@ -9,12 +9,11 @@
 @model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
 @{
     ViewData["Title"] = "OnlineCourseSchedule";
-    var nearestWeek = Model.OnlineCourseWeeks.OrderBy(x => x.StartDate).FirstOrDefault(x => x.StartDate > TimeZoneHelper.ConvertLocalDateTime());
-    var isApproved = User.Identity.IsAuthenticated && UserService.IsUserApproved(UserManager.GetUserId(User), Model.Id);
 }
 <div class="container">
     <div class="row">
         <div class="mx-auto mb-2 text-center">
+            @*
             <h3 class="schedule-title">Курс бағдарламасы:</h3>
             <div class="nextweek">
                 Келесі сабақ - @nearestWeek?.Name
@@ -26,114 +25,43 @@
                     <li><span id="seconds"></span>секунд</li>
                 </ul>
             </div>
-            @if (!isApproved)
-            {
-             <p class="mb-0">Бағасы: 7000 теңге</p>
-            <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode("Сәлеметсізбе! Мен математикалық сауаттылық курсына тіркелгім келеді")" type="button" class="btn btn-primary my-2 mx-auto">
-                Онлайн курсты сатып алу
-            </a>
-            }
-</div>
+            *@
+        </div>
         <div class="accordion" id="accordionCourse">
             @foreach (var week in Model.OnlineCourseWeeks)
             {
                 <div class="card">
                     <div class="card-header" id="heading_@week.Id">
                         <div class="mb-0">
-                            @if (week == nearestWeek && isApproved)
-                            {
+                           
                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
                                     @week.Name
                                 </button>
-                                <div class="btn float-right">@week.StartDate.ToString("dd.MM.yyyy")</div>
-                            }
-                            else if (week.StartDate < TimeZoneHelper.ConvertLocalDateTime() && isApproved)
+                        </div>
+                    </div>
+                    <div id="collapse_@week.Id" class="collapse" aria-labelledby="collapse_@week.Id" data-parent="#accordionCourse">
+                        <div class="card-body">
+                            @week.Description
+                            <div class="youtube-stream mx-auto mt-3">
+                                <iframe src="@week.StreamUrl" allowfullscreen="allowfullscreen">
+                                </iframe>
+                            </div>
+                            @if (week.Homeworks.Count > 0)
                             {
-                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
-                                    @week.Name
-                                </button>
-                            }
-                            else
-                            {
-                                <div class="btn">
-                                    @week.Name
+                                <div class="homework">
+                                    <p>Қосымша:</p>
+                                    <div class="homework-items">
+                                        @foreach (var homework in week.Homeworks)
+                                        {
+                                            <a class="btn btn-outline-success" asp-controller="Course" asp-action="DownloadHomework" asp-route-id="@homework.Id">@homework.Name</a>
+                                        }
+                                    </div>
                                 </div>
-                                <div class="btn float-right">@week.StartDate.ToString("dd.MM.yyyy")</div>
                             }
                         </div>
                     </div>
-                    @if ((week == nearestWeek || week.StartDate < TimeZoneHelper.ConvertLocalDateTime()) && isApproved)
-                    {
-                        <div id="collapse_@week.Id" class="collapse" aria-labelledby="collapse_@week.Id" data-parent="#accordionCourse">
-                            <div class="card-body">
-                                @week.Description
-                                <div class="youtube-stream mx-auto mt-3">
-                                    <iframe src="@week.StreamUrl" allowfullscreen="allowfullscreen">
-                                    </iframe>
-                                </div>
-                                @if (week.Homeworks.Count > 0)
-                                {
-                                    <div class="homework">
-                                        <p>Үй жұмысы:</p>
-                                        <div class="homework-items">
-                                            @foreach (var homework in week.Homeworks)
-                                            {
-                                                <a class="btn btn-outline-success" asp-controller="OnlineCourseWeek" asp-action="DownloadHomework" asp-route-id="@homework.Id">@homework.Name</a>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
                 </div>
             }
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ақпарат қалдырыңыз.</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form asp-action="SendCallRequest" method="post">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Есіміңіз</label>
-                        <input name="name" type="text" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label name="name">Телефон нөміріңіз</label>
-                        <input name="number" type="text" class="form-control" required />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Ақпарат Қалдыру</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<script>
-    const second = 1000,
-        minute = second * 60,
-        hour = minute * 60,
-        day = hour * 24;
-    console.log('@TimeZoneHelper.ConvertLocalDateTime()');
-    let countDownWeek = new Date('@nearestWeek?.StartDate.ToString(CultureInfo.InvariantCulture)').getTime(),
-        x = setInterval(function() {
-
-                let now = new Date().getTime(),
-                    distance = countDownWeek - now;
-                document.getElementById('days').innerText = Math.floor(distance / (day)),
-                    document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)),
-                    document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
-                    document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
-            },
-            second);
-</script>

@@ -1,0 +1,45 @@
+﻿@model ErkinStudy.Domain.Entities.Lessons.Folder
+
+@{
+    ViewData["Title"] = "Landing";
+}
+
+
+<h4 class="mt-4">Edit Landing</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Landing">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                    <label asp-for="LandingPage"></label>
+                    <textarea asp-for="LandingPage" class="form-control"  rows="20"></textarea>
+                    <span asp-validation-for="LandingPage" class="text-danger"></span>
+                </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="EnableLanding" /> @Html.DisplayNameFor(model => model.EnableLanding)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @if (Model.ParentId.HasValue)
+    {
+        <a asp-action="Manage" asp-route-id="@Model.ParentId">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

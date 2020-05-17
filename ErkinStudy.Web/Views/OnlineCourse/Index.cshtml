@@ -1,4 +1,6 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse>
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse>
+@inject FolderService FolderService
 @{
     ViewData["Title"] = "Index";
 }
@@ -15,23 +17,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
+            @*
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
+            *@
             <th>
-                FolderId
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfWeeks)
+                Folder
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsActive)
@@ -48,23 +43,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
+            @*
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
+            *@
             <td>
-                @Html.DisplayFor(modelItem => item.FolderId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfWeeks)
+                @FolderService.GetFolderName(item.FolderId ?? 0)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)

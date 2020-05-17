@@ -1,11 +1,13 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Lessons.Content>
-
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.Lessons.Content>
+@inject LessonService LessonService
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Content List";
+    var folderId = Model.Any() ? Model.First().Lesson.FolderId : await LessonService.GetById(ViewBag.LessonId).Result.FolderId;
 }
 
-<h1>Contents</h1>
-<a asp-controller="Lesson" asp-action="Index" class="btn btn-primary">Back</a>
+<h3>Contents</h3>
+<a asp-controller="Folder" asp-action="Manage" asp-route-id="@folderId" class="btn btn-primary">Back</a>
 <p>
     <a asp-action="Create" asp-route-lessonId="@ViewBag.LessonId">Create New</a>
 </p>

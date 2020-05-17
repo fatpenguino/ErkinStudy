@@ -1,0 +1,36 @@
+﻿@using System.Web
+@using ErkinStudy.Infrastructure.Services
+@model LandingViewModel
+@inject UserService UserService
+@{
+    ViewData["Title"] = Model.Name;
+}
+<section class="jumbotron text-center p-3 mb-0">
+    <div class="container">
+        <h2>@Model.Name</h2>
+        <p class="lead text-muted">@Model.Description</p>
+    </div>
+</section>
+
+<div class="pb-5">
+    <div class="landing-body row">
+        <div class="landing-media col-md-6">
+            @if (Model.Media.Type == MediaType.Image)
+            {
+                <img src="@Model.Media.Path" class="img-fluid" alt="">
+            }
+            else
+            {
+                <iframe src="@Model.Media.Path" allowfullscreen="allowfullscreen">
+                </iframe>
+            }
+        </div>
+        <div class="landing-content col-md-6">
+            <div class="landing-text text-justify p-1">
+              @Html.Raw(Model.Text)
+            </div>
+            <p class="landing-price mt-1">Багасы: @Model.Price т.</p>
+            <a href="https://wa.me/@UserService.GetUserPhone(-1)?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {Model.Name} курсына тіркелгім келеді")" class="btn btn-primary text-white">Сатып алу</a>
+        </div>
+    </div>
+</div>

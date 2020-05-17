@@ -5,6 +5,7 @@ using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace ErkinStudy.Infrastructure.Services
 {
@@ -17,10 +18,14 @@ namespace ErkinStudy.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<List<OnlineCourse>> GetByFolderId(long folderId)
+        public async Task<List<OnlineCourse>> GetByFolderId(long folderId, bool active = true)
         {
-            var courses = await _context.OnlineCourses.Where(x => x.FolderId == folderId && x.IsActive).ToListAsync();
-            return courses;
+            return active ? await _context.OnlineCourses.Where(x => x.FolderId == folderId && x.IsActive).ToListAsync() : await _context.OnlineCourses.Where(x => x.FolderId == folderId).ToListAsync();
+        }
+
+        public async Task<OnlineCourse> GetById(long id)
+        {
+            return await _context.OnlineCourses.FindAsync(id);
         }
     }
 }

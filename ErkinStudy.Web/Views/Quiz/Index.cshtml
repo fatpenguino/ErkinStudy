@@ -1,4 +1,6 @@
-﻿@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Quiz>
+@inject FolderService FolderService
 @{
     ViewData["Title"] = "Index";
 }
@@ -14,10 +16,7 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FolderId)
+                Folder
             </th>
             <th>
                 Q amt
@@ -41,10 +40,7 @@
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Category.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FolderId)
+                        @FolderService.GetFolderName(item.FolderId ?? -1)
                     </td>
                     <td>
                         @item.Questions.Count
@@ -57,7 +53,7 @@
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
                         <a asp-controller="Question" asp-action="Index" asp-route-quizId="@item.Id">Questions</a> |
                         <a asp-action="Scores" asp-route-id="@item.Id">Scores</a> |
-                        <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@item.Id">Preview</a> |
+                        <a asp-controller="TakeQuiz" asp-action="Preview" asp-route-id="@item.Id">Preview</a> |
                         <a asp-controller="UserQuiz" asp-action="Index" asp-route-quizId="@item.Id">Approve users</a>
                     </td>
                 </tr>

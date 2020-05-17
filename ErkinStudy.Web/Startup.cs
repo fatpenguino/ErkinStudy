@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace ErkinStudy.Web
 {
@@ -29,6 +30,7 @@ namespace ErkinStudy.Web
             services.AddScoped<FolderService>();
             services.AddScoped<CourseService>();
             services.AddScoped<QuizService>();
+            services.AddScoped<LessonService>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -45,9 +47,12 @@ namespace ErkinStudy.Web
                 .AddErrorDescriber<CustomIdentityErrorDescriber>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<AppDbContext>();
-            services.AddAntiforgery();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+            //панацея от мусора в логах
+            services.AddDataProtection().SetApplicationName("bolme.kz");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,7 +75,7 @@ namespace ErkinStudy.Web
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

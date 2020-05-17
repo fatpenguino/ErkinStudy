@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 
 namespace ErkinStudy.Infrastructure.Services
@@ -9,10 +10,12 @@ namespace ErkinStudy.Infrastructure.Services
     public class EmailService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(string subject, string message, string to = null)
@@ -22,7 +25,7 @@ namespace ErkinStudy.Infrastructure.Services
             {
                 var emailMessage = new MimeMessage();
                 to ??= _configuration.GetSection("EmailSettings")["To"];
-                emailMessage.From.Add(new MailboxAddress("ErkinStudy", "info@erkinstudy.kz"));
+                emailMessage.From.Add(new MailboxAddress("Bolme.kz", "info@bolme.kz"));
                 emailMessage.To.Add(new MailboxAddress("", to));
                 emailMessage.Subject = subject;
                 emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -30,7 +33,7 @@ namespace ErkinStudy.Infrastructure.Services
                     Text = message
                 };
                 await client.ConnectAsync("mail.hosting.reg.ru", 587, false);
-                await client.AuthenticateAsync("info@erkinstudy.kz", "Qazaq123@");
+                await client.AuthenticateAsync("info@bolme.kz", "Qazaq123@");
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);
@@ -38,7 +41,7 @@ namespace ErkinStudy.Infrastructure.Services
             catch (Exception e)
             {
                 await client.DisconnectAsync(true);
-                throw e;
+                _logger.LogError($"Ошибка при отправке email, {e}");
             }
         }
     }

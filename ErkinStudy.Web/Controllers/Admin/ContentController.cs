@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using ErkinStudy.Domain.Entities;
 using ErkinStudy.Domain.Entities.Lessons;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
+    [Authorize(Roles = "Admin,Teacher")]
     public class ContentController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,7 +19,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Content
-        [Authorize]
         public IActionResult Index(long? lessonId)
         {
 	        ViewBag.LessonId = lessonId;
@@ -28,7 +27,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Content/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -48,7 +46,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Content/Create
-        [Authorize]
         public IActionResult Create(long lessonId)
         {
 	        ViewBag.LessonId = lessonId;
@@ -59,8 +56,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Create([Bind("LessonId,Value,Order,ContentFormat,IsActive")] Content content)
         {
             if (ModelState.IsValid)
@@ -73,7 +68,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Content/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -93,8 +87,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Edit(long id, [Bind("Id,LessonId,Value,Order,ContentFormat,IsActive")] Content content)
         {
             if (id != content.Id)
@@ -124,7 +116,6 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Content/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -145,8 +136,6 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Content/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var content = await _context.Contents.FindAsync(id);

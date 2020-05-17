@@ -20,12 +20,13 @@ namespace ErkinStudy.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<List<Quiz>> GetByFolderId(long folderId)
+        public async Task<List<Quiz>> GetByFolderId(long folderId, bool active = true)
         {
             try
             {
-                var quizzes = await _context.Quizzes.Where(x =>  x.FolderId == folderId && x.IsActive)
-                    .OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
+                var quizzes = active ? await _context.Quizzes.Where(x =>  x.FolderId == folderId && x.IsActive)
+                    .OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync() : await _context.Quizzes.Where(x => x.FolderId == folderId)
+                    .OrderBy(x => x.Order).ThenBy(x => x.IsActive ? 0 : 1).ThenBy(x => x.Title).ToListAsync();
                 return quizzes;
             }
             catch (Exception e)
@@ -33,6 +34,11 @@ namespace ErkinStudy.Infrastructure.Services
                 _logger.LogError($"Ошибка при подтягиваний тестов по folderId - {folderId}, {e}");
             }
             return new List<Quiz>();
+        }
+
+        public async Task<Quiz> GetById(long id)
+        {
+            return await _context.Quizzes.FindAsync(id);
         }
     }
 }
