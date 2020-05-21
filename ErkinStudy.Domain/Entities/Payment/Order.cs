@@ -1,4 +1,6 @@
-﻿namespace ErkinStudy.Domain.Entities.Payment
+﻿using System;
+
+namespace ErkinStudy.Domain.Entities.Payment
 {
     public class Order
     {
@@ -8,6 +10,7 @@
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public decimal Amount { get; set; }
+        public DateTime CreatedTime { get; set; }
 
     }
 }

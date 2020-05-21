@@ -1,5 +1,4 @@
-﻿@using System.Web
-@using ErkinStudy.Infrastructure.Services
+﻿@using ErkinStudy.Infrastructure.Services
 @model LandingViewModel
 @inject UserService UserService
 @{
@@ -30,7 +29,7 @@
               @Html.Raw(Model.Text)
             </div>
             <p class="landing-price mt-1">Багасы: @Model.Price т.</p>
-            <a href="https://wa.me/@UserService.GetUserPhone(-1)?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {Model.Name} курсына тіркелгім келеді")" class="btn btn-primary text-white">Сатып алу</a>
+            <a asp-controller="Payment" asp-action="CreateOrder" asp-route-folderId="@Model.FolderId" class="btn btn-primary text-white">Сатып алу</a>
         </div>
     </div>
 </div>

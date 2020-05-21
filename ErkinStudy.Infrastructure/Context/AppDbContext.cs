@@ -1,6 +1,7 @@
 ﻿using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Domain.Entities.OnlineCourses;
+using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Domain.Entities.Quizzes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Answer> Answers { get; set; }
         public DbSet<QuizScore> QuizScores { get; set; }
         public DbSet<UserFolder> UserFolders { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 	        modelBuilder.Entity<UserFolder>(entity =>
