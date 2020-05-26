@@ -7,7 +7,10 @@ using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -106,6 +109,34 @@ namespace ErkinStudy.Web.Controllers
         {
             _logger.LogError($"Ошибка {HttpContext.TraceIdentifier}");
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public async Task<IActionResult> Landing(long id)
+        {
+            try
+            {
+                var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
+                if (folder != null)
+                {
+                    var json = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
+                    var model = new LandingViewModel
+                    {
+                        Name = folder.Name,
+                        Description = folder.Description,
+                        FolderId = folder.Id,
+                        Price = folder.Price,
+                        TeacherId = folder.Price,
+                        Media = new LandingMedia() {Path = json.MediaPath, Type = (MediaType) json.MediaType},
+                        Text = json.Text
+                    };
+                    return View(model);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при получение Landing Page по folderId - {id}, {e}");
+            }
+           
+            return RedirectToAction("Index");
         }
     }
 }
