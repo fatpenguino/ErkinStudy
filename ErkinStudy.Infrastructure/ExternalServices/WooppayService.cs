@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ErkinStudy.Infrastructure.DTOs;
+using ErkinStudy.Domain.Entities.Payment;
 using WooppayService;
 
 namespace ErkinStudy.Infrastructure.ExternalServices
@@ -29,31 +29,40 @@ namespace ErkinStudy.Infrastructure.ExternalServices
             }
         }
 
-        public async Task Payment(PaymentRequestDto paymentRequestDto)
+        public async Task<string> Payment(Order order)
         {
             try
             {
                 var client = CreateClient();
-                var request = new CashCreateInvoiceExtended2Request();
-                request.cardForbidden = 0;
-                request.userEmail = paymentRequestDto.Email;
-                request.userPhone = paymentRequestDto.PhoneNumber;
-                request.backUrl = "https://localhost:44379/Home";
-                request.requestUrl = $"https://localhost:44379/Payment/ConfirmOrder/{paymentRequestDto.Id}";
-                request.addInfo = "";
-                request.amount = (float) paymentRequestDto.Amount;
-                request.deathDate = DateTime.Now.AddMinutes(15).ToString("yyyy-MM-dd hh:mm:ss");
-                request.serviceType = 4;
-                request.description = "";
-                request.referenceId = paymentRequestDto.Id.ToString();
-                var response = await client.cash_createInvoice2ExtendedAsync(request);
-                
+                var loginRequest = new CoreLoginRequest { username = "test_merch", password = "A12345678a" };
+                var loginResponse = await client.core_loginAsync(loginRequest);
+                if (loginResponse.error_code == 0)
+                {
+                    var request = new CashCreateInvoiceExtended2Request
+                    {
+                        cardForbidden = 0,
+                        userEmail = order.Email,
+                        userPhone = order.PhoneNumber,
+                        backUrl = "https://localhost:44379/Home",
+                        requestUrl = $"https://localhost:44379/Payment/ConfirmOrder/{order.Id}",
+                        addInfo = "",
+                        amount = (float)order.Amount,
+                        deathDate = DateTime.Now.AddMinutes(15).ToString("yyyy-MM-dd hh:mm:ss"),
+                        serviceType = 4,
+                        description = "",
+                        referenceId = order.Id.ToString()
+                    };
+                    var response = await client.cash_createInvoice2ExtendedAsync(request);
+                    if (response.error_code == 0)
+                        return response.response.operationUrl;
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+            return null;
         }
 
     }

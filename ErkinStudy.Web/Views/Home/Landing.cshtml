@@ -29,7 +29,7 @@
               @Html.Raw(Model.Text)
             </div>
             <p class="landing-price mt-1">Багасы: @Model.Price т.</p>
-            <a asp-controller="Payment" asp-action="CreateOrder" asp-route-folderId="@Model.FolderId" class="btn btn-primary text-white">Сатып алу</a>
+            <a asp-controller="Payment" asp-action="NewOrder" asp-route-folderId="@Model.FolderId" class="btn btn-primary text-white">Сатып алу</a>
         </div>
     </div>
 </div>

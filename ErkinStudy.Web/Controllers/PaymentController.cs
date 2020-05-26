@@ -5,6 +5,8 @@ using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.ExternalServices;
+using ErkinStudy.Web.Models;
+using ErkinStudy.Web.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +30,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> CreateOrder(long folderId)
+        public async Task<IActionResult> CreateOrder(long folderId, string email, string phoneNumber, long amount)
         {
             var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == folderId);
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -36,29 +38,52 @@ namespace ErkinStudy.Web.Controllers
             {
                 var existingOrder = await _dbContext.Orders.FirstOrDefaultAsync(x => x.FolderId == folder.Id && x.UserId == user.Id);
                 if (existingOrder != null)
-                    return View(existingOrder);
+                    RedirectToAction("NewOrder");
                 var order = new Order
                 {
                     FolderId = folder.Id,
-                    Amount = folder.Price,
-                    Email = user.Email,
+                    Amount = amount,
+                    Email = email,
                     UserId = user.Id,
-                    PhoneNumber = user.PhoneNumber,
+                    PhoneNumber = phoneNumber,
                     CreatedTime = DateTime.Now
                 };
                 _dbContext.Orders.Add(order);
                 _dbContext.SaveChanges();
-                var orderId = order.Id;
-                return View(order);
+                var paymentResponse = await _wooppayPaymentService.Payment(order);
+                if (paymentResponse != null)
+                    return RedirectToAction("Payment", new { operationUrl = paymentResponse});
             }
-            return View();
+            return RedirectToAction("NewOrder");
         }
 
         [Authorize]
-        public async Task<IActionResult> MakePayment(long orderId)
+        public async Task<IActionResult> NewOrder(long folderId)
         {
+            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == folderId);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (folder == null || user == null) return View();
+            {
+                var existingOrder =
+                    await _dbContext.Orders.FirstOrDefaultAsync(x => x.FolderId == folder.Id && x.UserId == user.Id);
+                if (existingOrder != null)
+                    return View();
+                var model = new NewOrderViewModel
+                {
+                    FolderId = folderId,
+                    UserId = user.Id,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    Amount = folder.Price
+                };
+                return View(model);
+            }
+        }
 
-            return View();
+        [Authorize]
+        public IActionResult Payment(PaymentViewModel model)
+        {
+            return View(model);
         }
     }
 }
