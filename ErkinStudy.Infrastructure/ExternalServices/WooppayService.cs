@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Payment;
+using ErkinStudy.Infrastructure.DTOs;
 using WooppayService;
 
 namespace ErkinStudy.Infrastructure.ExternalServices
@@ -29,7 +30,7 @@ namespace ErkinStudy.Infrastructure.ExternalServices
             }
         }
 
-        public async Task<string> Payment(Order order)
+        public async Task<OrderResponseDto> Payment(OrderRequestDto orderRequest)
         {
             try
             {
@@ -41,20 +42,20 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                     var request = new CashCreateInvoiceExtended2Request
                     {
                         cardForbidden = 0,
-                        userEmail = order.Email,
-                        userPhone = order.PhoneNumber,
+                        userEmail = orderRequest.Email,
+                        userPhone = orderRequest.PhoneNumber,
                         backUrl = "https://localhost:44379/Home",
-                        requestUrl = $"https://localhost:44379/Payment/ConfirmOrder/{order.Id}",
+                        requestUrl = $"https://localhost:44379/Payment/ConfirmOrder/{orderRequest.OrderId}",
                         addInfo = "",
-                        amount = (float)order.Amount,
+                        amount = (float)orderRequest.Amount,
                         deathDate = DateTime.Now.AddMinutes(15).ToString("yyyy-MM-dd hh:mm:ss"),
                         serviceType = 4,
                         description = "",
-                        referenceId = order.Id.ToString()
+                        referenceId = orderRequest.OrderId.ToString()
                     };
                     var response = await client.cash_createInvoice2ExtendedAsync(request);
                     if (response.error_code == 0)
-                        return response.response.operationUrl;
+                        return new OrderResponseDto();
                 }
             }
             catch (Exception e)

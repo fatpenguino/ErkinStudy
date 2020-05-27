@@ -1,4 +1,5 @@
 ﻿using System;
+using ErkinStudy.Domain.Enums;
 
 namespace ErkinStudy.Domain.Entities.Payment
 {
@@ -10,7 +11,10 @@ namespace ErkinStudy.Domain.Entities.Payment
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public decimal Amount { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ExpireDate { get; set; }
+        public DateTime? ConfirmedDate { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
     }
 }
