@@ -45,6 +45,7 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                 var client = CreateClient();
                 var loginRequest = new CoreLoginRequest { username = "test_merch", password = "A12345678a" };
                 var loginResponse = await client.core_loginAsync(loginRequest);
+                var response = new OrderResponseDto();
                 if (loginResponse.error_code == 0)
                 {
                     var request = new CashCreateInvoiceExtended2Request
@@ -61,9 +62,13 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                         description = "",
                         referenceId = $"87078897741{orderRequest.OrderId}"
                     };
-                    var response = await client.cash_createInvoice2ExtendedAsync(request);
-                    if (response.error_code == 0)
-                        return new OrderResponseDto() {ErrorCode = 0, OperationUrl = response.response.operationUrl, OperationId = response.response.operationId};
+                    var wooppayResponse = await client.cash_createInvoice2ExtendedAsync(request);
+                    response.ErrorCode = wooppayResponse.error_code;
+                    if (response.ErrorCode == 0)
+                    {
+                        response.OperationId = wooppayResponse.response.operationId;
+                        response.OperationUrl = wooppayResponse.response.operationUrl;
+                    }
                     return new OrderResponseDto()
                         {ErrorCode = response.error_code, ErrorMessage = "Ошибка во время оплаты"};
                 }

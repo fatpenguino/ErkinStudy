@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Payment;
+using ErkinStudy.Domain.Enums;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.DTOs;
 using ErkinStudy.Infrastructure.ExternalServices;
@@ -47,13 +48,17 @@ namespace ErkinStudy.Web.Controllers
                     Email = email,
                     UserId = user.Id,
                     PhoneNumber = phoneNumber,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    OrderStatus = OrderStatus.Created,
+                    ExpireDate = DateTime.Now.AddMinutes(30)
                 };
                 _dbContext.Orders.Add(order);
                 _dbContext.SaveChanges();
                 var paymentResponse = await _wooppayPaymentService.Payment(new OrderRequestDto() {Amount = amount, OrderId = order.Id, PhoneNumber = phoneNumber, Email = email});
                 if (paymentResponse != null)
-                    return RedirectToAction("Payment", new { operationUrl = paymentResponse.OperationUrl});
+                {
+                    return RedirectToAction("Payment", new { operationUrl = paymentResponse.OperationUrl });
+                }
             }
             return RedirectToAction("Error", "Home");
         }

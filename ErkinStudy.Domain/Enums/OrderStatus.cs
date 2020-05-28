@@ -3,7 +3,6 @@
     public enum OrderStatus
     {
         Created,
-        SentToWooppay,
         Declined,
         Paid,
         Confirmed,
