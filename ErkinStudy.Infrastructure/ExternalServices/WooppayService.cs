@@ -2,12 +2,20 @@
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Infrastructure.DTOs;
+using Microsoft.Extensions.Logging;
 using WooppayService;
 
 namespace ErkinStudy.Infrastructure.ExternalServices
 {
     public class WooppayPaymentService
     {
+        private readonly ILogger<WooppayPaymentService> _logger;
+
+        public WooppayPaymentService(ILogger<WooppayPaymentService> logger)
+        {
+            _logger = logger;
+        }
+
         public XmlControllerPortTypeClient CreateClient()
         {
             var client = new XmlControllerPortTypeClient();
@@ -49,21 +57,22 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                         addInfo = "",
                         amount = (float)orderRequest.Amount,
                         deathDate = DateTime.Now.AddMinutes(15).ToString("yyyy-MM-dd hh:mm:ss"),
-                        serviceType = 4,
+                        serviceType = 5,
                         description = "",
-                        referenceId = orderRequest.OrderId.ToString()
+                        referenceId = $"87078897741{orderRequest.OrderId}"
                     };
                     var response = await client.cash_createInvoice2ExtendedAsync(request);
                     if (response.error_code == 0)
-                        return new OrderResponseDto();
+                        return new OrderResponseDto() {ErrorCode = 0, OperationUrl = response.response.operationUrl, OperationId = response.response.operationId};
+                    return new OrderResponseDto()
+                        {ErrorCode = response.error_code, ErrorMessage = "Ошибка во время оплаты"};
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError($"Ошибка при попытке оплаты, orderId - {orderRequest.OrderId}, {e}");
+                return new OrderResponseDto() {ErrorCode = -1, ErrorMessage = "Ошибка при попытке оплаты"};
             }
-            return null;
         }
 
     }

@@ -53,9 +53,9 @@ namespace ErkinStudy.Web.Controllers
                 _dbContext.SaveChanges();
                 var paymentResponse = await _wooppayPaymentService.Payment(new OrderRequestDto() {Amount = amount, OrderId = order.Id, PhoneNumber = phoneNumber, Email = email});
                 if (paymentResponse != null)
-                    return RedirectToAction("Payment", new { operationUrl = paymentResponse});
+                    return RedirectToAction("Payment", new { operationUrl = paymentResponse.OperationUrl});
             }
-            return RedirectToAction("NewOrder");
+            return RedirectToAction("Error", "Home");
         }
 
         [Authorize]

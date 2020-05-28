@@ -7,6 +7,6 @@ namespace ErkinStudy.Infrastructure.DTOs
         public int ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public string OperationUrl { get; set; }
-        public string OperationId { get; set; }
+        public int OperationId { get; set; }
     }
 }
