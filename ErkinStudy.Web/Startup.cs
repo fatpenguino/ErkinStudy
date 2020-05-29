@@ -33,6 +33,7 @@ namespace ErkinStudy.Web
             services.AddScoped<QuizService>();
             services.AddScoped<LessonService>();
             services.AddScoped<WooppayPaymentService>();
+            services.AddScoped<OrderService>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

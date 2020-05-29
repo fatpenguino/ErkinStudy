@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Infrastructure.DTOs;
+using ErkinStudy.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using WooppayService;
 
@@ -10,10 +11,11 @@ namespace ErkinStudy.Infrastructure.ExternalServices
     public class WooppayPaymentService
     {
         private readonly ILogger<WooppayPaymentService> _logger;
-
-        public WooppayPaymentService(ILogger<WooppayPaymentService> logger)
+        private readonly OrderService _orderService;
+        public WooppayPaymentService(ILogger<WooppayPaymentService> logger, OrderService orderService)
         {
             _logger = logger;
+            _orderService = orderService;
         }
 
         public XmlControllerPortTypeClient CreateClient()
@@ -40,27 +42,29 @@ namespace ErkinStudy.Infrastructure.ExternalServices
 
         public async Task<OrderResponseDto> Payment(OrderRequestDto orderRequest)
         {
+            var response = new OrderResponseDto();
             try
             {
                 var client = CreateClient();
                 var loginRequest = new CoreLoginRequest { username = "test_merch", password = "A12345678a" };
                 var loginResponse = await client.core_loginAsync(loginRequest);
-                var response = new OrderResponseDto();
                 if (loginResponse.error_code == 0)
                 {
+                    var hash = _orderService.GetHash(orderRequest.OrderId);
                     var request = new CashCreateInvoiceExtended2Request
                     {
                         cardForbidden = 0,
                         userEmail = orderRequest.Email,
                         userPhone = orderRequest.PhoneNumber,
-                        backUrl = "https://localhost:44379/Home",
-                        requestUrl = $"https://localhost:44379/Payment/ConfirmOrder/{orderRequest.OrderId}",
+                        backUrl = "https://bolme.kz/SuccessPage",
+                        requestUrl = $"https://bolme.kz/ConfirmPayment?orderId={orderRequest.OrderId}&hash={hash}",
                         addInfo = "",
-                        amount = (float)orderRequest.Amount,
-                        deathDate = DateTime.Now.AddMinutes(15).ToString("yyyy-MM-dd hh:mm:ss"),
+                        amount = 200.0f,
+                        deathDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss"),
                         serviceType = 5,
                         description = "",
-                        referenceId = $"87078897741{orderRequest.OrderId}"
+                        referenceId = $"bolme{orderRequest.OrderId}",
+                        orderNumber = (int)orderRequest.OrderId
                     };
                     var wooppayResponse = await client.cash_createInvoice2ExtendedAsync(request);
                     response.ErrorCode = wooppayResponse.error_code;
@@ -69,15 +73,20 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                         response.OperationId = wooppayResponse.response.operationId;
                         response.OperationUrl = wooppayResponse.response.operationUrl;
                     }
-                    return new OrderResponseDto()
-                        {ErrorCode = response.error_code, ErrorMessage = "Ошибка во время оплаты"};
+                    else
+                    {
+                        response.ErrorCode = wooppayResponse.error_code;
+                        response.ErrorMessage = "";
+                    }
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError($"Ошибка при попытке оплаты, orderId - {orderRequest.OrderId}, {e}");
-                return new OrderResponseDto() {ErrorCode = -1, ErrorMessage = "Ошибка при попытке оплаты"};
+                response.ErrorCode = -1;
+                response.ErrorMessage = "Ошибка при попытке оплаты";
             }
+            return response;
         }
 
     }

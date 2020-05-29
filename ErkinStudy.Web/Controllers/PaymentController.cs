@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Payment;
@@ -7,6 +6,7 @@ using ErkinStudy.Domain.Enums;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.DTOs;
 using ErkinStudy.Infrastructure.ExternalServices;
+using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models;
 using ErkinStudy.Web.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
@@ -19,41 +19,31 @@ namespace ErkinStudy.Web.Controllers
 {
     public class PaymentController : Controller
     {
-        private readonly AppDbContext _dbContext;
         private readonly ILogger<PaymentController> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly WooppayPaymentService _wooppayPaymentService;
-        public PaymentController(AppDbContext dbContext, ILogger<PaymentController> logger, UserManager<ApplicationUser> userManager, WooppayPaymentService wooppayPaymentService)
+        private readonly OrderService _orderService;
+        private readonly FolderService _folderService;
+        public PaymentController(AppDbContext dbContext, ILogger<PaymentController> logger, UserManager<ApplicationUser> userManager, WooppayPaymentService wooppayPaymentService, OrderService orderService, FolderService folderService)
         {
-            _dbContext = dbContext;
             _logger = logger;
             _userManager = userManager;
             _wooppayPaymentService = wooppayPaymentService;
+            _orderService = orderService;
+            _folderService = folderService;
         }
 
         [Authorize]
         public async Task<IActionResult> CreateOrder(long folderId, string email, string phoneNumber, long amount)
         {
-            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == folderId);
+            var folder = _folderService.Get(folderId);
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (folder != null && user != null)
             {
-                var existingOrder = await _dbContext.Orders.FirstOrDefaultAsync(x => x.FolderId == folder.Id && x.UserId == user.Id);
-                if (existingOrder != null)
-                    RedirectToAction("NewOrder");
-                var order = new Order
-                {
-                    FolderId = folder.Id,
-                    Amount = amount,
-                    Email = email,
-                    UserId = user.Id,
-                    PhoneNumber = phoneNumber,
-                    CreatedDate = DateTime.Now,
-                    OrderStatus = OrderStatus.Created,
-                    ExpireDate = DateTime.Now.AddMinutes(30)
-                };
-                _dbContext.Orders.Add(order);
-                _dbContext.SaveChanges();
+                var existingOrder = _orderService.GetByUserIdAndFolderId(folderId, user.Id);
+                if (existingOrder != null && existingOrder.ExpireDate > DateTime.Now)
+                    RedirectToAction("Index","Home");
+                var order = _orderService.CreateOrder(folderId, user.Id, email, phoneNumber, folder.Price);
                 var paymentResponse = await _wooppayPaymentService.Payment(new OrderRequestDto() {Amount = amount, OrderId = order.Id, PhoneNumber = phoneNumber, Email = email});
                 if (paymentResponse != null)
                 {
@@ -66,12 +56,11 @@ namespace ErkinStudy.Web.Controllers
         [Authorize]
         public async Task<IActionResult> NewOrder(long folderId)
         {
-            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == folderId);
+            var folder = _folderService.Get(folderId);
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (folder == null || user == null) return View();
             {
-                var existingOrder =
-                    await _dbContext.Orders.FirstOrDefaultAsync(x => x.FolderId == folder.Id && x.UserId == user.Id);
+                var existingOrder = _orderService.GetByUserIdAndFolderId(folderId, user.Id);
                 if (existingOrder != null)
                     return View();
                 var model = new NewOrderViewModel
@@ -90,6 +79,31 @@ namespace ErkinStudy.Web.Controllers
         public IActionResult Payment(PaymentViewModel model)
         {
             return View(model);
+        }
+
+        public IActionResult SuccessPage()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmPayment(string orderId, string hash)
+        {
+            try
+            {
+                var parsedOrder = long.Parse(orderId);
+                var newHash = _orderService.GetHash(parsedOrder);
+                if (newHash == hash)
+                {
+                   await _orderService.ConfirmOrder(parsedOrder);
+                   return Ok(new {data = 1});
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{e}");
+            }
+            return StatusCode(500);
         }
     }
 }
