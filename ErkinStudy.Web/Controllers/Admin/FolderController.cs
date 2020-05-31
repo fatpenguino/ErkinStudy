@@ -10,6 +10,7 @@ using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -20,13 +21,15 @@ namespace ErkinStudy.Web.Controllers.Admin
         private readonly UserService _userService;
         private readonly FolderService _folderService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<FolderController> _logger;
 
-        public FolderController(AppDbContext context, UserService userService, FolderService folderService, UserManager<ApplicationUser> userManager)
+        public FolderController(AppDbContext context, UserService userService, FolderService folderService, UserManager<ApplicationUser> userManager, ILogger<FolderController> logger)
         {
             _context = context;
             _userService = userService;
             _folderService = folderService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: Folder
@@ -187,10 +190,17 @@ namespace ErkinStudy.Web.Controllers.Admin
             var userList = users.Split(',');
             foreach (var userEmail in userList)
             {
-                var user =  _userManager.FindByEmailAsync(userEmail.Trim()).Result;
-                if (user == null)
-                    continue;
-                _folderService.ApproveUser(folderId, user.Id);
+                try
+                {
+                    var user = _userManager.FindByEmailAsync(userEmail.Trim()).Result;
+                    if (user == null)
+                        continue;
+                    _folderService.ApproveUser(folderId, user.Id);
+                }
+                catch(Exception e)
+                {
+                    _logger.LogError($"Все таки проебался {e}");
+                }
             }
             return RedirectToAction(nameof(Manage), new {id = folderId});
         }

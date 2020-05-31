@@ -58,7 +58,10 @@ namespace ErkinStudy.Infrastructure.Services
             try
             {
                 if (_context.UserFolders.Any(x => x.FolderId == folderId && x.UserId == userId))
+                {
                     _logger.LogError($"Ошибка при потверждение пользователя {userId} для папки {folderId}, Ex: уже есть такой пользователь и папка");
+                    return;
+                }
                 var userFolder = new UserFolder() {UserId = userId, FolderId = folderId};
                 _context.UserFolders.Add(userFolder); 
                 _context.SaveChanges();
