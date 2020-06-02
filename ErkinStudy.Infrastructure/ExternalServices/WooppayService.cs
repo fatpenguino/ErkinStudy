@@ -59,7 +59,7 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                         backUrl = "https://bolme.kz/SuccessPage",
                         requestUrl = $"https://bolme.kz/ConfirmPayment?orderId={orderRequest.OrderId}&hash={hash}",
                         addInfo = "",
-                        amount = 200.0f,
+                        amount = (float)orderRequest.Amount,
                         deathDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss"),
                         serviceType = 5,
                         description = "",

@@ -4,8 +4,10 @@
 }
 
 <div class="container">
-    <div class="row">
-        <iframe src="@Model.OperationUrl&view_format=frame" width="400" height="400">
-        </iframe>
+    <div class="row mt-3">
+        <div class="embed-responsive embed-responsive-4by3" style="min-height: 700px;">
+            <iframe src="@Model.OperationUrl&view_format=frame" class="embed-responsive-item">
+            </iframe>
+        </div>
+        </div>
     </div>
-</div>
