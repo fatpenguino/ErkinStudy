@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Infrastructure.DTOs;
@@ -56,8 +57,8 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                         cardForbidden = 0,
                         userEmail = orderRequest.Email,
                         userPhone = orderRequest.PhoneNumber,
-                        backUrl = "https://bolme.kz/SuccessPage",
-                        requestUrl = $"https://bolme.kz/ConfirmPayment?orderId={orderRequest.OrderId}&hash={hash}",
+                        backUrl = "http://u0908343.plsk.regruhosting.ru/Payment/SuccessPage",
+                        requestUrl = $"http://u0908343.plsk.regruhosting.ru/Payment/ConfirmPayment?orderId={orderRequest.OrderId}&hash={hash}",
                         addInfo = "",
                         amount = (float)orderRequest.Amount,
                         deathDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss"),
@@ -66,6 +67,9 @@ namespace ErkinStudy.Infrastructure.ExternalServices
                         referenceId = $"bolme{orderRequest.OrderId}",
                         orderNumber = (int)orderRequest.OrderId
                     };
+                    var jsonRequest = JsonSerializer.Serialize(request);
+                    await _orderService.LogOperation(orderRequest.OrderId,
+                        $"Отправляем запрос в wooppay для получение страницы оплаты, данные запроса - {jsonRequest}");
                     var wooppayResponse = await client.cash_createInvoice2ExtendedAsync(request);
                     response.ErrorCode = wooppayResponse.error_code;
                     if (response.ErrorCode == 0)

@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Domain.Entities.Payment;
+using ErkinStudy.Web.Helpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ErkinStudy.Infrastructure.Services
 {
@@ -66,7 +66,8 @@ namespace ErkinStudy.Infrastructure.Services
                     await _dbContext.UserFolders.AddAsync(userFolder);
                     await _dbContext.SaveChangesAsync();
                 }
-                _logger.LogError($"Не нашли заказ по этому id - {orderId}");
+                else 
+                    _logger.LogError($"Не нашли заказ по этому id - {orderId}");
             }
             catch (Exception e)
             {
@@ -86,6 +87,20 @@ namespace ErkinStudy.Infrastructure.Services
             var md5 = new MD5CryptoServiceProvider();
             var hashEnc = md5.ComputeHash(hash);
             return hashEnc.Aggregate("", (current, b) => current + b.ToString("x2"));
+        }
+
+        public async Task SetExternalId(long orderId, string externalId)
+        {
+            var order = await _dbContext.Orders.FindAsync(orderId);
+            order.ExternalId = externalId;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task LogOperation(long orderId, string message)
+        {
+            var operation = new OrderOperation {OrderId = orderId, Message = message, TraceTime = TimeZoneHelper.GetLocalDateTime() };
+            await _dbContext.OrderOperations.AddAsync(operation);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

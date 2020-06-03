@@ -55,7 +55,7 @@ namespace ErkinStudy.Web
             services.AddDistributedMemoryCache();
             services.AddSession();
             //панацея от мусора в логах
-            services.AddDataProtection().SetApplicationName("bolme.kz");
+            //services.AddDataProtection().SetApplicationName("bolme.kz");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

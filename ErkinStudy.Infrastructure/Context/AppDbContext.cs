@@ -27,6 +27,7 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<UserFolder> UserFolders { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<OrderOperation> OrderOperations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 	        modelBuilder.Entity<UserFolder>(entity =>

@@ -12,6 +12,7 @@ using ErkinStudy.Web.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -44,10 +45,16 @@ namespace ErkinStudy.Web.Controllers
                 if (existingOrder != null && existingOrder.ExpireDate > DateTime.Now)
                     RedirectToAction("Index","Home");
                 var order = _orderService.CreateOrder(folderId, user.Id, email, phoneNumber, folder.Price);
+                await _orderService.LogOperation(order.Id, $"Был создан новый заказ, {order.Id}");
                 var paymentResponse = await _wooppayPaymentService.Payment(new OrderRequestDto() {Amount = amount, OrderId = order.Id, PhoneNumber = phoneNumber, Email = email});
-                if (paymentResponse != null)
+                if (paymentResponse != null && paymentResponse.ErrorCode == 0)
                 {
+                    await _orderService.SetExternalId(order.Id, paymentResponse.OperationUrl);
+                    await _orderService.ChangeStatus(order.Id, OrderStatus.SentToPay);
                     return RedirectToAction("Payment", new { operationUrl = paymentResponse.OperationUrl });
+                }
+                {
+                    await _orderService.ChangeStatus(order.Id, OrderStatus.Declined);
                 }
             }
             return RedirectToAction("Error", "Home");
@@ -91,6 +98,7 @@ namespace ErkinStudy.Web.Controllers
         {
             try
             {
+                _logger.LogDebug($"Пришел запрос от wooppay, {orderId}, {hash}");
                 var parsedOrder = long.Parse(orderId);
                 var newHash = _orderService.GetHash(parsedOrder);
                 if (newHash == hash)

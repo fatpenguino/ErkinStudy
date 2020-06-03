@@ -3,9 +3,9 @@
     public enum OrderStatus
     {
         Created,
-        Declined,
-        Paid,
+        SentToPay,
         Confirmed,
-        Expired
+        Expired,
+        Declined
     } 
 }
