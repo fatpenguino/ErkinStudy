@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,12 +24,22 @@ namespace ErkinStudy.Infrastructure.Services
             _dbContext = dbContext;
             _logger = logger;
         }
-
+        
         public Order GetByUserIdAndFolderId(long folderId, long userId)
         {
             return _dbContext.Orders.FirstOrDefault(x => x.FolderId == folderId && x.UserId == userId);
         }
 
+        public async Task<List<Order>> GetAll(int count)
+        {
+            return await _dbContext.Orders.Include(x => x.User).Include(x => x.Folder).OrderByDescending(x => x.Id).Take(count).ToListAsync();
+        }
+        public async Task<Order> Get(long orderId)
+        {
+            return await _dbContext.Orders
+                .Include(x => x.Folder).Include(x => x.User)
+                .Include(x => x.OrderOperations).FirstOrDefaultAsync(x => x.Id == orderId);
+        }
         public Order CreateOrder(long folderId, long userId, string email, string phoneNumber, long amount)
         {
             var order = new Order

@@ -8,5 +8,6 @@ namespace ErkinStudy.Domain.Entities.Payment
         public long OrderId { get; set; }
         public string Message { get; set; }
         public DateTime TraceTime { get; set; }
+        public virtual Order Order { get; set; }
     }
 }
