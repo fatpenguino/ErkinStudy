@@ -27,7 +27,8 @@ namespace ErkinStudy.Infrastructure.Services
         
         public Order GetByUserIdAndFolderId(long folderId, long userId)
         {
-            return _dbContext.Orders.FirstOrDefault(x => x.FolderId == folderId && x.UserId == userId);
+            var orders = _dbContext.Orders.Where(x => x.FolderId == folderId && x.UserId == userId).OrderByDescending(x => x.CreatedDate);
+            return orders.FirstOrDefault();
         }
 
         public async Task<List<Order>> GetAll(int count)
@@ -91,7 +92,6 @@ namespace ErkinStudy.Infrastructure.Services
             order.OrderStatus = status;
             await _dbContext.SaveChangesAsync();
         }
-
         public string GetHash(long orderId)
         {
             var hash = Encoding.ASCII.GetBytes($"fatpenguino_{orderId}");
@@ -113,5 +113,6 @@ namespace ErkinStudy.Infrastructure.Services
             await _dbContext.OrderOperations.AddAsync(operation);
             await _dbContext.SaveChangesAsync();
         }
+
     }
 }

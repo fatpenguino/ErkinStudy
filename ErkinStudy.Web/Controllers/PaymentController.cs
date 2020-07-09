@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
-using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Domain.Enums;
-using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.DTOs;
 using ErkinStudy.Infrastructure.ExternalServices;
 using ErkinStudy.Infrastructure.Services;
@@ -12,8 +10,6 @@ using ErkinStudy.Web.Models.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers
@@ -25,7 +21,7 @@ namespace ErkinStudy.Web.Controllers
         private readonly WooppayPaymentService _wooppayPaymentService;
         private readonly OrderService _orderService;
         private readonly FolderService _folderService;
-        public PaymentController(AppDbContext dbContext, ILogger<PaymentController> logger, UserManager<ApplicationUser> userManager, WooppayPaymentService wooppayPaymentService, OrderService orderService, FolderService folderService)
+        public PaymentController(ILogger<PaymentController> logger, UserManager<ApplicationUser> userManager, WooppayPaymentService wooppayPaymentService, OrderService orderService, FolderService folderService)
         {
             _logger = logger;
             _userManager = userManager;
@@ -43,7 +39,10 @@ namespace ErkinStudy.Web.Controllers
             {
                 var existingOrder = _orderService.GetByUserIdAndFolderId(folderId, user.Id);
                 if (existingOrder != null && existingOrder.ExpireDate > DateTime.Now)
-                    RedirectToAction("Index","Home");
+                {
+                    TempData["ErrorMessage"] = "У вас уже есть активный заказ, пожалуйста оплатите его!";
+                    return RedirectToAction("Index", "Home");
+                }
                 var order = _orderService.CreateOrder(folderId, user.Id, email, phoneNumber, folder.Price);
                 await _orderService.LogOperation(order.Id, $"Был создан новый заказ, {order.Id}");
                 var paymentResponse = await _wooppayPaymentService.Payment(new OrderRequestDto() {Amount = amount, OrderId = order.Id, PhoneNumber = phoneNumber, Email = email});
@@ -67,9 +66,6 @@ namespace ErkinStudy.Web.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (folder == null || user == null) return View();
             {
-                var existingOrder = _orderService.GetByUserIdAndFolderId(folderId, user.Id);
-                if (existingOrder != null)
-                    return View();
                 var model = new NewOrderViewModel
                 {
                     FolderId = folderId,
@@ -100,6 +96,7 @@ namespace ErkinStudy.Web.Controllers
             {
                 _logger.LogDebug($"Пришел запрос от wooppay, {orderId}, {hash}");
                 var parsedOrder = long.Parse(orderId);
+                await _orderService.LogOperation(parsedOrder, $"Пришел запрос от wooppay, {orderId}, {hash}");
                 var newHash = _orderService.GetHash(parsedOrder);
                 if (newHash == hash)
                 {
