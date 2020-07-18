@@ -1,10 +1,11 @@
 ﻿namespace ErkinStudy.Domain.Enums
 {
-    public enum PaymentStatus
+    public enum OrderStatus
     {
         Created,
-        WaitingApprove,
-        Approved,
+        SentToPay,
+        Confirmed,
+        Expired,
         Declined
     } 
 }

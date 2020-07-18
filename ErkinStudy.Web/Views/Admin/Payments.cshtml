@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.Payment.Payment>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Id
+            </th>
+            <th>
+               User
+            </th>
+            <th>
+               Folder
+            </th>
+            <th>
+                Order
+            </th>
+            <th>
+                Amount
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.User.Id - @item.User.UserName
+            </td>
+            <td>
+                @item.Folder.Id - @item.Folder.Name
+            </td>
+            <td>
+                @Html.ActionLink(item.OrderId.ToString(), "Details", "Order", new { orderId = item.OrderId})
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

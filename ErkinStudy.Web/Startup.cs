@@ -1,5 +1,6 @@
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
+using ErkinStudy.Infrastructure.ExternalServices;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,8 @@ namespace ErkinStudy.Web
             services.AddScoped<CourseService>();
             services.AddScoped<QuizService>();
             services.AddScoped<LessonService>();
+            services.AddScoped<WooppayPaymentService>();
+            services.AddScoped<OrderService>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -52,7 +55,7 @@ namespace ErkinStudy.Web
             services.AddDistributedMemoryCache();
             services.AddSession();
             //панацея от мусора в логах
-            services.AddDataProtection().SetApplicationName("bolme.kz");
+            //services.AddDataProtection().SetApplicationName("bolme.kz");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

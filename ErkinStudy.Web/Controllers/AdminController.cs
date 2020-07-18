@@ -36,6 +36,9 @@ namespace ErkinStudy.Web.Controllers
         {
             return View();
         }
+
+        #region User
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users(int count = 50)
         {
@@ -76,7 +79,7 @@ namespace ErkinStudy.Web.Controllers
 
         // POST: ApplicationUsers/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]      
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var applicationUser = await _dbContext.Users.FindAsync(id);
@@ -84,29 +87,30 @@ namespace ErkinStudy.Web.Controllers
             await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Media
         public IActionResult ListMediaFiles()
         {
             return View(Directory.EnumerateFiles(_appEnvironment.WebRootPath + "\\Media", "*", SearchOption.AllDirectories).ToList());
         }
-
         public IActionResult UploadMedia(IFormFile image)
         {
-             if (image != null)
-             {
-                 try
-                 {
-                     var path = "/Media/" + image.FileName;
-                     if (System.IO.File.Exists(_appEnvironment.WebRootPath + path))
-                         return RedirectToAction("ListMediaFiles");
-                     image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
-                 }
-                 catch (Exception e)
-                 {
-                     _logger.LogError($"Ошибка при загрузке медиа, {e}");
-                 }
-             }
-             return RedirectToAction("ListMediaFiles");
+            if (image != null)
+            {
+                try
+                {
+                    var path = "/Media/" + image.FileName;
+                    if (System.IO.File.Exists(_appEnvironment.WebRootPath + path))
+                        return RedirectToAction("ListMediaFiles");
+                    image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка при загрузке медиа, {e}");
+                }
+            }
+            return RedirectToAction("ListMediaFiles");
         }
         public IActionResult DeleteMedia(string path)
         {
@@ -123,5 +127,14 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction("ListMediaFiles");
         }
+        #endregion
+
+        #region Payments
+        public async Task<IActionResult> Payments()
+        {
+            return View( await _dbContext.Payments.Include(x => x.User).Include(x => x.Folder).OrderByDescending(x => x.Id).ToListAsync());
+        }
+
+        #endregion
     }
 }

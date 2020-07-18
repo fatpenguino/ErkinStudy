@@ -1,0 +1,82 @@
+﻿@model ErkinStudy.Domain.Entities.Payment.Order
+<div class="container">
+    <div class="row  mt-3 mb-2">
+        <h4>Order Detail:</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        User
+                    </th>
+                    <th>
+                        Folder
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Phone
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Created Date
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Model.Id
+                    </td>
+                    <td>
+                        @Model.Id - @Model.User.UserName
+                    </td>
+                    <td>
+                        @Model.Folder.Id - @Model.Folder.Name
+                    </td>
+                    <td>
+                        @Model.Email
+                    </td>
+                    <td>
+                        @Model.PhoneNumber;
+                    </td>
+                    <td>
+                        @Model.Amount
+                    </td>
+                    <td>
+                        @Model.CreatedDate
+                    </td>
+                    <td>
+                        @Model.OrderStatus
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h4 class="mt-2 mb-2">Logs:</h4>
+        <table class="table table-bordered">
+            @foreach (var item in Model.OrderOperations.OrderByDescending(x => x.Id))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Message)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraceTime)
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div>
+            <a asp-controller="Order" asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</div>
