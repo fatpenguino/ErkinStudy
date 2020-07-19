@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using ErkinStudy.Domain.Entities.Quizzes;
+using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
@@ -156,6 +157,42 @@ namespace ErkinStudy.Web.Controllers.Admin
             var answers = question.Answers;
             _dbContext.Answers.RemoveRange(answers);
             _dbContext.Questions.Remove(question);
+        }
+        [HttpGet]
+        public IActionResult Clone(long id)
+        {
+            var quiz = _dbContext.Quizzes.FirstOrDefault(x => x.Id == id);
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
+            return View(quiz);
+        }
+        [HttpPost]
+        public IActionResult Clone(long quizId, string title, string description, int order, long? folderId)
+        {
+            var quiz = _dbContext.Quizzes.Include(x => x.Questions).ThenInclude(x => x.Answers).FirstOrDefault(x => x.Id == quizId);
+            if (quiz == null)
+                return RedirectToAction("Index");
+            var clonedQuiz = new Quiz {Title = title, Description = description, Order = order, FolderId = folderId};
+            _dbContext.Quizzes.Add(clonedQuiz);
+            _dbContext.SaveChanges();
+            foreach (var question in quiz.Questions)
+            {
+                var clonedQuestion = new Question
+                {
+                    Content = question.Content, ImagePath = question.ImagePath, QuizId = clonedQuiz.Id
+                };
+                _dbContext.Questions.Add(clonedQuestion);
+                _dbContext.SaveChanges();
+                foreach (var answer in question.Answers)
+                {
+                    var clonedAnswer = new Answer
+                    {
+                        Content = answer.Content, IsCorrect = answer.IsCorrect, Question = clonedQuestion
+                    };
+                    _dbContext.Answers.Add(clonedAnswer);
+                    _dbContext.SaveChanges();
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 }

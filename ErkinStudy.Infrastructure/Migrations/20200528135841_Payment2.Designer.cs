@@ -4,14 +4,16 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ErkinStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200528135841_Payment2")]
+    partial class Payment2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,9 +360,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<DateTime?>("ExpireDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ExternalId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("FolderId")
                         .HasColumnType("bigint");
 
@@ -378,27 +377,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.Payment.OrderOperation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("TraceTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderOperations");
-                });
-
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Payment.Payment", b =>
                 {
                     b.Property<long>("Id")
@@ -408,9 +386,6 @@ namespace ErkinStudy.Infrastructure.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ExternalId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("FolderId")
                         .HasColumnType("bigint");

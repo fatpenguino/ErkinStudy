@@ -4,7 +4,7 @@ namespace ErkinStudy.Web.Helpers
 {
     public  static class TimeZoneHelper
     {
-        public static DateTime ConvertLocalDateTime()
+        public static DateTime GetLocalDateTime()
         {
             var info = TimeZoneInfo.FindSystemTimeZoneById("Central Asia Standard Time");
             var localServerTime = DateTimeOffset.Now;

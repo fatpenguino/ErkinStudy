@@ -25,6 +25,10 @@ namespace ErkinStudy.Infrastructure.Services
             return await _context.Folders.Where(x => x.IsActive).ToListAsync();
         }
 
+        public Folder Get(long folderId)
+        {
+            return _context.Folders.FirstOrDefault(x => x.Id == folderId);
+        }
         public string GetFolderName(long id)
         {
             if (id == -1)
@@ -58,7 +62,10 @@ namespace ErkinStudy.Infrastructure.Services
             try
             {
                 if (_context.UserFolders.Any(x => x.FolderId == folderId && x.UserId == userId))
+                {
                     _logger.LogError($"Ошибка при потверждение пользователя {userId} для папки {folderId}, Ex: уже есть такой пользователь и папка");
+                    return;
+                }
                 var userFolder = new UserFolder() {UserId = userId, FolderId = folderId};
                 _context.UserFolders.Add(userFolder); 
                 _context.SaveChanges();

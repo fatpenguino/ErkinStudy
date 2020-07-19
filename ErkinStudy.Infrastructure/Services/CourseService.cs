@@ -5,7 +5,6 @@ using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace ErkinStudy.Infrastructure.Services
 {
