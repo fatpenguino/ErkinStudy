@@ -7,10 +7,8 @@ using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ErkinStudy.Web.Controllers
 {
