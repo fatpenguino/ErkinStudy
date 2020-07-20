@@ -6,6 +6,7 @@ using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ErkinStudy.Infrastructure.Services
 {
@@ -112,6 +113,40 @@ namespace ErkinStudy.Infrastructure.Services
             return _context.Folders.FirstOrDefault(x => x.Id == id)?.Price ?? 0;
         }
 
+        public async Task<List<Folder>> GetUserFolders(long userId)
+        {
+            return await _context.UserFolders.Include(x => x.Folder).Where(x => x.UserId == userId).Select(x => x.Folder)
+                .ToListAsync();
+
+        }
+
+        public string GetFolderPreview(long id)
+        {
+            var folder = Get(id);
+            if (folder.EnableLanding)
+            {
+                try
+                {
+                    var landing = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
+                    if (landing.MediaType == 0)
+                    {
+                        return landing.MediaPath;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"Ошибка парсинга landing-а, {e}");
+                    return @"~\img\erkin.jpg";
+                }
+            }
+            return @"~\img\erkin.jpg";
+        }
     }
 
+}
+public class LandingPageJson
+{
+    public string Text { get; set; }
+    public string MediaPath { get; set; }
+    public int MediaType { get; set; }
 }

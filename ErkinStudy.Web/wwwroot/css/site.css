@@ -358,3 +358,10 @@ body {
     }
 
 }
+.course-card-list {
+    width: inherit;
+}
+.card-img-top {
+    width: inherit;
+    height: 200px;
+}
