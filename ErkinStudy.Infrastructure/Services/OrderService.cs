@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Domain.Entities.Payment;
-using ErkinStudy.Web.Helpers;
+using ErkinStudy.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErkinStudy.Infrastructure.Services

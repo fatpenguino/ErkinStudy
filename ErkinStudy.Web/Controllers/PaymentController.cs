@@ -4,6 +4,7 @@ using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Enums;
 using ErkinStudy.Infrastructure.DTOs;
 using ErkinStudy.Infrastructure.ExternalServices;
+using ErkinStudy.Infrastructure.Helpers;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models;
 using ErkinStudy.Web.Models.Payment;
@@ -33,6 +34,7 @@ namespace ErkinStudy.Web.Controllers
         [Authorize]
         public async Task<IActionResult> CreateOrder(long folderId, string email, string phoneNumber, long amount)
         {
+            phoneNumber = UtilHelper.RemoveInputMaskFromPhoneNumber(phoneNumber);
             var folder = _folderService.Get(folderId);
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (folder != null && user != null)

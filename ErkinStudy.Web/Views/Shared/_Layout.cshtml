@@ -13,6 +13,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="/js/imask.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -84,6 +85,13 @@
                 <a asp-action="Offer">Публичная оферта</a></div>
         </div>
     </footer>
-    @RenderSection("Scripts", required: false)
+@await RenderSectionAsync("Scripts", required: false)
+<script>
+    var element = document.getElementById('phoneNumber');
+    var maskOptions = {
+        mask: '+{7}(000)000-00-00'
+    };
+    var mask = IMask(element, maskOptions);
+</script>
 </body>
 </html>

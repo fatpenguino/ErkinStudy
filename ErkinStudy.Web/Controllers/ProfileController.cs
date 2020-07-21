@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
+using ErkinStudy.Infrastructure.Helpers;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Controllers.Admin;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +33,7 @@ namespace ErkinStudy.Web.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             user.FirstName = firstname;
             user.LastName = lastname;
-            user.PhoneNumber = phone;
+            user.PhoneNumber = UtilHelper.RemoveInputMaskFromPhoneNumber(phone);
             await _userManager.UpdateAsync(user);
             TempData["SuccessMessage"] = "Edit success";
             return RedirectToAction("Index", "Home");

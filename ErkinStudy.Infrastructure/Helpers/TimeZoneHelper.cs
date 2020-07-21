@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ErkinStudy.Web.Helpers
+namespace ErkinStudy.Infrastructure.Helpers
 {
     public  static class TimeZoneHelper
     {

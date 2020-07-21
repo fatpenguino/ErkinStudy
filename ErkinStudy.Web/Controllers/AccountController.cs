@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
+using ErkinStudy.Infrastructure.Helpers;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -125,7 +126,7 @@ namespace ErkinStudy.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
-                    { Email = model.Email, UserName = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
+                    { Email = model.Email, UserName = model.Email, PhoneNumber = UtilHelper.RemoveInputMaskFromPhoneNumber(model.PhoneNumber), FirstName = model.FirstName, LastName = model.LastName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
