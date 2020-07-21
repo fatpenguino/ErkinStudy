@@ -35,7 +35,7 @@ namespace ErkinStudy.Web.Controllers
             user.LastName = lastname;
             user.PhoneNumber = UtilHelper.RemoveInputMaskFromPhoneNumber(phone);
             await _userManager.UpdateAsync(user);
-            TempData["SuccessMessage"] = "Edit success";
+            TempData["SuccessMessage"] = "Профиль cәтті өзгертілді";
             return RedirectToAction("Index", "Home");
         }
 

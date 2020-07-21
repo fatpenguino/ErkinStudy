@@ -7,7 +7,7 @@
             <div class="col-md-4 mx-auto">
                 <br>
                 <form method="post" asp-action="Edit">
-                    <h4>Редактирование профиля</h4>
+                    <h4>Профильді өзгерту</h4>
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
@@ -15,18 +15,18 @@
                         <input class="form-control" value="@Model.Email" readonly="readonly"/>
                     </div>
                     <div class="form-group">
-                        <label>First Name</label>
+                        <label>Аты</label>
                         <input name="firstname" class="form-control" value="@Model.FirstName" />
                     </div>
                     <div class="form-group">
-                        <label>Last Name</label>
+                        <label>Тегі</label>
                         <input name="lastname" value="@Model.LastName" class="form-control" />
                     </div>
                     <div class="form-group">
-                        <label>Phone Number</label>
+                        <label>Телефон нөмері</label>
                         <input name="phone" id="phoneNumber" value="@Model.PhoneNumber" class="form-control"  />
                     </div>
-                    <button type="submit" class="btn btn-primary">Edit</button>
+                    <button type="submit" class="btn btn-primary">Өзгерту</button>
                 </form>
             </div>
         </div>
