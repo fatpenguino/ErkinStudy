@@ -62,7 +62,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             if (parentId.HasValue)
                 ViewData["ParentId"] = parentId;
             else
-                ViewData["ParentList"] = new SelectList(_context.Folders, "Id", "Name");
+                ViewData["ParentList"] = new SelectList(_context.Folders.ToList().Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             if (teacherId.HasValue)
                 ViewData["TeacherId"] = teacherId;
             else
@@ -100,7 +100,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["ParentList"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Name", folder.ParentId);
+            ViewData["ParentList"] = new SelectList(_context.Folders.Where(x => x.Id != id).Select(x => new {x.Id, Name = $"{x.Name} - {x.Description}"}), "Id", "Name", folder.ParentId);
             ViewData["TeacherList"] = new SelectList(_userService.GetAllTeachers(), "Id", "UserName",folder.TeacherId);
             return View(folder);
         }

@@ -20,7 +20,7 @@
 <div class="accordion mb-3" id="accordionFolder">
     <div class="card">
         <div class="card-header" id="headingTwo">
-            <h2 class="mb-0">
+            <h2 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Child Folders
                 </button>
@@ -98,7 +98,7 @@
     </div>
     <div class="card">
         <div class="card-header" id="headingThree">
-            <h2 class="mb-0">
+            <h2 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Courses
                 </button>
@@ -163,7 +163,7 @@
     </div>
     <div class="card">
         <div class="card-header" id="headingFour">
-            <h2 class="mb-0">
+            <h2 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     Quizzes
                 </button>
@@ -231,7 +231,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header" id="headingFive">
+        <div class="card-header text-center" id="headingFive">
             <h2 class="mb-0">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                     Lessons
@@ -298,70 +298,69 @@
 
         </div>
 </div>
+    <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0 text-center">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Users
+                    </button>
+                </h2>
+            </div>
 
-<div class="card">
-    <div class="card-header" id="headingOne">
-        <h2 class="mb-0">
-            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Users
-            </button>
-        </h2>
-    </div>
-
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
-        <div class="card-body">
-            <form asp-action="ApproveUser">
-                <div class="form-group">
-                    <label>Add Users:</label>
-                    <textarea class="form-control" name="users" rows="1" required></textarea>
-                </div>
-                <input name="folderId" type="hidden" value="@Model.Id" />
-                <div class="form-group">
-                    <input type="submit" value="Approve" class="btn btn-primary" />
-                </div>
-            </form>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            N
-                        </th>
-                        <th>
-                            User Email
-                        </th>
-                        <th>
-                            Folder
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int j = 0;
-                        foreach (var user in users.OrderBy(x => x.User.UserName))
-                        {
-                            j++;
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+                <div class="card-body">
+                    <form asp-action="ApproveUser">
+                        <div class="form-group">
+                            <label>Add Users:</label>
+                            <textarea class="form-control" name="users" rows="1" required></textarea>
+                        </div>
+                        <input name="folderId" type="hidden" value="@Model.Id" />
+                        <div class="form-group">
+                            <input type="submit" value="Approve" class="btn btn-primary" />
+                        </div>
+                    </form>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>
-                                    @j
-                                </td>
-                                <td>
-                                    @user.User.UserName
-                                </td>
-                                <td>
-                                    @user.Folder.Name
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Delete", "DeleteApprovedUser", new { userId = user.UserId, folderId = user.FolderId })
-                                </td>
+                                <th>
+                                    N
+                                </th>
+                                <th>
+                                    User Email
+                                </th>
+                                <th>
+                                    Folder
+                                </th>
+                                <th></th>
                             </tr>
-                    }
-                    }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @{
+                                int j = 0;
+                                foreach (var user in users.OrderBy(x => x.User.UserName))
+                                {
+                                    j++;
+                                    <tr>
+                                        <td>
+                                            @j
+                                        </td>
+                                        <td>
+                                            @user.User.UserName
+                                        </td>
+                                        <td>
+                                            @user.Folder.Name
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Delete", "DeleteApprovedUser", new { userId = user.UserId, folderId = user.FolderId })
+                                        </td>
+                                    </tr>
+                            }
+                            }
+                            </tbody>
+                        </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 </div>
 
 <div>

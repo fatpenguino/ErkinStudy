@@ -17,9 +17,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -45,10 +42,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
+            <tr style="background-color: aqua">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -83,10 +77,7 @@
             var childs = await FolderService.GetChilds(item.Id);
             foreach (var child in childs)
             {
-                <tr class="table-secondary ml-5 w-75">
-                    <td>
-                        @child.Id
-                    </td>
+                <tr class="table ml-5 w-75">
                     <td>
                         @child.Name
                     </td>
