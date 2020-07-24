@@ -188,20 +188,23 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult ApproveUser(long folderId, string users)
         {
             var userList = users.Split(',');
+            var nonExistMessage = string.Empty;
             foreach (var userEmail in userList)
             {
                 try
                 {
                     var user = _userManager.FindByEmailAsync(userEmail.Trim()).Result;
-                    if (user == null)
-                        continue;
-                    _folderService.ApproveUser(folderId, user.Id);
+                    if (user != null)
+                        _folderService.ApproveUser(folderId, user.Id);
+                    else
+                        nonExistMessage += $"{userEmail}, ";
                 }
                 catch(Exception e)
                 {
                     _logger.LogError($"Все таки проебался {e}");
                 }
             }
+            TempData["ErrorMessage"] = $"Мынындай email-дар жок - {nonExistMessage}";
             return RedirectToAction(nameof(Manage), new {id = folderId});
         }
 
