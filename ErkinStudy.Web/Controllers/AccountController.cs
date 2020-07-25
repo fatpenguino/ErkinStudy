@@ -175,7 +175,7 @@ namespace ErkinStudy.Web.Controllers
                 {
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                     // Потом переделать в нормальный url генератор.
-                    var callbackUrl = $"https://bolme.kz/Account/ResetPassword?userId={user.Id}&code={code}";
+                    var callbackUrl = $"https://erkinstudy.kz/Account/ResetPassword?userId={user.Id}&code={code}";
                     await _emailService.SendEmailAsync("Құпия сөзді қалпына келтіру",
                         $"Құпия сөзді қалпына келтіру үшін <a href='{callbackUrl}'> сілтемені </a> басыңыз.", model.Email);
                     _logger.LogInformation($"Отправляем письмо для восстановление для пользователя по ссылке {callbackUrl}");
