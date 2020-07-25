@@ -40,7 +40,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             if (folderId.HasValue)
                 ViewData["FolderId"] = folderId;
             else
-                ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
+                ViewData["FolderList"] = new SelectList(_dbContext.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             return View();
         }
 
@@ -69,7 +69,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name", quiz.FolderId);
             return View(quiz);
         }
 
@@ -162,7 +162,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Clone(long id)
         {
             var quiz = _dbContext.Quizzes.FirstOrDefault(x => x.Id == id);
-            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             return View(quiz);
         }
         [HttpPost]

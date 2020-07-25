@@ -61,7 +61,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             if (folderId.HasValue)
                 ViewData["FolderId"] = folderId;
             else
-                ViewData["FolderList"] = new SelectList(_context.Folders, "Id", "Name");
+                ViewData["FolderList"] = new SelectList(_context.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             return View();
         }
 
@@ -93,7 +93,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["FolderList"] = new SelectList(_context.Folders, "Id", "Name", onlineCourse.FolderId);
+            ViewData["FolderList"] = new SelectList(_context.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name", onlineCourse.FolderId);
             return View(onlineCourse);
         }
 
