@@ -5,6 +5,7 @@
         public long UserId { get; set; }
         public long RoleId { get; set; }
         public string Username { get; set; }
+        public string UserEmail { get; set; }
         public string RoleName { get; set; }
     }
 }

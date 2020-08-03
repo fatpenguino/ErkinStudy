@@ -62,7 +62,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             if (parentId.HasValue)
                 ViewData["ParentId"] = parentId;
             else
-                ViewData["ParentList"] = new SelectList(_context.Folders, "Id", "Name");
+                ViewData["ParentList"] = new SelectList(_context.Folders.ToList().Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             if (teacherId.HasValue)
                 ViewData["TeacherId"] = teacherId;
             else
@@ -100,7 +100,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["ParentList"] = new SelectList(_context.Folders.Where(x => x.Id != id), "Id", "Name", folder.ParentId);
+            ViewData["ParentList"] = new SelectList(_context.Folders.Where(x => x.Id != id).Select(x => new {x.Id, Name = $"{x.Name} - {x.Description}"}), "Id", "Name", folder.ParentId);
             ViewData["TeacherList"] = new SelectList(_userService.GetAllTeachers(), "Id", "UserName",folder.TeacherId);
             return View(folder);
         }
@@ -188,20 +188,23 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult ApproveUser(long folderId, string users)
         {
             var userList = users.Split(',');
+            var nonExistMessage = string.Empty;
             foreach (var userEmail in userList)
             {
                 try
                 {
                     var user = _userManager.FindByEmailAsync(userEmail.Trim()).Result;
-                    if (user == null)
-                        continue;
-                    _folderService.ApproveUser(folderId, user.Id);
+                    if (user != null)
+                        _folderService.ApproveUser(folderId, user.Id);
+                    else
+                        nonExistMessage += $"{userEmail}, ";
                 }
                 catch(Exception e)
                 {
                     _logger.LogError($"Все таки проебался {e}");
                 }
             }
+            TempData["ErrorMessage"] = $"Мынындай email-дар жок - {nonExistMessage}";
             return RedirectToAction(nameof(Manage), new {id = folderId});
         }
 

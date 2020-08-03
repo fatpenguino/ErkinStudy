@@ -25,7 +25,7 @@ namespace ErkinStudy.Infrastructure.Services
             {
                 var emailMessage = new MimeMessage();
                 to ??= _configuration.GetSection("EmailSettings")["To"];
-                emailMessage.From.Add(new MailboxAddress("Bolme.kz", "info@bolme.kz"));
+                emailMessage.From.Add(new MailboxAddress("ErkinStudy", "info@erkinstudy.kz"));
                 emailMessage.To.Add(new MailboxAddress("", to));
                 emailMessage.Subject = subject;
                 emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -33,7 +33,7 @@ namespace ErkinStudy.Infrastructure.Services
                     Text = message
                 };
                 await client.ConnectAsync("mail.hosting.reg.ru", 587, false);
-                await client.AuthenticateAsync("info@bolme.kz", "Qazaq123@");
+                await client.AuthenticateAsync("info@erkinstudy.kz", "Qazaq123@");
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);

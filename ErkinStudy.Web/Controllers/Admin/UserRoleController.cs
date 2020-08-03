@@ -40,6 +40,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                     UserId = userRole.UserId,
                     RoleId = userRole.RoleId,
                     Username = $"{user.LastName} {user.FirstName}",
+                    UserEmail = user.Email,
                     RoleName = role.Name
                 };
                 resultList.Add(item);
