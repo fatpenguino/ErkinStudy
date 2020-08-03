@@ -123,23 +123,19 @@ namespace ErkinStudy.Infrastructure.Services
         public string GetFolderPreview(long id)
         {
             var folder = Get(id);
-            if (folder.EnableLanding)
+            try
             {
-                try
+                var landing = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
+                if (landing.MediaType == 0)
                 {
-                    var landing = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
-                    if (landing.MediaType == 0)
-                    {
-                        return landing.MediaPath;
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError($"Ошибка парсинга landing-а, {e}");
-                    return @"~\img\erkin.jpg";
+                    return landing.MediaPath;
                 }
             }
-            return @"~\img\erkin.jpg";
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка парсинга landing-а, {e}");
+            }
+            return string.Empty;
         }
     }
 
