@@ -365,3 +365,6 @@ body {
     width: inherit;
     height: 200px;
 }
+.info-icon {
+    width: 30px;
+}
