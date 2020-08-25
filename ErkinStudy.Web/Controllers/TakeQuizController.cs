@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
 using ErkinStudy.Web.Models;
-using ErkinStudy.Infrastructure.Services;
 using System.Collections.Generic;
 
 namespace ErkinStudy.Web.Controllers
@@ -94,25 +93,58 @@ namespace ErkinStudy.Web.Controllers
         [HttpPost]
         public JsonResult Check([FromBody] QuizAnswerViewModel quizAnswer)
         {
-            byte score = 0;
+            var score = 0;
             var quizId = Convert.ToInt32(quizAnswer.QuizId);
-
-            var questions = _dbContext.Questions.Where(x => x.QuizId == quizId).Include(x => x.Answers).ToList();
-            List<long> checkedAnswers = quizAnswer.CheckedAnswers.Select(long.Parse).ToList(); 
-
-            foreach (var question in questions)
+            var answers = new List<QuestionAnswerModel>();
+            foreach (var checkedAnswer in quizAnswer.CheckedAnswers)
             {
-                var allAns = question.Answers.ToList();
-                var correctAnsId = allAns.Where(x => x.IsCorrect).Select(x => x.Id);
-                var allAnsId = allAns.Select(x => x.Id);
-                if (correctAnsId.Except(checkedAnswers).Any() ||
-                checkedAnswers.Intersect(allAnsId).Count() != correctAnsId.Count())
+                var questionId = long.Parse(checkedAnswer.Split('-')[1]);
+                var answerId = long.Parse(checkedAnswer.Split('-')[0]);
+                var questionAnswer = answers.FirstOrDefault(x => x.QuestionId == questionId);
+                if ( questionAnswer == null)
                 {
-                    continue;
+                    questionAnswer = new QuestionAnswerModel {QuestionId = questionId};
+                    questionAnswer.Answers.Add(answerId);
+                    answers.Add(questionAnswer);
                 }
-                score++;
+                else
+                {
+                    questionAnswer.Answers.Add(answerId);
+                }
             }
+            var questions = _dbContext.Questions.Where(x => x.QuizId == quizId).Include(x => x.Answers).ToList();
+            foreach (var answer in answers)
+            {
+                var question = questions.FirstOrDefault(x => x.Id == answer.QuestionId);
+                if (question == null) continue;
+                {
+                    var correctAnswers = question.Answers.Where(x => x.IsCorrect).Select(x => x.Id).ToList();
+                    if (correctAnswers.Count == 1)
+                    {
+                        if (answer.Answers.Contains(correctAnswers.First()))
+                        {
+                            score++;
+                        }
+                    }
+                    else
+                    {
+                        short correct = 0;
+                        foreach (var correctAnswer in correctAnswers.Where(correctAnswer => answer.Answers.Contains(correctAnswer)))
+                        {
+                            correct++;
+                        }
 
+                        if (correct == correctAnswers.Count)
+                        {
+                            score += 2;
+                        }
+                        else if(correctAnswers.Count - correct == 1)
+                        {
+                            score++;
+                        }
+                    }
+                }
+            }
             try
             {
                 var scoreDb = new QuizScore
