@@ -192,7 +192,8 @@ namespace ErkinStudy.Web.Controllers.Admin
                     _dbContext.SaveChanges();
                 }
             }
-            return RedirectToAction("Index");
+
+            return folderId != null ? RedirectToAction("Manage", "Folder", new { id = folderId }) : RedirectToAction("Index");
         }
     }
 }
