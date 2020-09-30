@@ -75,7 +75,7 @@
                 </td>
             </tr>
             var childs = await FolderService.GetChilds(item.Id);
-            foreach (var child in childs)
+            foreach (var child in childs.OrderBy(x => x.Order))
             {
                 <tr class="table ml-5 w-75">
                     <td>
