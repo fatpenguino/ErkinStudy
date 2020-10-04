@@ -17,16 +17,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            @*
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            *@
             <th>
                 Folder
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsActive)
@@ -43,16 +41,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            @*
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            *@
             <td>
                 @FolderService.GetFolderName(item.FolderId ?? 0)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td style="@if(!string.IsNullOrWhiteSpace(item.Color)){ @Html.Raw($"background-color: {item.Color}")}">
+                @Html.DisplayFor(modelItem => item.Color)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)

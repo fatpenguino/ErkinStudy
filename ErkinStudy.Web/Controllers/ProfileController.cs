@@ -2,7 +2,6 @@
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Helpers;
 using ErkinStudy.Infrastructure.Services;
-using ErkinStudy.Web.Controllers.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,12 +11,10 @@ namespace ErkinStudy.Web.Controllers
     public class ProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<ProfileController> _logger;
         private readonly FolderService _folderService;
-        public ProfileController(UserManager<ApplicationUser> userManager, ILogger<ProfileController> logger, FolderService folderService)
+        public ProfileController(UserManager<ApplicationUser> userManager, FolderService folderService)
         {
             this._userManager = userManager;
-            _logger = logger;
             _folderService = folderService;
         }
         [HttpGet]

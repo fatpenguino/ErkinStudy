@@ -46,7 +46,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         // POST: Quiz/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,FolderId,IsActive,Price,Order,Description,Color")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,FolderId,IsActive,Price,Order,Description,Color")] Quiz quiz)
         {
             if (id != quiz.Id)
             {

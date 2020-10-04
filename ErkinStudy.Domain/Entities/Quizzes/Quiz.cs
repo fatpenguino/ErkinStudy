@@ -10,6 +10,7 @@ namespace ErkinStudy.Domain.Entities.Quizzes
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public int Order { get; set; }
+        public string Color { get; set; }
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }

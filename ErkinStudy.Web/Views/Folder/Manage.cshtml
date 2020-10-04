@@ -50,6 +50,9 @@
                                 Order
                             </th>
                             <th>
+                                Color
+                            </th>
+                            <th>
                                 Is Active
                             </th>
                             <th>
@@ -74,6 +77,9 @@
                                     @UserService.GetFullNameByUserId(child.TeacherId ?? -1)
                                 </td>
                                 <td>
+                                    @child.Order
+                                </td>
+                                <td style="@if(!string.IsNullOrWhiteSpace(child.Color)){ @Html.Raw($"background-color: {child.Color}")}">
                                     @child.Order
                                 </td>
                                 <td>
@@ -125,6 +131,9 @@
                                 Price
                             </th>
                             <th>
+                                Color
+                            </th>
+                            <th>
                                 Is Active
                             </th>
                             <th></th>
@@ -133,28 +142,31 @@
                     <tbody>
                         @foreach (var course in courses)
                         {
-                            <tr>
-                                <td>
-                                    @course.Name
-                                </td>
-                                <td>
-                                    @course.Description
-                                </td>
-                                <td>
-                                    @Model.Name
-                                </td>
-                                <td>
-                                    @course.Price
-                                </td>
-                                <td>
-                                    @course.IsActive
-                                </td>
-                                <td>
-                                    <a asp-controller="OnlineCourse" asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
-                                    <a asp-controller="OnlineCourseWeek" asp-action="Index" asp-route-onlineCourseId="@course.Id">Weeks</a> |
-                                    <a asp-controller="OnlineCourse" asp-action="Delete" asp-route-id="@course.Id">Delete</a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @course.Name
+                            </td>
+                            <td>
+                                @course.Description
+                            </td>
+                            <td>
+                                @Model.Name
+                            </td>
+                            <td>
+                                @course.Price
+                            </td>
+                            <td style="@if(!string.IsNullOrWhiteSpace(course.Color)){ @Html.Raw($"background-color: {course.Color}")}">
+                                @course.Color
+                            </td>
+                            <td>
+                                @course.IsActive
+                            </td>
+                            <td>
+                                <a asp-controller="OnlineCourse" asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
+                                <a asp-controller="OnlineCourseWeek" asp-action="Index" asp-route-onlineCourseId="@course.Id">Weeks</a> |
+                                <a asp-controller="OnlineCourse" asp-action="Delete" asp-route-id="@course.Id">Delete</a>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -188,6 +200,9 @@
                                 Q amt
                             </th>
                             <th>
+                               Color
+                            </th>
+                            <th>
                                 Is Active
                             </th>
                             <th>
@@ -211,6 +226,9 @@
                                     </td>
                                     <td>
                                         @quiz.Questions.Count
+                                    </td>
+                                    <td style="@if (!string.IsNullOrWhiteSpace(quiz.Color)){ @Html.Raw($"background-color: {quiz.Color}")}">
+                                        @quiz.Color
                                     </td>
                                     <td>
                                         @quiz.IsActive

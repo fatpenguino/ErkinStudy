@@ -115,7 +115,7 @@ namespace ErkinStudy.Infrastructure.Services
 
         public async Task<List<Folder>> GetUserFolders(long userId)
         {
-            return await _context.UserFolders.Include(x => x.Folder).Where(x => x.UserId == userId).Select(x => x.Folder)
+            return await _context.UserFolders.Include(x => x.Folder).Where(x => x.UserId == userId && x.Folder.IsActive).Select(x => x.Folder)
                 .ToListAsync();
 
         }
