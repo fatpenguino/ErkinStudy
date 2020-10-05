@@ -119,7 +119,7 @@ namespace ErkinStudy.Web.Controllers
                 if (question == null) continue;
                 {
                     var correctAnswers = question.Answers.Where(x => x.IsCorrect).Select(x => x.Id).ToList();
-                    if (correctAnswers.Count == 1)
+                    if (correctAnswers.Count == 1 && question.Answers.Count == 5)
                     {
                         if (answer.Answers.Contains(correctAnswers.First()))
                         {

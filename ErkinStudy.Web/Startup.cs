@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.ExternalServices;
@@ -16,12 +18,14 @@ namespace ErkinStudy.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -54,8 +58,12 @@ namespace ErkinStudy.Web
             services.AddRazorPages();
             services.AddDistributedMemoryCache();
             services.AddSession();
-            //панацея от мусора в логах
-            //services.AddDataProtection().SetApplicationName("bolme.kz");
+
+            var keysFolder = Path.Combine(WebHostEnvironment.ContentRootPath, "temp-keys");
+            services.AddDataProtection()
+                .SetApplicationName("ErkinStudy")
+                .PersistKeysToFileSystem(new DirectoryInfo(keysFolder))
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
