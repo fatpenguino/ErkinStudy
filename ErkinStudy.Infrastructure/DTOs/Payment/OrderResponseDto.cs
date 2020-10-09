@@ -1,6 +1,4 @@
-﻿using ErkinStudy.Domain.Entities.Payment;
-
-namespace ErkinStudy.Infrastructure.DTOs
+﻿namespace ErkinStudy.Infrastructure.DTOs.Payment
 {
     public class OrderResponseDto
     {

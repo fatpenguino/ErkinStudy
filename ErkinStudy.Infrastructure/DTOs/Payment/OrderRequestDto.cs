@@ -1,4 +1,4 @@
-﻿namespace ErkinStudy.Infrastructure.DTOs
+﻿namespace ErkinStudy.Infrastructure.DTOs.Payment
 {
     public class OrderRequestDto
     {

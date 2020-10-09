@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Infrastructure.DTOs;
+using ErkinStudy.Infrastructure.DTOs.Payment;
 using ErkinStudy.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using WooppayService;

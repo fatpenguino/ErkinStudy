@@ -77,6 +77,26 @@ namespace ErkinStudy.Web.Controllers
             var tests = await _dbContext.Quizzes.Where(x => x.IsActive).OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
             return View(tests);
         }
+
+        public async Task<IActionResult> TotalRating(long id)
+        {
+            var totalRating = await _folderService.TotalRating(id);
+            if (totalRating == null)
+                return RedirectToAction("Folder", new { id });
+            var model = new TotalRatingViewModel
+            {
+                FolderId = totalRating.FolderId,
+                QuizIds = totalRating.QuizIds.ToArray(),
+                QuizTitles = totalRating.QuizTitles.ToArray(),
+                FolderName =  totalRating.FolderName,
+                UserScores = totalRating.UserScores.Select(x => new UserScoreViewModel()
+                {
+                    FullName = x.FullName, UserId = x.UserId, Scores = x.Scores, TotalPoint = x.TotalPoint
+                }).ToList()
+            };
+            return View(model);
+        }
+
         public IActionResult Privacy() 
         {
             return View();

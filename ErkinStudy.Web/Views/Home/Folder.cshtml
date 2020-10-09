@@ -65,7 +65,7 @@
                             <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
                         </div>
                     </div>
-                    </div>
+                </div>
             }
             @foreach (var lesson in Model.Lessons ?? new List<Lesson>())
             {
@@ -78,6 +78,10 @@
                         </div>
                     </div>
                 </div>
+            }
+            @if (Model.IsQuizGroup && quizzes.Count > 0)
+            {
+                <a class="btn btn-info">Рейтинг</a>
             }
         </div>
     </div>
