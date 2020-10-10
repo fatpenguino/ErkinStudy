@@ -81,7 +81,13 @@
             }
             @if (Model.IsQuizGroup && quizzes.Count > 0)
             {
-                <a class="btn btn-info">Рейтинг</a>
+                <div class="col-auto mb-3">
+                    <div class="card folder-button" style="width: 18rem; background-color: #66a1d2">
+                        <div class="card-body text-center">
+                            <a asp-action="TotalRating" asp-route-id="@Model.Id" class="card-link text-white">Жалпы Рейтинг</a>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
     </div>

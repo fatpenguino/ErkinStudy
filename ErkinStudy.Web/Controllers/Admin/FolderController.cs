@@ -106,7 +106,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,Price,IsActive,LandingPage,Color,EnableLanding")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,Price,IsActive,LandingPage,Color,EnableLanding,IsQuizGroup")] Folder folder)
         {
             if (id != folder.Id)
             {
