@@ -66,28 +66,21 @@ namespace ErkinStudy.Web.Controllers
                 if (!id.HasValue)
                     throw new NotImplementedException();
 
-                var currentUser = await _userManager.GetUserAsync(User);
-                var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
-
-                //if ((!userService.IsUserHasQuiz(currentUser.Id, shortQuiz.Id) 
-                //    && shortQuiz.Price != 0) || !shortQuiz.IsActive)
-                //    return RedirectToAction("Tests", "Home");
-
                 var quiz = await _dbContext.Quizzes
                     .Include(x => x.Questions)
                     .ThenInclude(q => q.Answers)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
-                return View(quiz);
+                if (quiz != null) return View(quiz);
+
+                _logger.LogError($"Нету квиза по заданному id - {id.Value}");
             }
             catch (Exception e)
             {
                 //we need change it!!!
                 _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id {id}, у пользователя {User.Identity.Name}, {e}");
-                RedirectToAction(nameof(Index));
             }
-
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -119,7 +112,7 @@ namespace ErkinStudy.Web.Controllers
                 if (question == null) continue;
                 {
                     var correctAnswers = question.Answers.Where(x => x.IsCorrect).Select(x => x.Id).ToList();
-                    if (correctAnswers.Count == 1 && question.Answers.Count == 5)
+                    if (correctAnswers.Count == 1 && question.Answers.Count <= 5)
                     {
                         if (answer.Answers.Contains(correctAnswers.First()))
                         {
@@ -129,7 +122,7 @@ namespace ErkinStudy.Web.Controllers
                     else
                     {
                         short correct = 0;
-                        foreach (var correctAnswer in correctAnswers.Where(correctAnswer => answer.Answers.Contains(correctAnswer)))
+                        foreach (var unused in correctAnswers.Where(correctAnswer => answer.Answers.Contains(correctAnswer)))
                         {
                             correct++;
                         }

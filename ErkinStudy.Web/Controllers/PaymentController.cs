@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Enums;
-using ErkinStudy.Infrastructure.DTOs;
 using ErkinStudy.Infrastructure.DTOs.Payment;
 using ErkinStudy.Infrastructure.ExternalServices;
 using ErkinStudy.Infrastructure.Helpers;

@@ -6,13 +6,12 @@
     ViewData["Title"] = "Quiz";
 }
 
-<h2>@Model.Title</h2>
-
+<h3 class="mt-2">@Model.Title</h3>
 <form asp-action="Check">
     <input type="hidden" name="quizId" value="@Model.Id" />
     <div class="form-group row">
         <ol type="1">
-            @foreach (var question in Model.Questions) 
+            @foreach (var question in Model.Questions)
             {
                 <li>
                     @Html.DisplayFor(modelItem => question.Content)
@@ -31,28 +30,28 @@
                     @{
                         if (question.Answers.Count() <= 5)
                         {
-                            foreach( var ans in question.Answers)
+                            foreach (var ans in question.Answers)
                             {
                                 <li>
-                                    <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" 
-                                           type="radio" 
-                                           name="@question.Id" 
-                                           value="@ans.Id-@question.Id" > @ans.Content
-                                </li>
+                                    <input class="answer @(ans.IsCorrect ? "answer_correct" : "")"
+                                           type="radio"
+                                           name="@question.Id"
+                                           value="@ans.Id-@question.Id"> @ans.Content
+                                    </li>
+                                }
                             }
-                        }
-                        else
-                        {
-                            foreach( var ans in question.Answers)
+                            else
                             {
-                                <li>
-                                    <input class="answer @(ans.IsCorrect ? "answer_correct" : "")" 
-                                           type="checkbox" 
-                                           name="@question.Id" 
-                                           value="@ans.Id-@question.Id" > @ans.Content
-                                </li>
-                            }
-                        }
+                                foreach (var ans in question.Answers)
+                                {
+                                    <li>
+                                        <input class="answer @(ans.IsCorrect ? "answer_correct" : "")"
+                                               type="checkbox"
+                                               name="@question.Id"
+                                               value="@ans.Id-@question.Id"> @ans.Content
+                                        </li>
+                                    }
+                                }
                     }
                 </ol>
             }
@@ -65,10 +64,10 @@
         <p class="mx-auto quiz_result" style="display: none">Жинаған балыңыз: </p>
     </div>
     <div class="form-group row">
-        <input type="button" 
-               style="display: none" 
-               value="Кеттік, бәрін таста" 
-               class="btn btn-primary mx-auto exit_quiz" 
+        <input type="button"
+               style="display: none"
+               value="Кеттік, бәрін таста"
+               class="btn btn-primary mx-auto exit_quiz"
                onclick="location.href='@Url.Action("Index", "Home")'" />
     </div>
 </form>
@@ -78,41 +77,41 @@
             <td class="bg-success info-icon">
             </td>
             <td>
-               - Дұрыс белгіленді
+                - Дұрыс белгіленді
             </td>
         </tr>
         <tr>
             <td class="bg-warning info-icon">
             </td>
             <td>
-               - Дұрыс жауап
+                - Дұрыс жауап
             </td>
         </tr>
         <tr>
             <td class="bg-danger info-icon">
             </td>
             <td>
-               - Қате белгіленді
+                - Қате белгіленді
             </td>
         </tr>
     </table>
 </div>
 <div class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
-        <div class="loader" >Loading...</div>
+        <div class="loader">Loading...</div>
     </div>
 </div>
 
 <script type="text/javascript">
     $(function() {
-        
+
         $(".pass_quiz").on("click", function() {
 
             $(".modal").modal("show");
             $(this).attr("disabled", true);
 
             let quizId = $("input[name='quizId']").val();
-            
+
             let checkedAnswers = [];
             $(".answer:checked").each(function() {
                 checkedAnswers.push($(this).val());
@@ -121,16 +120,16 @@
             let formData = JSON.stringify({
                 'quizId': quizId,
                 'checkedAnswers': checkedAnswers
-            })
+            });
 
-            $.ajax({  
+            $.ajax({
                 type: "POST",
-                url: "@Url.Action("Check", "TakeQuiz")",
+                url: "/TakeQuiz/Check",
                 contentType: "application/json; charset=utf-8",
                 data: formData,
                 dataType: "json",
 
-                success: function (result, status, xhr) {
+                success: function (result) {
                     $(".pass_quiz").hide();
                     $(".exit_quiz").show();
                     $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
@@ -149,12 +148,12 @@
                     });
 
                     $(".modal").modal("hide");
-                },  
-                error: function (xhr, status, error) { 
+                },
+                error: function () {
                     $(this).attr("disabled", false);
                     $(".modal").modal("hide");
-                }  
-            });  
+                }
+            });
         });
 
     });

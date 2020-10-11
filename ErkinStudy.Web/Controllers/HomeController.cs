@@ -33,10 +33,9 @@ namespace ErkinStudy.Web.Controllers
             _folderService = folderService;
             _quizService = quizService;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var folders = await _dbContext.Folders.Where(x => x.IsActive).ToListAsync();
-            return View(folders);
+            return View();
         }
         public async Task<IActionResult> SendCallRequest(string name, string number, string type = "Онлайн курс")
         {
@@ -60,6 +59,12 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Folder(long id)
         {
+            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+            if (folder == null)
+            {
+                _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
+                return RedirectToAction("Index");
+            }
             var childs = await _folderService.GetChilds(id);
             var courses = await _courseService.GetByFolderId(id);
             var quizzes = await _quizService.GetByFolderId(id);
@@ -70,7 +75,7 @@ namespace ErkinStudy.Web.Controllers
                return RedirectToAction("Quiz","TakeQuiz", new { id = quizzes.First().Id });
             if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 0 && lessons.Count == 1)
                return RedirectToAction("Detail","Col", new { id = lessons.First().Id });
-            return View(await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive));
+            return View(folder);
         }
         public async Task<IActionResult> Tests()
         {
@@ -135,6 +140,11 @@ namespace ErkinStudy.Web.Controllers
                 var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
                 if (folder != null)
                 {
+                    if (string.IsNullOrWhiteSpace(folder.LandingPage))
+                    {
+                        _logger.LogError($"Попытка открыть выключенный landing, {id}");
+                        return RedirectToAction("Folder", new {id});
+                    }
                     var json = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
                     var model = new LandingViewModel
                     {

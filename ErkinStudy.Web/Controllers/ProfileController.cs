@@ -2,22 +2,24 @@
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Infrastructure.Helpers;
 using ErkinStudy.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FolderService _folderService;
         public ProfileController(UserManager<ApplicationUser> userManager, FolderService folderService)
         {
-            this._userManager = userManager;
+            _userManager = userManager;
             _folderService = folderService;
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -25,6 +27,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(string firstname, string lastname, string phone)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -37,6 +40,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Courses()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
