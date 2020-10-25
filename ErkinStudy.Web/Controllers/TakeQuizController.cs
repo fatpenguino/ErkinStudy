@@ -11,6 +11,7 @@ using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
 using ErkinStudy.Web.Models;
 using System.Collections.Generic;
+using ErkinStudy.Domain.Enums;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -74,6 +75,27 @@ namespace ErkinStudy.Web.Controllers
                 if (quiz != null) return View(quiz);
 
                 _logger.LogError($"Нету квиза по заданному id - {id.Value}");
+            }
+            catch (Exception e)
+            {
+                //we need change it!!!
+                _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id {id}, у пользователя {User.Identity.Name}, {e}");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> OpenQuiz(long id)
+        {
+            try
+            {
+                var quiz = await _dbContext.Quizzes
+                    .Include(x => x.Questions)
+                    .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync(x => x.Id == id && x.Type == QuizType.HomeTask);
+
+                if (quiz != null) return View(quiz);
+
+                _logger.LogError($"Нету открытого квиза по заданному id - {id}");
             }
             catch (Exception e)
             {

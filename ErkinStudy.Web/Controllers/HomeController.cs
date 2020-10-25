@@ -68,13 +68,10 @@ namespace ErkinStudy.Web.Controllers
             var childs = await _folderService.GetChilds(id);
             var courses = await _courseService.GetByFolderId(id);
             var quizzes = await _quizService.GetByFolderId(id);
-            var lessons = await _lessonService.GetByFolderId(id);
-            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0 && lessons.Count == 0)
+            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
                return RedirectToAction("Index", "Course",new { id = courses.First().Id});
-            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1 && lessons.Count == 0)
+            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
                return RedirectToAction("Quiz","TakeQuiz", new { id = quizzes.First().Id });
-            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 0 && lessons.Count == 1)
-               return RedirectToAction("Detail","Col", new { id = lessons.First().Id });
             return View(folder);
         }
         public async Task<IActionResult> Tests()

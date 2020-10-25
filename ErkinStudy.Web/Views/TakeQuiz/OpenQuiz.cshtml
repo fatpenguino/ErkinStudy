@@ -1,0 +1,109 @@
+@model ErkinStudy.Domain.Entities.Quizzes.Quiz
+
+@{
+    ViewData["Title"] = "Quiz";
+}
+
+<h3 class="mt-2">@Model.Title</h3>
+<form asp-action="Check">
+    <input type="hidden" name="quizId" value="@Model.Id" />
+    <div class="form-group">
+        <ol class="list-group" type="1">
+            @foreach (var question in Model.Questions)
+            {
+                <li class="list-group-item">
+                    @Html.DisplayFor(modelItem => question.Content)
+                    <div class="row">
+                        <div class="col-10">
+                            @{
+                                if(question.ImagePath != null)
+                                {
+                                    <img class="img-fluid" asp-append-version="true" src="@question.ImagePath">
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Жауабы:</label>
+                        <input type="text" name="@question.Id">
+                    </div>
+                </li>
+            }
+        </ol>
+    </div>
+    <div class="form-group row mb-0">
+        <input type="button" value="Тексеру" class="btn btn-primary mx-auto pass_quiz" />
+    </div>
+    <div class="form-group row">
+        <p class="mx-auto quiz_result" style="display: none">Жинаған балыңыз: </p>
+    </div>
+    <div class="form-group row">
+        <input type="button"
+               style="display: none"
+               value="Кеттік, бәрін таста"
+               class="btn btn-primary mx-auto exit_quiz"
+               onclick="location.href='@Url.Action("Index", "Home")'" />
+    </div>
+</form>
+<div class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+        <div class="loader">Loading...</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+
+        $(".pass_quiz").on("click", function() {
+
+            $(".modal").modal("show");
+            $(this).attr("disabled", true);
+
+            let quizId = $("input[name='quizId']").val();
+
+            let checkedAnswers = [];
+            $(".answer:checked").each(function() {
+                checkedAnswers.push($(this).val());
+            });
+
+            let formData = JSON.stringify({
+                'quizId': quizId,
+                'checkedAnswers': checkedAnswers
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/TakeQuiz/Check",
+                contentType: "application/json; charset=utf-8",
+                data: formData,
+                dataType: "json",
+
+                success: function (result) {
+                    $(".pass_quiz").hide();
+                    $(".exit_quiz").show();
+                    $(".quiz_result").append("<h4><strong>" + result + "</strong><h4>").show();
+
+                    $(".answer_correct").each(function () {
+                        $(this).parent().addClass('bg-warning');
+                    });
+                    $(".answer:checked").each(function() {
+                        if (!$(this).hasClass('answer_correct')) {
+                            $(this).parent().addClass('bg-danger');
+                        }
+                        else {
+                            $(this).parent().removeClass('bg-warning');
+                            $(this).parent().addClass('bg-success');
+                        }
+                    });
+
+                    $(".modal").modal("hide");
+                },
+                error: function () {
+                    $(this).attr("disabled", false);
+                    $(".modal").modal("hide");
+                }
+            });
+        });
+
+    });
+</script>

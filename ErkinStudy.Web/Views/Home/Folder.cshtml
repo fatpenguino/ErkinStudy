@@ -1,6 +1,6 @@
 ﻿@using System.Web
 @using ErkinStudy.Domain.Entities.Identity
-@using ErkinStudy.Domain.Entities.Lessons
+@using ErkinStudy.Domain.Enums
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
 @model ErkinStudy.Domain.Entities.Lessons.Folder
@@ -59,22 +59,18 @@
             @foreach (var quiz in quizzes.OrderBy(x => x.Order).ThenBy(x => x.Title))
             {
                 <div class="col-auto mb-3">
-                    <div class="card text-white folder-button" style="width: 18rem; background-color: @if(!string.IsNullOrWhiteSpace(quiz.Color)){@quiz.Color} else {@Html.Raw("#66a1d2")}">
+                    <div class="card text-white folder-button" style="width: 18rem; background-color: @if(!string.IsNullOrWhiteSpace(quiz.Color)){ @quiz.Color} else {@Html.Raw("#66a1d2")}">
                         <div class="card-body text-center">
-                            <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
-                            <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
-                        </div>
-                    </div>
-                </div>
-            }
-            @foreach (var lesson in Model.Lessons ?? new List<Lesson>())
-            {
-                <div class="col-auto mb-3">
-                    <div class="card folder-button" style="width: 18rem; background-color: #66a1d2">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@lesson.Name</h5>
-                            <p class="card-text">@lesson.Description</p>
-                            <a asp-controller="Col" asp-action="Detail" asp-route-id="@lesson.Id" class="card-link">Ашу</a>
+                            @if (quiz.Type == QuizType.MultipleChoice)
+                            {
+                                <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
+                                <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="TakeQuiz" asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
+
+                            }
                         </div>
                     </div>
                 </div>

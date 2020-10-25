@@ -1,4 +1,5 @@
-﻿@model ErkinStudy.Domain.Entities.Quizzes.Quiz
+﻿@using ErkinStudy.Domain.Enums
+@model ErkinStudy.Domain.Entities.Quizzes.Quiz
 @{
     ViewData["Title"] = "Edit Quiz";
 }
@@ -22,6 +23,11 @@
         <label asp-for="Order" class="col-form-label"></label>
         <input asp-for="Order" class="form-control" />
         <span asp-validation-for="Order" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Quiz Type</label>
+        <select asp-for="Type" value="@Model.Type" class="form-control" asp-items="@Html.GetEnumSelectList<QuizType>()">
+        </select>
     </div>
     @if (User.IsInRole("Admin"))
     {
