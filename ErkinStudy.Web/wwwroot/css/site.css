@@ -363,3 +363,16 @@ body {
 .info-icon {
     width: 30px;
 }
+
+.exit_quiz {
+    display: none;
+}
+.quiz_result {
+    display: none;
+}
+.pass_quiz {
+
+}
+.answer {
+
+}

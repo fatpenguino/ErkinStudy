@@ -6,5 +6,15 @@
         {
             return phoneNumber?.Replace("+", "").Replace("(", "").Replace(")","").Replace("-", "");
         }
+
+        public static bool CheckUserAnswer(string answer, string correctAnswer)
+        {
+            return FormatAnswer(answer) == FormatAnswer(correctAnswer);
+        }
+
+        public static string FormatAnswer(string answer)
+        {
+            return answer.Replace(" ", "").ToLower();
+        }
     }
 }

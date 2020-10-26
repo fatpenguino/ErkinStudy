@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ErkinStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201024142331_UserAnswer")]
+    [Migration("20201026200927_UserAnswer")]
     partial class UserAnswer
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -565,17 +565,20 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<string>("Answer")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
                     b.Property<long>("QuestionId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("UserId")
+                    b.Property<long>("QuizScoreId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("QuizScoreId");
 
                     b.ToTable("UserAnswers");
                 });
@@ -792,7 +795,7 @@ namespace ErkinStudy.Infrastructure.Migrations
             modelBuilder.Entity("ErkinStudy.Domain.Entities.Quizzes.QuizScore", b =>
                 {
                     b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("QuizScores")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -806,9 +809,9 @@ namespace ErkinStudy.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ErkinStudy.Domain.Entities.Identity.ApplicationUser", "User")
+                    b.HasOne("ErkinStudy.Domain.Entities.Quizzes.QuizScore", "QuizScore")
                         .WithMany("UserAnswers")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("QuizScoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

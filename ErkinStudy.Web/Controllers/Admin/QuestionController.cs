@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
-using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using ErkinStudy.Domain.Entities.Quizzes;
+using ErkinStudy.Web.Models.Quiz;
 using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
@@ -56,7 +56,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                     string path = null;
                     if (questionViewModel.Image != null)
                     {
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + questionViewModel.Image.FileName;
+                        var uniqueFileName = Guid.NewGuid() + "_" + questionViewModel.Image.FileName;
                         path = "/Questions/" + uniqueFileName;
                         using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                         {
@@ -121,14 +121,14 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {
-                    var question = _context.Questions.Find(questionViewModel.Id);
-                    string path = question.ImagePath;
+                    var question = await _context.Questions.FindAsync(questionViewModel.Id);
+                    var path = question.ImagePath;
 
                     if (questionViewModel.Image != null)
                     {
                         var uniqueFileName = Guid.NewGuid() + "_" + questionViewModel.Image.FileName;
                         path = "/Questions/" + uniqueFileName;
-                        questionViewModel.Image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
+                        await questionViewModel.Image.CopyToAsync(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
 
                         if (question.ImagePath != null)
                         {
@@ -172,7 +172,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Question/Delete/5
-        public IActionResult Delete(long? id)
+        public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -196,7 +196,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return RedirectToAction("Error", "Home");
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { quizId = question.QuizId });
         }
 

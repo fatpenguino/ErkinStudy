@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ErkinStudy.Web.Models
+namespace ErkinStudy.Web.Models.Quiz
 {
     public class QuestionAnswerModel
     {

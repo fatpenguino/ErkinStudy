@@ -9,9 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
-using ErkinStudy.Web.Models;
 using System.Collections.Generic;
 using ErkinStudy.Domain.Enums;
+using ErkinStudy.Infrastructure.Helpers;
+using ErkinStudy.Web.Models.Quiz;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -180,6 +181,53 @@ namespace ErkinStudy.Web.Controllers
             return Json(score);
         }
 
+        [HttpPost]
+        public async Task<long> CheckHomeTask([FromBody] FilledQuizViewModel filledQuiz)
+        {
+            try
+            {
+                var quiz = _dbContext.Quizzes.Include(x => x.Questions).ThenInclude(x => x.Answers)
+                    .First(x => x.Id == filledQuiz.QuizId);
+
+                var quizScore = new QuizScore
+                {
+                    UserId = long.Parse(_userManager.GetUserId(User)),
+                    QuizId = filledQuiz.QuizId,
+                    TakenTime = DateTime.Now,
+                    Point = 0
+                };
+                await _dbContext.QuizScores.AddAsync(quizScore);
+                await _dbContext.SaveChangesAsync();
+                var userAnswers = new List<UserAnswer>();
+
+                foreach (var filledAnswer in filledQuiz.Answers)
+                {
+                    var userAnswer = new UserAnswer
+                    {
+                        Answer = filledAnswer.Answer,
+                        QuestionId = long.Parse(filledAnswer.QuestionId),
+                        QuizScoreId = quizScore.Id,
+                        IsCorrect = false
+                    };
+                    var question = quiz.Questions.First(x => x.Id == long.Parse(filledAnswer.QuestionId));
+                    if (question.Answers.Where(x => x.IsCorrect).Any(questionAnswer => UtilHelper.CheckUserAnswer(filledAnswer.Answer, questionAnswer.Content)))
+                    {
+                        userAnswer.IsCorrect = true;
+                    }
+                    userAnswers.Add(userAnswer);
+                }
+
+                quizScore.Point = userAnswers.Count(x => x.IsCorrect);
+                await _dbContext.UserAnswers.AddRangeAsync(userAnswers);
+                await _dbContext.SaveChangesAsync();
+                return quizScore.Id;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка во время проверки открытых тестов id - {filledQuiz.QuizId}, {e}");
+                return -1;
+            }
+        }
         public async Task<IActionResult> Results(long? id)
         {
             if (!id.HasValue)

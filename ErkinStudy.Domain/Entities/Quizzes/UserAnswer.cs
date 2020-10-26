@@ -1,14 +1,13 @@
-﻿using ErkinStudy.Domain.Entities.Identity;
-
-namespace ErkinStudy.Domain.Entities.Quizzes
+﻿namespace ErkinStudy.Domain.Entities.Quizzes
 {
     public class UserAnswer
     {
         public long Id { get; set; }
-        public long UserId { get; set; }
+        public long QuizScoreId { get; set; }
         public long QuestionId { get; set; }
         public string Answer { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public bool IsCorrect { get; set; }
+        public virtual QuizScore QuizScore { get; set; }
         public virtual Question Question { get; set; }
     }
 }

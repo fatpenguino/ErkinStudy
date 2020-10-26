@@ -24,9 +24,10 @@ namespace ErkinStudy.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(nullable: false),
+                    QuizScoreId = table.Column<long>(nullable: false),
                     QuestionId = table.Column<long>(nullable: false),
-                    Answer = table.Column<string>(nullable: true)
+                    Answer = table.Column<string>(nullable: true),
+                    IsCorrect = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,9 +39,9 @@ namespace ErkinStudy.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserAnswers_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_UserAnswers_QuizScores_QuizScoreId",
+                        column: x => x.QuizScoreId,
+                        principalTable: "QuizScores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -51,9 +52,9 @@ namespace ErkinStudy.Infrastructure.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserAnswers_UserId",
+                name: "IX_UserAnswers_QuizScoreId",
                 table: "UserAnswers",
-                column: "UserId");
+                column: "QuizScoreId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

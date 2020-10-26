@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
-using ErkinStudy.Domain.Entities.Quizzes;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using ErkinStudy.Domain.Entities.Quizzes;
+using Microsoft.AspNetCore.Http;
 
-namespace ErkinStudy.Web.Models
+namespace ErkinStudy.Web.Models.Quiz
 {
     public class QuestionViewModel
     {
