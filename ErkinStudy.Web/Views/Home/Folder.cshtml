@@ -64,13 +64,12 @@
                             @if (quiz.Type == QuizType.MultipleChoice)
                             {
                                 <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
-                                <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
                             }
                             else
                             {
                                 <a asp-controller="TakeQuiz" asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
-
                             }
+                            <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
                         </div>
                     </div>
                 </div>

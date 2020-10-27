@@ -12,6 +12,7 @@ namespace ErkinStudy.Domain.Entities.Quizzes
         public int Point { get; set; }
         public DateTime TakenTime { get; set; }
         public virtual ApplicationUser User { get; set; }
+        public virtual Quiz Quiz { get; set; }
         public virtual ICollection<UserAnswer> UserAnswers { get; set; }
     }
 

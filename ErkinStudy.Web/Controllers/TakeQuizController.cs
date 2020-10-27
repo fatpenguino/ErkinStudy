@@ -89,6 +89,11 @@ namespace ErkinStudy.Web.Controllers
         {
             try
             {
+                var userId = long.Parse(_userManager.GetUserId(User));
+                var quizScore = _dbContext.QuizScores.FirstOrDefault(x => x.UserId == userId && x.QuizId == id);
+                if (quizScore != null)
+                    return RedirectToAction("QuizScore", new {id = quizScore.Id});
+
                 var quiz = await _dbContext.Quizzes
                     .Include(x => x.Questions)
                     .ThenInclude(q => q.Answers)
@@ -104,6 +109,36 @@ namespace ErkinStudy.Web.Controllers
                 _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id {id}, у пользователя {User.Identity.Name}, {e}");
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> QuizScore(long id)
+        {
+            try
+            {
+                var quizScore = await _dbContext.QuizScores.Include(x => x.UserAnswers).Include(x => x.Quiz)
+                    .ThenInclude(x => x.Questions).ThenInclude(x => x.Answers).FirstAsync(x => x.Id == id);
+
+                var model = new QuizScoreViewModel { QuizId = quizScore.QuizId, QuizTitle = quizScore.Quiz.Title, Score = quizScore.Point };
+
+                foreach (var question in quizScore.Quiz.Questions)
+                {
+                    var answeredQuestion = new AnsweredQuestion();
+                    var userAnswer = quizScore.UserAnswers.FirstOrDefault(x => x.QuestionId == question.Id);
+                    answeredQuestion.QuestionId = question.Id;
+                    answeredQuestion.ImagePath = question.ImagePath;
+                    answeredQuestion.Content = question.Content;
+                    answeredQuestion.Answer = question.Answers.First(x => x.IsCorrect).Content;
+                    answeredQuestion.IsCorrect = userAnswer?.IsCorrect ?? false;
+                    answeredQuestion.UserAnswer = userAnswer?.Answer ?? string.Empty;
+                    model.Questions.Add(answeredQuestion);
+                }
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при отображений QuizScore id - {id}, {e}");
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -182,7 +217,7 @@ namespace ErkinStudy.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<long> CheckHomeTask([FromBody] FilledQuizViewModel filledQuiz)
+        public async Task<JsonResult> CheckHomeTask([FromBody] FilledQuizViewModel filledQuiz)
         {
             try
             {
@@ -220,14 +255,15 @@ namespace ErkinStudy.Web.Controllers
                 quizScore.Point = userAnswers.Count(x => x.IsCorrect);
                 await _dbContext.UserAnswers.AddRangeAsync(userAnswers);
                 await _dbContext.SaveChangesAsync();
-                return quizScore.Id;
+                return Json(new { redirectUrl = Url.Action("QuizScore", new { id = quizScore.Id }) });
             }
             catch (Exception e)
             {
                 _logger.LogError($"Ошибка во время проверки открытых тестов id - {filledQuiz.QuizId}, {e}");
-                return -1;
+                return Json(new { redirectUrl = Url.Action("Error", "Home") });
             }
         }
+
         public async Task<IActionResult> Results(long? id)
         {
             if (!id.HasValue)

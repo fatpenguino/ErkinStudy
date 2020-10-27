@@ -1,0 +1,65 @@
+﻿@model ErkinStudy.Web.Models.Quiz.QuizScoreViewModel
+
+@{
+    ViewData["Title"] = "Quiz";
+    var i = 1;
+}
+<div class="container">
+    <div class="row">
+        <h3 class="mt-3 mx-auto">@Model.QuizTitle</h3>
+        <ol class="list-group">
+            @foreach (var question in Model.Questions)
+            {
+                <li class="list-group-item">
+                    @i. @Html.DisplayFor(modelItem => question.Content)
+                    <div class="row">
+                        <div class="col-10">
+                            @{
+                                if (question.ImagePath != null)
+                                {
+                                    <img class="img-fluid" asp-append-version="true" src="@question.ImagePath">
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label>Жауабы: @question.Answer</label>
+                    </div>
+                    <div>
+                        <label class="p-1 @if (question.IsCorrect) { @Html.Raw("bg-success") } else { @Html.Raw("bg-danger") }">Сіздің жауабыңыз: @question.UserAnswer</label>
+                    </div>
+                </li>
+                i++;
+            }
+        </ol>
+
+        <h4 class="mx-auto mt-3" style="display: block">Жинаған балыңыз: @Model.Score</h4>
+        <div class="w-100"></div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary mx-auto mt-1 mb-2">Қайту</a>
+        <div class="w-100"></div>
+        <table class="table-borderless mb-3" style="border-collapse: separate; border-spacing: 5px">
+
+            <tr>
+                <td class="bg-success info-icon">
+                </td>
+                <td>
+                    - Дұрыс белгіленді
+                </td>
+            </tr>
+            @*<tr>
+                <td class="bg-warning info-icon">
+                </td>
+                <td>
+                    - Дұрыс жауап
+                </td>
+            </tr>*@
+            <tr>
+                <td class="bg-danger info-icon">
+                </td>
+                <td>
+                    - Қате белгіленді
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

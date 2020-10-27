@@ -219,5 +219,28 @@ namespace ErkinStudy.Web.Controllers.Admin
             _context.Questions.Remove(question);
         }
 
+        public async Task<ActionResult> UserAnswers(long id, long quizId)
+        {
+            var question = await _context.Questions.Include(x => x.Answers).FirstAsync(x => x.Id == id);
+            var quizScores =  await _context.QuizScores.Include(x => x.User).Include(x => x.UserAnswers).Where(x => x.QuizId == question.QuizId).ToListAsync();
+            if (quizScores.Count == 0)
+                return RedirectToAction("Index", new {quizId});
+
+            var model = new UserAnswerViewModel
+            {
+                QuizId = quizId, QuestionId = id, ImagePath = question.ImagePath, Content = question.Content, CorrectAnswer = question.Answers.FirstOrDefault()?.Content
+            };
+            foreach (var quizScore in quizScores)
+            {
+                var userAnswer = quizScore.UserAnswers.FirstOrDefault(x => x.QuestionId == id);
+                if (userAnswer != null)
+                {
+                    model.FilledAnswers.Add(new FilledAnswer() { Answer = userAnswer.Answer, IsCorrect = userAnswer.IsCorrect, UserAnswerId = userAnswer.Id, UserEmail = quizScore.User.Email, UserFullName = $"{quizScore.User.LastName} {quizScore.User.FirstName}"});
+                }
+            }
+
+            return View(model);
+        }
+
     }
 }

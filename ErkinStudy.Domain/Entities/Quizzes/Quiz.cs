@@ -15,5 +15,6 @@ namespace ErkinStudy.Domain.Entities.Quizzes
         public string Color { get; set; }
         public QuizStatus Status { get; set; }
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+        public virtual ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
     }
 }
