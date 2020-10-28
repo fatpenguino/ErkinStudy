@@ -16,6 +16,8 @@ namespace ErkinStudy.Domain.Entities.Lessons
         public long Price { get; set; }
         public string LandingPage { get; set; }
         public bool EnableLanding { get; set; }
+        public string Color { get; set; }
+        public bool IsQuizGroup { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; }
         public virtual ICollection<UserFolder> UserFolders { get; set; }
     }

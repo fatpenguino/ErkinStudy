@@ -10,5 +10,6 @@ namespace ErkinStudy.Domain.Entities.Quizzes
         public virtual ICollection<Answer> Answers { get; set; }
         public long QuizId { get; set; }
         public virtual Quiz Quiz { get; set; }
+        public virtual ICollection<UserAnswer> UserAnswers { get; set; }
     }
 }

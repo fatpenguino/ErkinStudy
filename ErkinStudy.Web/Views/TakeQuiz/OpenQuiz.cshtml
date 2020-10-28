@@ -1,0 +1,84 @@
+@model ErkinStudy.Domain.Entities.Quizzes.Quiz
+
+@{
+    ViewData["Title"] = Model.Title;
+    var i = 1;
+}
+<div class="container">
+    <div class="row">
+        <h3 class="mt-2 mb-2 mx-auto">@Model.Title</h3>
+        <form asp-action="Check">
+            <div class="form-group">
+                <ol class="list-group" type="1">
+                    @foreach (var question in Model.Questions)
+                    {
+                        <li class="list-group-item">
+                            @i. @Html.DisplayFor(modelItem => question.Content)
+                            <div class="row">
+                                <div class="col-10">
+                                    @{
+                                        if(question.ImagePath != null)
+                                        {
+                                            <img class="img-fluid" asp-append-version="true" src="@question.ImagePath">
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label>Жауабы:</label>
+                                <input type="text" class="answer" name="@question.Id" required>
+                            </div>
+                        </li>
+                        i++;
+                    }
+                </ol>
+            </div>
+            <div class="form-group row mb-2 mt-2">
+                <input type="button" value="Тексеру" class="btn btn-primary mx-auto pass_quiz" />
+            </div>
+        </form>
+        <div class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+                <div class="loader">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function() {
+
+        $(".pass_quiz").on("click", function() {
+
+            $(".modal").modal("show");
+            $(this).attr("disabled", true);
+
+            let answers = [];
+            $(".answer").each(function() {
+                answers.push({ questionId: $(this).attr('name'), answer: $(this).val() });
+            });
+            let formData = JSON.stringify({
+                'quizId': @Model.Id,
+                'answers': answers
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/TakeQuiz/CheckHomeTask",
+                contentType: "application/json; charset=utf-8",
+                data: formData,
+                dataType: "json",
+
+                success: function (result) {
+                    window.location.replace(result.redirectUrl);
+                },
+                error: function () {
+                    $(this).attr("disabled", false);
+                    $(".modal").modal("hide");
+                }
+            });
+        });
+
+    });
+</script>

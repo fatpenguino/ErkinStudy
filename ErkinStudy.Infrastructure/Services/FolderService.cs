@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Infrastructure.Context;
+using ErkinStudy.Infrastructure.DTOs.Quiz;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ErkinStudy.Infrastructure.Services
 {
@@ -41,7 +43,7 @@ namespace ErkinStudy.Infrastructure.Services
         {
             return active ? await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync() : await _context.Folders.Where(x => x.ParentId == id).ToListAsync();
         }
-        
+
         public async Task<List<Folder>> GetFoldersByTeacherId(long teacherId, bool withParent = false)
         {
             return withParent
@@ -112,6 +114,94 @@ namespace ErkinStudy.Infrastructure.Services
             return _context.Folders.FirstOrDefault(x => x.Id == id)?.Price ?? 0;
         }
 
+        public async Task<List<Folder>> GetUserFolders(long userId)
+        {
+            return await _context.UserFolders.Include(x => x.Folder).Where(x => x.UserId == userId && x.Folder.IsActive).Select(x => x.Folder)
+                .ToListAsync();
+
+        }
+
+        public string GetFolderPreview(long id)
+        {
+            var folder = Get(id);
+            try
+            {
+                var landing = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
+                if (landing.MediaType == 0)
+                {
+                    return landing.MediaPath;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка парсинга landing-а, {e}");
+            }
+            return string.Empty;
+        }
+
+        public async Task<TotalRatingDto> TotalRating(long id)
+        {
+            var totalRating = new TotalRatingDto();
+            try
+            {
+                var folder = Get(id);
+                if (folder == null)
+                {
+                    _logger.LogError("Нету такой папки для общего рейтинга");
+                    return null;
+                }
+                //вытаскиваем все тесты папки 
+                var quizzes = await _context.Quizzes.Where(x => x.FolderId == id && x.IsActive).OrderBy(x => x.Order).ToListAsync();
+                if (quizzes == null || quizzes.Count == 0)
+                {
+                    _logger.LogError("В папке для рейтинга нету тестов");
+                    return null;
+                }
+                totalRating.FolderId = id;
+                totalRating.FolderName = folder.Name;
+                totalRating.QuizIds.AddRange(quizzes.Select(x => x.Id));
+                totalRating.QuizTitles.AddRange(quizzes.Select(x => x.Title));
+                var userScores = new List<UserScoreDto>();
+                foreach (var quiz in quizzes)
+                {
+                    var quizScores = _context.QuizScores.Include(x => x.User).OrderBy(x => x.Id).Where(x => x.QuizId == quiz.Id).ToList();
+                    foreach (var quizScore in quizScores)
+                    {
+                        var userScore = userScores.FirstOrDefault(x => x.UserId == quizScore.UserId);
+                        if (userScore == null)
+                        {
+                            userScore = new UserScoreDto
+                            {
+                                UserId = quizScore.UserId,
+                                FullName = $"{quizScore.User.LastName} {quizScore.User.FirstName}",
+                                Scores = new Dictionary<long, int>() {{quizScore.QuizId, quizScore.Point}},
+                                TotalPoint = quizScore.Point
+                            };
+                            userScores.Add(userScore);
+                        }
+                        else
+                        {
+                            if (userScore.Scores.TryGetValue(quizScore.QuizId, out _)) continue;
+                            userScore.Scores.Add(quizScore.QuizId, quizScore.Point);
+                            userScore.TotalPoint += quizScore.Point;
+                        }
+                    }
+                }
+                totalRating.UserScores = userScores;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при формирование общего рейтинга {e}");
+                return null;
+            }
+            return totalRating;
+        }
     }
 
+}
+public class LandingPageJson
+{
+    public string Text { get; set; }
+    public string MediaPath { get; set; }
+    public int MediaType { get; set; }
 }

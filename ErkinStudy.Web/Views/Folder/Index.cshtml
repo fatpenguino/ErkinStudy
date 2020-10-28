@@ -17,9 +17,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -35,6 +32,9 @@
                 @Html.DisplayNameFor(model => model.Order)
             </th>
             <th>
+               Color
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th>
@@ -45,10 +45,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
+            <tr style="background-color: #e9ecef">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -63,6 +60,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Order)
+                </td>
+                <td style="@if(!string.IsNullOrWhiteSpace(item.Color)){ @Html.Raw($"background-color: {item.Color}")}">
+                    @Html.DisplayFor(modelItem => item.Color)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsActive)
@@ -81,44 +81,53 @@
                 </td>
             </tr>
             var childs = await FolderService.GetChilds(item.Id);
-            foreach (var child in childs)
+            foreach (var child in childs.OrderBy(x => x.Order))
             {
-                <tr class="table-secondary ml-5 w-75">
-                    <td>
-                        @child.Id
-                    </td>
-                    <td>
-                        @child.Name
-                    </td>
-                    <td>
-                        @child.Description
-                    </td>
-                    <td>
-                        @item.Name
-                    </td>
-                    <td>
-                        @UserService.GetFullNameByUserId(child.TeacherId ?? -1)
-                    </td>
-                    <td>
-                        @child.Order
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => child.IsActive)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@child.Id">Edit</a> 
-                        <a asp-action="Manage" asp-route-id="@child.Id">Manage</a> 
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Delete" asp-route-id="@child.Id">Delete</a>
-                            if (child.EnableLanding)
-                            {
-                                <a asp-action="Landing" asp-controller="Folder"  asp-route-id="@child.Id">Landing Page</a>
-                            }
-                        }
-                       
-                    </td>
-                </tr>
+    <tr class="table ml-5 w-75">
+        <td>
+            @child.Name
+        </td>
+        <td>
+            @child.Description
+        </td>
+        <td>
+            @item.Name
+        </td>
+        <td>
+            @UserService.GetFullNameByUserId(child.TeacherId ?? -1)
+        </td>
+        <td>
+            @child.Order
+        </td>
+        @if (!string.IsNullOrWhiteSpace(child.Color))
+        {
+            <td style="background-color: @child.Color">
+                @child.Color
+            </td>
+        }
+        else
+        {
+            <td>
+                @child.Color
+            </td>
+        }
+        <td>
+            @Html.DisplayFor(modelItem => child.IsActive)
+        </td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@child.Id">Edit</a>
+            <a asp-action="Manage" asp-route-id="@child.Id">Manage</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Delete" asp-route-id="@child.Id">Delete</a>
+                if (child.EnableLanding)
+                {
+                    <a asp-action="Landing" asp-controller="Folder" asp-route-id="@child.Id">Landing Page</a>
+                }
+            }
+
+        </td>
+    </tr>
             }
         }
     </tbody>

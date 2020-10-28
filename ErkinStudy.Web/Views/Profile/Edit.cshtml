@@ -1,0 +1,33 @@
+﻿@model ErkinStudy.Domain.Entities.Identity.ApplicationUser
+@{
+    ViewData["Title"] = "Edit";
+}
+    <div class="container pt-4">
+        <div class="row">
+            <div class="col-md-4 mx-auto">
+                <br>
+                <form method="post" asp-action="Edit">
+                    <h4>Профильді өзгерту</h4>
+                    <hr />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input class="form-control" value="@Model.Email" readonly="readonly"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Аты</label>
+                        <input name="firstname" class="form-control" value="@Model.FirstName" />
+                    </div>
+                    <div class="form-group">
+                        <label>Тегі</label>
+                        <input name="lastname" value="@Model.LastName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон нөмері</label>
+                        <input name="phone" id="phoneNumber" value="@Model.PhoneNumber" class="form-control"  />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Өзгерту</button>
+                </form>
+            </div>
+        </div>
+    </div>

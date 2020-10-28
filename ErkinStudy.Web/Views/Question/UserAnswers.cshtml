@@ -1,0 +1,75 @@
+﻿@model ErkinStudy.Web.Models.Quiz.UserAnswerViewModel
+@{
+    ViewData["Title"] = "User Answers";
+    var i = 1;
+}
+<div class="container">
+    <div class="row">
+        <h4 class="mx-auto mt-3">User Answers</h4>
+        <div class="w-100"></div>
+        <div>
+            <p class="mb-0"> @Model.Content </p>
+            @if (Model.ImagePath != null)
+            {
+                <div class="col-10">
+                    <img class="img-fluid" asp-append-version="true" src="@Model.ImagePath">
+                </div>
+            }
+            <p>Answer: @Model.CorrectAnswer</p>
+        </div>
+
+        <div class="w-100"></div>
+        <a asp-action="Index" asp-route-quizId="@Model.QuizId" class="btn btn-primary mb-3">Back</a>
+
+        <table class="table">
+            @foreach (var userAnswer in Model.FilledAnswers)
+            {
+                <tr id="@userAnswer.UserAnswerId" class="@if(!userAnswer.IsCorrect){@Html.Raw("bg-danger")}">
+                    <td>
+                        @i
+                    </td>
+                    <td>
+                        @userAnswer.UserFullName
+                    </td>
+                    <td>
+                        @userAnswer.UserEmail
+                    </td>
+                    <td>
+                        @userAnswer.Answer
+                    </td>
+                    <td>
+                        @if (!userAnswer.IsCorrect)
+                        {
+                            <a class="btn btn-light" id="@userAnswer.UserAnswerId@Html.Raw("btn")" onclick="MakeCorrect(@userAnswer.UserAnswerId)">Make Correct</a>
+                        }
+                    </td>
+                </tr>
+                i++;
+            }
+            <tr>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function MakeCorrect(id) {
+
+        $.ajax({
+                type: "POST",
+                url: `/Question/MakeCorrect/${id}`,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (result) {
+                    $(`#${id}`).removeClass('bg-danger');
+                    $(`#${id}btn`).hide();
+
+                },
+                error: function () {
+                    alert('Не смогли сделать ответ успешным');
+                }
+            });
+        };
+
+</script>

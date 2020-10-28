@@ -20,7 +20,7 @@
 <div class="accordion mb-3" id="accordionFolder">
     <div class="card">
         <div class="card-header" id="headingTwo">
-            <h2 class="mb-0">
+            <h2 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Child Folders
                 </button>
@@ -50,6 +50,9 @@
                                 Order
                             </th>
                             <th>
+                                Color
+                            </th>
+                            <th>
                                 Is Active
                             </th>
                             <th>
@@ -76,6 +79,9 @@
                                 <td>
                                     @child.Order
                                 </td>
+                                <td style="@if(!string.IsNullOrWhiteSpace(child.Color)){ @Html.Raw($"background-color: {child.Color}")}">
+                                    @child.Order
+                                </td>
                                 <td>
                                     @child.IsActive
                                 </td>
@@ -98,7 +104,7 @@
     </div>
     <div class="card">
         <div class="card-header" id="headingThree">
-            <h2 class="mb-0">
+            <h2 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Courses
                 </button>
@@ -125,6 +131,9 @@
                                 Price
                             </th>
                             <th>
+                                Color
+                            </th>
+                            <th>
                                 Is Active
                             </th>
                             <th></th>
@@ -133,28 +142,31 @@
                     <tbody>
                         @foreach (var course in courses)
                         {
-                            <tr>
-                                <td>
-                                    @course.Name
-                                </td>
-                                <td>
-                                    @course.Description
-                                </td>
-                                <td>
-                                    @Model.Name
-                                </td>
-                                <td>
-                                    @course.Price
-                                </td>
-                                <td>
-                                    @course.IsActive
-                                </td>
-                                <td>
-                                    <a asp-controller="OnlineCourse" asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
-                                    <a asp-controller="OnlineCourseWeek" asp-action="Index" asp-route-onlineCourseId="@course.Id">Weeks</a> |
-                                    <a asp-controller="OnlineCourse" asp-action="Delete" asp-route-id="@course.Id">Delete</a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @course.Name
+                            </td>
+                            <td>
+                                @course.Description
+                            </td>
+                            <td>
+                                @Model.Name
+                            </td>
+                            <td>
+                                @course.Price
+                            </td>
+                            <td style="@if(!string.IsNullOrWhiteSpace(course.Color)){ @Html.Raw($"background-color: {course.Color}")}">
+                                @course.Color
+                            </td>
+                            <td>
+                                @course.IsActive
+                            </td>
+                            <td>
+                                <a asp-controller="OnlineCourse" asp-action="Edit" asp-route-id="@course.Id">Edit</a> |
+                                <a asp-controller="OnlineCourseWeek" asp-action="Index" asp-route-onlineCourseId="@course.Id">Weeks</a> |
+                                <a asp-controller="OnlineCourse" asp-action="Delete" asp-route-id="@course.Id">Delete</a>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -163,7 +175,7 @@
     </div>
     <div class="card">
         <div class="card-header" id="headingFour">
-            <h2 class="mb-0">
+            <h2 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     Quizzes
                 </button>
@@ -186,6 +198,9 @@
                             </th>
                             <th>
                                 Q amt
+                            </th>
+                            <th>
+                               Color
                             </th>
                             <th>
                                 Is Active
@@ -212,6 +227,9 @@
                                     <td>
                                         @quiz.Questions.Count
                                     </td>
+                                    <td style="@if (!string.IsNullOrWhiteSpace(quiz.Color)){ @Html.Raw($"background-color: {quiz.Color}")}">
+                                        @quiz.Color
+                                    </td>
                                     <td>
                                         @quiz.IsActive
                                     </td>
@@ -220,7 +238,8 @@
                                         <a asp-controller="Quiz" asp-action="Delete" asp-route-id="@quiz.Id">Delete</a> |
                                         <a asp-controller="Question" asp-action="Index" asp-route-quizId="@quiz.Id">Questions</a> |
                                         <a asp-controller="Quiz" asp-action="Scores" asp-route-id="@quiz.Id">Scores</a> |
-                                        <a asp-controller="TakeQuiz" asp-action="Preview" asp-route-id="@quiz.Id">Preview</a>
+                                        <a asp-controller="TakeQuiz" asp-action="Preview" asp-route-id="@quiz.Id">Preview</a> |
+                                        <a asp-controller="Quiz" asp-action="Clone" asp-route-id="@quiz.Id">Clone</a>
                                     </td>
                                 </tr>
                             }
@@ -231,7 +250,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header" id="headingFive">
+        <div class="card-header text-center" id="headingFive">
             <h2 class="mb-0">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                     Lessons
@@ -298,70 +317,69 @@
 
         </div>
 </div>
+    <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0 text-center">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Users
+                    </button>
+                </h2>
+            </div>
 
-<div class="card">
-    <div class="card-header" id="headingOne">
-        <h2 class="mb-0">
-            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Users
-            </button>
-        </h2>
-    </div>
-
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
-        <div class="card-body">
-            <form asp-action="ApproveUser">
-                <div class="form-group">
-                    <label>Add Users:</label>
-                    <textarea class="form-control" name="users" rows="1" required></textarea>
-                </div>
-                <input name="folderId" type="hidden" value="@Model.Id" />
-                <div class="form-group">
-                    <input type="submit" value="Approve" class="btn btn-primary" />
-                </div>
-            </form>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            N
-                        </th>
-                        <th>
-                            User Email
-                        </th>
-                        <th>
-                            Folder
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int j = 0;
-                        foreach (var user in users.OrderBy(x => x.User.UserName))
-                        {
-                            j++;
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+                <div class="card-body">
+                    <form asp-action="ApproveUser">
+                        <div class="form-group">
+                            <label>Add Users:</label>
+                            <textarea class="form-control" name="users" rows="1" required></textarea>
+                        </div>
+                        <input name="folderId" type="hidden" value="@Model.Id" />
+                        <div class="form-group">
+                            <input type="submit" value="Approve" class="btn btn-primary" />
+                        </div>
+                    </form>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>
-                                    @j
-                                </td>
-                                <td>
-                                    @user.User.UserName
-                                </td>
-                                <td>
-                                    @user.Folder.Name
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Delete", "DeleteApprovedUser", new { userId = user.UserId, folderId = user.FolderId })
-                                </td>
+                                <th>
+                                    N
+                                </th>
+                                <th>
+                                    User Email
+                                </th>
+                                <th>
+                                    Folder
+                                </th>
+                                <th></th>
                             </tr>
-                    }
-                    }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @{
+                                int j = 0;
+                                foreach (var user in users.OrderBy(x => x.User.UserName))
+                                {
+                                    j++;
+                                    <tr>
+                                        <td>
+                                            @j
+                                        </td>
+                                        <td>
+                                            @user.User.UserName
+                                        </td>
+                                        <td>
+                                            @user.Folder.Name
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Delete", "DeleteApprovedUser", new { userId = user.UserId, folderId = user.FolderId })
+                                        </td>
+                                    </tr>
+                            }
+                            }
+                            </tbody>
+                        </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 </div>
 
 <div>

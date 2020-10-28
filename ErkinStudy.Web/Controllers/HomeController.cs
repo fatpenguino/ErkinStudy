@@ -2,15 +2,14 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Enums;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -21,24 +20,21 @@ namespace ErkinStudy.Web.Controllers
         private readonly EmailService _emailService;
         private readonly FolderService _folderService;
         private readonly QuizService _quizService;
-        private readonly LessonService _lessonService;
         private readonly CourseService _courseService;
 
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, LessonService lessonService, FolderService folderService, QuizService quizService)
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, FolderService folderService, QuizService quizService)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
             _courseService = courseService;
-            _lessonService = lessonService;
             _folderService = folderService;
             _quizService = quizService;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var folders = await _dbContext.Folders.Where(x => x.IsActive).ToListAsync();
-            return View(folders);
+            return View();
         }
         public async Task<IActionResult> SendCallRequest(string name, string number, string type = "Онлайн курс")
         {
@@ -62,23 +58,48 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Folder(long id)
         {
+            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+            if (folder == null)
+            {
+                _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
+                return RedirectToAction("Index");
+            }
             var childs = await _folderService.GetChilds(id);
             var courses = await _courseService.GetByFolderId(id);
             var quizzes = await _quizService.GetByFolderId(id);
-            var lessons = await _lessonService.GetByFolderId(id);
-            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0 && lessons.Count == 0)
+            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
                return RedirectToAction("Index", "Course",new { id = courses.First().Id});
-            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1 && lessons.Count == 0)
-               return RedirectToAction("Quiz","TakeQuiz", new { id = quizzes.First().Id });
-            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 0 && lessons.Count == 1)
-               return RedirectToAction("Detail","Col", new { id = lessons.First().Id });
-            return View(await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive));
+            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
+                return quizzes.First().Type == QuizType.MultipleChoice
+                    ? RedirectToAction("Quiz", "TakeQuiz", new {id = quizzes.First().Id})
+                    : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
+            return View(folder);
         }
         public async Task<IActionResult> Tests()
         {
             var tests = await _dbContext.Quizzes.Where(x => x.IsActive).OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
             return View(tests);
         }
+
+        public async Task<IActionResult> TotalRating(long id)
+        {
+            var totalRating = await _folderService.TotalRating(id);
+            if (totalRating == null)
+                return RedirectToAction("Folder", new { id });
+            var model = new TotalRatingViewModel
+            {
+                FolderId = totalRating.FolderId,
+                QuizIds = totalRating.QuizIds.ToArray(),
+                QuizTitles = totalRating.QuizTitles.ToArray(),
+                FolderName =  totalRating.FolderName,
+                UserScores = totalRating.UserScores.Select(x => new UserScoreViewModel()
+                {
+                    FullName = x.FullName, UserId = x.UserId, Scores = x.Scores, TotalPoint = x.TotalPoint
+                }).ToList()
+            };
+            return View(model);
+        }
+
         public IActionResult Privacy() 
         {
             return View();
@@ -117,6 +138,11 @@ namespace ErkinStudy.Web.Controllers
                 var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
                 if (folder != null)
                 {
+                    if (string.IsNullOrWhiteSpace(folder.LandingPage))
+                    {
+                        _logger.LogError($"Попытка открыть выключенный landing, {id}");
+                        return RedirectToAction("Folder", new {id});
+                    }
                     var json = JsonConvert.DeserializeObject<LandingPageJson>(folder.LandingPage);
                     var model = new LandingViewModel
                     {

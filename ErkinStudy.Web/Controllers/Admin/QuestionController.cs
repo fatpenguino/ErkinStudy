@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
-using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using ErkinStudy.Domain.Entities.Quizzes;
+using ErkinStudy.Web.Models.Quiz;
 using Microsoft.Extensions.Logging;
 
 namespace ErkinStudy.Web.Controllers.Admin
@@ -56,7 +56,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                     string path = null;
                     if (questionViewModel.Image != null)
                     {
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + questionViewModel.Image.FileName;
+                        var uniqueFileName = Guid.NewGuid() + "_" + questionViewModel.Image.FileName;
                         path = "/Questions/" + uniqueFileName;
                         using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                         {
@@ -121,14 +121,14 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {
-                    var question = _context.Questions.Find(questionViewModel.Id);
-                    string path = question.ImagePath;
+                    var question = await _context.Questions.FindAsync(questionViewModel.Id);
+                    var path = question.ImagePath;
 
                     if (questionViewModel.Image != null)
                     {
                         var uniqueFileName = Guid.NewGuid() + "_" + questionViewModel.Image.FileName;
                         path = "/Questions/" + uniqueFileName;
-                        questionViewModel.Image.CopyTo(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
+                        await questionViewModel.Image.CopyToAsync(new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create));
 
                         if (question.ImagePath != null)
                         {
@@ -172,7 +172,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         // GET: Question/Delete/5
-        public IActionResult Delete(long? id)
+        public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -196,7 +196,7 @@ namespace ErkinStudy.Web.Controllers.Admin
                 return RedirectToAction("Error", "Home");
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { quizId = question.QuizId });
         }
 
@@ -217,6 +217,50 @@ namespace ErkinStudy.Web.Controllers.Admin
             var answers = question.Answers;
             _context.Answers.RemoveRange(answers);
             _context.Questions.Remove(question);
+        }
+
+        public async Task<ActionResult> UserAnswers(long id)
+        {
+            var question = await _context.Questions.Include(x => x.Answers).FirstAsync(x => x.Id == id);
+            var quizScores =  await _context.QuizScores.Include(x => x.User).Include(x => x.UserAnswers).Where(x => x.QuizId == question.QuizId).ToListAsync();
+            if (quizScores.Count == 0)
+                return RedirectToAction("Index", new {question.QuizId});
+
+            var model = new UserAnswerViewModel
+            {
+                QuizId = question.QuizId, QuestionId = id, ImagePath = question.ImagePath, Content = question.Content, CorrectAnswer = question.Answers.FirstOrDefault()?.Content
+            };
+            foreach (var quizScore in quizScores)
+            {
+                var userAnswer = quizScore.UserAnswers.FirstOrDefault(x => x.QuestionId == id);
+                if (userAnswer != null)
+                {
+                    model.FilledAnswers.Add(new FilledAnswer() { Answer = userAnswer.Answer, IsCorrect = userAnswer.IsCorrect, UserAnswerId = userAnswer.Id, UserEmail = quizScore.User.Email, UserFullName = $"{quizScore.User.LastName} {quizScore.User.FirstName}"});
+                }
+            }
+
+            return View(model);
+        }
+        
+        public async Task<int> MakeCorrect(long id)
+        {
+            try
+            {
+                var userAnswer = await _context.UserAnswers.Include(x => x.QuizScore).FirstAsync(x => x.Id == id);
+                if (!userAnswer.IsCorrect)
+                {
+                    userAnswer.IsCorrect = true;
+                    userAnswer.QuizScore.Point += 1;
+                    _context.UserAnswers.Update(userAnswer);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при отмечаний ответа успешным id - {id}, {e}");
+            }
+
+            return 0;
         }
 
     }

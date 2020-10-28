@@ -1,0 +1,66 @@
+﻿@model ErkinStudy.Web.Models.TotalRatingViewModel
+@{
+    ViewData["Title"] = "Scores";
+    var quizQuantity = Model.QuizIds.Length;
+    var userCounter = 0;
+}
+<div class="container">
+    <div class="row">
+        <div class="mx-auto text-center mt-3 mb-2">
+            <h4>@Model.FolderName - Жалпы рейтинг</h4>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">
+                    #
+                </th>
+                <th scope="col">
+                    Еркін оқушы
+                </th>
+                @for (var i = 0; i < quizQuantity; i++)
+                {
+                    <th class="col">
+                        @Model.QuizTitles[i]
+                    </th>
+                }
+                <th scope="col">
+                    Жалпы бал
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var userScore in Model.UserScores.OrderByDescending(x => x.TotalPoint))
+            {
+                userCounter++;
+                <tr>
+                    <th scope="col">
+                        @userCounter
+                    </th>
+                    <td>
+                        @userScore.FullName
+                    </td>
+                    @for (var i = 0; i < quizQuantity; i++)
+                    {
+                        if (userScore.Scores.TryGetValue(Model.QuizIds[i], out var score))
+                        {
+                            <td>
+                                @Html.Raw(score)
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <b>-</b>
+                            </td>
+                        }
+                    }
+                    <th scope="col">
+                        @userScore.TotalPoint
+                    </th>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

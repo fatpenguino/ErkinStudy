@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using ErkinStudy.Domain.Entities.Quizzes;
-using ErkinStudy.Web.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
@@ -40,13 +39,13 @@ namespace ErkinStudy.Web.Controllers.Admin
             if (folderId.HasValue)
                 ViewData["FolderId"] = folderId;
             else
-                ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
+                ViewData["FolderList"] = new SelectList(_dbContext.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             return View();
         }
 
         // POST: Quiz/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,Type,FolderId,IsActive,Price,Order,Description,Color")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
@@ -69,7 +68,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 return NotFound();
             }
-            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name", quiz.FolderId);
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name", quiz.FolderId);
             return View(quiz);
         }
 
@@ -77,7 +76,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,FolderId,IsActive,Price,Order,Description")] Quiz quiz)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,Type,FolderId,IsActive,Price,Order,Description,Color")] Quiz quiz)
         {
             if (id != quiz.Id)
             {
@@ -135,7 +134,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         public async Task<IActionResult> Scores(long id)
         {
-            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id)
+            var scores = await _dbContext.QuizScores.Include(x => x.Quiz).Include(x => x.User).Where(x => x.QuizId == id)
                 .OrderByDescending(x => x.TakenTime).ToListAsync();
             return View(scores);
         }
@@ -162,7 +161,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         public IActionResult Clone(long id)
         {
             var quiz = _dbContext.Quizzes.FirstOrDefault(x => x.Id == id);
-            ViewData["FolderList"] = new SelectList(_dbContext.Folders, "Id", "Name");
+            ViewData["FolderList"] = new SelectList(_dbContext.Folders.Select(x => new { x.Id, Name = $"{x.Name}-{x.Description}" }), "Id", "Name");
             return View(quiz);
         }
         [HttpPost]
@@ -192,7 +191,8 @@ namespace ErkinStudy.Web.Controllers.Admin
                     _dbContext.SaveChanges();
                 }
             }
-            return RedirectToAction("Index");
+
+            return folderId != null ? RedirectToAction("Manage", "Folder", new { id = folderId }) : RedirectToAction("Index");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ErkinStudy.Web.Models
+﻿namespace ErkinStudy.Web.Models.Quiz
 {
     public class QuizAnswerViewModel
     {

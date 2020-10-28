@@ -9,9 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ErkinStudy.Domain.Entities.Identity;
 using ErkinStudy.Domain.Entities.Quizzes;
-using ErkinStudy.Web.Models;
-using ErkinStudy.Infrastructure.Services;
 using System.Collections.Generic;
+using ErkinStudy.Domain.Enums;
+using ErkinStudy.Infrastructure.Helpers;
+using ErkinStudy.Web.Models.Quiz;
 
 namespace ErkinStudy.Web.Controllers
 {
@@ -67,52 +68,134 @@ namespace ErkinStudy.Web.Controllers
                 if (!id.HasValue)
                     throw new NotImplementedException();
 
-                var currentUser = await _userManager.GetUserAsync(User);
-                var shortQuiz = await _dbContext.Quizzes.FindAsync(id);
-
-                //if ((!userService.IsUserHasQuiz(currentUser.Id, shortQuiz.Id) 
-                //    && shortQuiz.Price != 0) || !shortQuiz.IsActive)
-                //    return RedirectToAction("Tests", "Home");
-
                 var quiz = await _dbContext.Quizzes
                     .Include(x => x.Questions)
                     .ThenInclude(q => q.Answers)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
-                return View(quiz);
+                if (quiz != null) return View(quiz);
+
+                _logger.LogError($"Нету квиза по заданному id - {id.Value}");
             }
             catch (Exception e)
             {
                 //we need change it!!!
                 _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id {id}, у пользователя {User.Identity.Name}, {e}");
-                RedirectToAction(nameof(Index));
             }
+            return RedirectToAction("Index", "Home");
+        }
 
-            return View();
+        public async Task<IActionResult> OpenQuiz(long id)
+        {
+            try
+            {
+                var userId = long.Parse(_userManager.GetUserId(User));
+                var quizScore = _dbContext.QuizScores.FirstOrDefault(x => x.UserId == userId && x.QuizId == id);
+                if (quizScore != null)
+                    return RedirectToAction("QuizScore", new {id = quizScore.Id});
+
+                var quiz = await _dbContext.Quizzes
+                    .Include(x => x.Questions)
+                    .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync(x => x.Id == id && x.Type == QuizType.HomeTask);
+
+                if (quiz != null) return View(quiz);
+
+                _logger.LogError($"Нету открытого квиза по заданному id - {id}");
+            }
+            catch (Exception e)
+            {
+                //we need change it!!!
+                _logger.LogError($"Произошла ошибка во время подтягивание Quiz по id {id}, у пользователя {User.Identity.Name}, {e}");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> QuizScore(long id)
+        {
+            try
+            {
+                var quizScore = await _dbContext.QuizScores.Include(x => x.UserAnswers).Include(x => x.Quiz)
+                    .ThenInclude(x => x.Questions).ThenInclude(x => x.Answers).FirstAsync(x => x.Id == id);
+
+                var model = new QuizScoreViewModel { QuizId = quizScore.QuizId, QuizTitle = quizScore.Quiz.Title, Score = quizScore.Point };
+
+                foreach (var question in quizScore.Quiz.Questions)
+                {
+                    var answeredQuestion = new AnsweredQuestion();
+                    var userAnswer = quizScore.UserAnswers.FirstOrDefault(x => x.QuestionId == question.Id);
+                    answeredQuestion.QuestionId = question.Id;
+                    answeredQuestion.ImagePath = question.ImagePath;
+                    answeredQuestion.Content = question.Content;
+                    answeredQuestion.Answer = question.Answers.First(x => x.IsCorrect).Content;
+                    answeredQuestion.IsCorrect = userAnswer?.IsCorrect ?? false;
+                    answeredQuestion.UserAnswer = userAnswer?.Answer ?? string.Empty;
+                    model.Questions.Add(answeredQuestion);
+                }
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при отображений QuizScore id - {id}, {e}");
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public JsonResult Check([FromBody] QuizAnswerViewModel quizAnswer)
         {
-            byte score = 0;
+            var score = 0;
             var quizId = Convert.ToInt32(quizAnswer.QuizId);
-
-            var questions = _dbContext.Questions.Where(x => x.QuizId == quizId).Include(x => x.Answers).ToList();
-            List<long> checkedAnswers = quizAnswer.CheckedAnswers.Select(long.Parse).ToList(); 
-
-            foreach (var question in questions)
+            var answers = new List<QuestionAnswerModel>();
+            foreach (var checkedAnswer in quizAnswer.CheckedAnswers)
             {
-                var allAns = question.Answers.ToList();
-                var correctAnsId = allAns.Where(x => x.IsCorrect).Select(x => x.Id);
-                var allAnsId = allAns.Select(x => x.Id);
-                if (correctAnsId.Except(checkedAnswers).Any() ||
-                checkedAnswers.Intersect(allAnsId).Count() != correctAnsId.Count())
+                var questionId = long.Parse(checkedAnswer.Split('-')[1]);
+                var answerId = long.Parse(checkedAnswer.Split('-')[0]);
+                var questionAnswer = answers.FirstOrDefault(x => x.QuestionId == questionId);
+                if ( questionAnswer == null)
                 {
-                    continue;
+                    questionAnswer = new QuestionAnswerModel {QuestionId = questionId};
+                    questionAnswer.Answers.Add(answerId);
+                    answers.Add(questionAnswer);
                 }
-                score++;
+                else
+                {
+                    questionAnswer.Answers.Add(answerId);
+                }
             }
+            var questions = _dbContext.Questions.Where(x => x.QuizId == quizId).Include(x => x.Answers).ToList();
+            foreach (var answer in answers)
+            {
+                var question = questions.FirstOrDefault(x => x.Id == answer.QuestionId);
+                if (question == null) continue;
+                {
+                    var correctAnswers = question.Answers.Where(x => x.IsCorrect).Select(x => x.Id).ToList();
+                    if (correctAnswers.Count == 1 && question.Answers.Count <= 5)
+                    {
+                        if (answer.Answers.Contains(correctAnswers.First()))
+                        {
+                            score++;
+                        }
+                    }
+                    else
+                    {
+                        short correct = 0;
+                        foreach (var unused in correctAnswers.Where(correctAnswer => answer.Answers.Contains(correctAnswer)))
+                        {
+                            correct++;
+                        }
 
+                        if (correct == correctAnswers.Count)
+                        {
+                            score += 2;
+                        }
+                        else if(correctAnswers.Count - correct == 1)
+                        {
+                            score++;
+                        }
+                    }
+                }
+            }
             try
             {
                 var scoreDb = new QuizScore
@@ -131,6 +214,54 @@ namespace ErkinStudy.Web.Controllers
                 _logger.LogError($"Произошла ошибка во время проверки Quiz у - {User.Identity.Name}, {e}");
             }
             return Json(score);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CheckHomeTask([FromBody] FilledQuizViewModel filledQuiz)
+        {
+            try
+            {
+                var quiz = _dbContext.Quizzes.Include(x => x.Questions).ThenInclude(x => x.Answers)
+                    .First(x => x.Id == filledQuiz.QuizId);
+
+                var quizScore = new QuizScore
+                {
+                    UserId = long.Parse(_userManager.GetUserId(User)),
+                    QuizId = filledQuiz.QuizId,
+                    TakenTime = DateTime.Now,
+                    Point = 0
+                };
+                await _dbContext.QuizScores.AddAsync(quizScore);
+                await _dbContext.SaveChangesAsync();
+                var userAnswers = new List<UserAnswer>();
+
+                foreach (var filledAnswer in filledQuiz.Answers)
+                {
+                    var userAnswer = new UserAnswer
+                    {
+                        Answer = filledAnswer.Answer,
+                        QuestionId = long.Parse(filledAnswer.QuestionId),
+                        QuizScoreId = quizScore.Id,
+                        IsCorrect = false
+                    };
+                    var question = quiz.Questions.First(x => x.Id == long.Parse(filledAnswer.QuestionId));
+                    if (question.Answers.Where(x => x.IsCorrect).Any(questionAnswer => UtilHelper.CheckUserAnswer(filledAnswer.Answer, questionAnswer.Content)))
+                    {
+                        userAnswer.IsCorrect = true;
+                    }
+                    userAnswers.Add(userAnswer);
+                }
+
+                quizScore.Point = userAnswers.Count(x => x.IsCorrect);
+                await _dbContext.UserAnswers.AddRangeAsync(userAnswers);
+                await _dbContext.SaveChangesAsync();
+                return Json(new { redirectUrl = Url.Action("QuizScore", new { id = quizScore.Id }) });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка во время проверки открытых тестов id - {filledQuiz.QuizId}, {e}");
+                return Json(new { redirectUrl = Url.Action("Error", "Home") });
+            }
         }
 
         public async Task<IActionResult> Results(long? id)

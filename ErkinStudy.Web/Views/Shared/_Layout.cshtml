@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="index, follow">
-    <meta content="Онлайн курс, Математикалық сауаттылық" name="description">
-    <META name="keywords" content="ҰБТ онлайн, 140 бал, Математикалық сауаттылық, Қазақстан тарихы, ҰБТ ….. ">
-    <title>Bolme</title>
+    <meta content="Онлайн курс, Математикалық сауаттылық,ҰБТ" name="description">
+    <META name="keywords" content="ҰБТ онлайн, 140 бал, Математикалық сауаттылық, Қазақстан тарихы, ҰБТ, Erkin, Study,ErkinStudy ">
+    <title>ErkinStudy</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="/js/imask.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -22,8 +23,8 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <div class="logo">
-                        <p class="logo-text logo-text-first">Bol</p>
-                        <p class="logo-text logo-text-second">me</p>
+                        <p class="logo-text logo-text-first">Erkin</p>
+                        <p class="logo-text logo-text-second">Study</p>
                     </div>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -78,12 +79,19 @@
 </div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            <div class="mt-0" style="line-height: 20px">&copy; Bolme - 2020 </div>
+            <div class="mt-0" style="line-height: 20px">&copy; ErkinStudy - 2020 </div>
             <div class="mt-1" style="line-height: 20px"><a asp-action="Contact">Бізбен хабарласу</a></div>
             <div class="mt-1 mb-3" style="line-height: 20px"><a asp-action="Privacy">Политика конфиденциальности</a>
                 <a asp-action="Offer">Публичная оферта</a></div>
         </div>
     </footer>
-    @RenderSection("Scripts", required: false)
+@await RenderSectionAsync("Scripts", required: false)
+<script>
+    var element = document.getElementById('phoneNumber');
+    var maskOptions = {
+        mask: '+{7}(000)000-00-00'
+    };
+    var mask = IMask(element, maskOptions);
+</script>
 </body>
 </html>

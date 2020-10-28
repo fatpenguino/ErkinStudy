@@ -1,0 +1,36 @@
+﻿@using ErkinStudy.Infrastructure.Services
+@model IEnumerable<ErkinStudy.Domain.Entities.Lessons.Folder>
+@inject FolderService FolderService
+
+<div class="container">
+    <section class="jumbotron text-center p-3 mb-0">
+        <div class="container">
+            <h2>Менің сабақтарым</h2>
+        </div>
+    </section>
+    <div class="row text-center">
+            @foreach (var folder in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card mb-4 shadow-sm">
+                        @if (folder.EnableLanding)
+                        {
+                            <img class="card-img-top" src="@FolderService.GetFolderPreview(folder.Id)" alt=""/>
+                        }
+                        else
+                        {
+                            <img class="card-img-top" src="~/img/defaut_course.jpg" alt=""/>
+                        }
+                        <div class="card-body">
+                            <p class="card-text">@folder.Name</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a asp-controller="Home" asp-action="Folder" asp-route-id="@folder.Id" class="btn btn-sm btn-outline-secondary">Курсты ашу</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+    </div>
+</div>

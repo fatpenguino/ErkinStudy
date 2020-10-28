@@ -7,16 +7,20 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark">Сәлем @UserService.GetFullNameByUserName(User.Identity.Name)!</a>
+    <li class="nav-item dropdown">
+
+        <a  class="nav-link text-dark">@UserService.GetFullNameByUserName(User.Identity.Name)</a>
     </li>
-    @*<li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Back" asp-action="Index">Жеке бөлмем</a>
-    </li>*@
-    <li class="nav-item">
-        <form  class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Шығу</button>
-        </form>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Профиль
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" asp-controller="Profile" asp-action="Courses">Менің сабақтарым</a>
+            <a class="dropdown-item" asp-controller="Profile" asp-action="Edit">Профильді өзгерту</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Шығу</a>
+        </div>
     </li>
 }
 else

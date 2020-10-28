@@ -22,6 +22,9 @@
                 Q amt
             </th>
             <th>
+                Color
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th>
@@ -44,6 +47,9 @@
                     </td>
                     <td>
                         @item.Questions.Count
+                    </td>
+                    <td style="@if(!string.IsNullOrWhiteSpace(item.Color)){ @Html.Raw($"background-color: {item.Color}")}">
+                        @item.Color
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.IsActive)
