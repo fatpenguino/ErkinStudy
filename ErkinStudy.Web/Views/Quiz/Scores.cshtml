@@ -2,56 +2,58 @@
 
 @{
     ViewData["Title"] = "Scores";
+    var i = 1;
 }
+<div class="container">
+    <div class="row">
+        <h4 class="mx-auto mt-3 mb-3">@Model.First().Quiz.Title</h4>
 
-<h1>Quiz scores</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.QuizId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Point)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TakenTime)
-            </th>
-            <th>
-                User Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Phone
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.QuizId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Point)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TakenTime)
-            </td>
-            <td>
-                @item.User.FirstName @item.User.LastName
-            </td>
-            <td>
-                @item.User.Email
-            </td>
-            <td>
-                @item.User.PhoneNumber
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    N
+                </th>
+                <th>
+                    User Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Taken Time
+                </th>
+                <th>
+                    Point
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @i
+                    </td>
+                    <td>
+                        @item.User.FirstName @item.User.LastName
+                    </td>
+                    <td>
+                        @item.User.Email
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TakenTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Point)
+                    </td>
+                    <td>
+                        <a asp-controller="TakeQuiz" asp-action="QuizScore" asp-route-id="@item.Id"> Details </a>
+                    </td>
+                </tr>
+                i++;
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

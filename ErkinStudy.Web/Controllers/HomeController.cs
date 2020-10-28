@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using ErkinStudy.Domain.Enums;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +20,15 @@ namespace ErkinStudy.Web.Controllers
         private readonly EmailService _emailService;
         private readonly FolderService _folderService;
         private readonly QuizService _quizService;
-        private readonly LessonService _lessonService;
         private readonly CourseService _courseService;
 
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, LessonService lessonService, FolderService folderService, QuizService quizService)
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, FolderService folderService, QuizService quizService)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
             _courseService = courseService;
-            _lessonService = lessonService;
             _folderService = folderService;
             _quizService = quizService;
         }
@@ -71,7 +70,9 @@ namespace ErkinStudy.Web.Controllers
             if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
                return RedirectToAction("Index", "Course",new { id = courses.First().Id});
             if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
-               return RedirectToAction("Quiz","TakeQuiz", new { id = quizzes.First().Id });
+                return quizzes.First().Type == QuizType.MultipleChoice
+                    ? RedirectToAction("Quiz", "TakeQuiz", new {id = quizzes.First().Id})
+                    : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
             return View(folder);
         }
         public async Task<IActionResult> Tests()

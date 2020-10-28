@@ -134,7 +134,7 @@ namespace ErkinStudy.Web.Controllers.Admin
 
         public async Task<IActionResult> Scores(long id)
         {
-            var scores = await _dbContext.QuizScores.Include(x => x.User).Where(x => x.QuizId == id)
+            var scores = await _dbContext.QuizScores.Include(x => x.Quiz).Include(x => x.User).Where(x => x.QuizId == id)
                 .OrderByDescending(x => x.TakenTime).ToListAsync();
             return View(scores);
         }

@@ -219,16 +219,16 @@ namespace ErkinStudy.Web.Controllers.Admin
             _context.Questions.Remove(question);
         }
 
-        public async Task<ActionResult> UserAnswers(long id, long quizId)
+        public async Task<ActionResult> UserAnswers(long id)
         {
             var question = await _context.Questions.Include(x => x.Answers).FirstAsync(x => x.Id == id);
             var quizScores =  await _context.QuizScores.Include(x => x.User).Include(x => x.UserAnswers).Where(x => x.QuizId == question.QuizId).ToListAsync();
             if (quizScores.Count == 0)
-                return RedirectToAction("Index", new {quizId});
+                return RedirectToAction("Index", new {question.QuizId});
 
             var model = new UserAnswerViewModel
             {
-                QuizId = quizId, QuestionId = id, ImagePath = question.ImagePath, Content = question.Content, CorrectAnswer = question.Answers.FirstOrDefault()?.Content
+                QuizId = question.QuizId, QuestionId = id, ImagePath = question.ImagePath, Content = question.Content, CorrectAnswer = question.Answers.FirstOrDefault()?.Content
             };
             foreach (var quizScore in quizScores)
             {
@@ -240,6 +240,27 @@ namespace ErkinStudy.Web.Controllers.Admin
             }
 
             return View(model);
+        }
+        
+        public async Task<int> MakeCorrect(long id)
+        {
+            try
+            {
+                var userAnswer = await _context.UserAnswers.Include(x => x.QuizScore).FirstAsync(x => x.Id == id);
+                if (!userAnswer.IsCorrect)
+                {
+                    userAnswer.IsCorrect = true;
+                    userAnswer.QuizScore.Point += 1;
+                    _context.UserAnswers.Update(userAnswer);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка при отмечаний ответа успешным id - {id}, {e}");
+            }
+
+            return 0;
         }
 
     }
