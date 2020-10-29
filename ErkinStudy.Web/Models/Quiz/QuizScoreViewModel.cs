@@ -13,6 +13,7 @@ namespace ErkinStudy.Web.Models.Quiz
     public class AnsweredQuestion
     {
         public long QuestionId { get; set; }
+        public long AnswerId { get; set; }
         public string Content { get; set; }
         public string ImagePath { get; set; }
         public string Answer { get; set; }

@@ -24,7 +24,7 @@
         <table class="table">
             @foreach (var userAnswer in Model.FilledAnswers)
             {
-                <tr id="@userAnswer.UserAnswerId" class="@if(!userAnswer.IsCorrect){@Html.Raw("bg-danger")}">
+                <tr id="@userAnswer.UserAnswerId" class="@if(!userAnswer.IsCorrect){@Html.Raw("bg-danger")} else {@Html.Raw("bg-success")}">
                     <td>
                         @i
                     </td>

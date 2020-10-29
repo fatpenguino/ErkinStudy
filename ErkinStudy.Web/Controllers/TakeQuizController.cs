@@ -124,12 +124,15 @@ namespace ErkinStudy.Web.Controllers
                 {
                     var answeredQuestion = new AnsweredQuestion();
                     var userAnswer = quizScore.UserAnswers.FirstOrDefault(x => x.QuestionId == question.Id);
+                    if (userAnswer == null)
+                        continue;
                     answeredQuestion.QuestionId = question.Id;
                     answeredQuestion.ImagePath = question.ImagePath;
                     answeredQuestion.Content = question.Content;
                     answeredQuestion.Answer = question.Answers.First(x => x.IsCorrect).Content;
-                    answeredQuestion.IsCorrect = userAnswer?.IsCorrect ?? false;
-                    answeredQuestion.UserAnswer = userAnswer?.Answer ?? string.Empty;
+                    answeredQuestion.IsCorrect = userAnswer.IsCorrect;
+                    answeredQuestion.UserAnswer = userAnswer.Answer ?? string.Empty;
+                    answeredQuestion.AnswerId = userAnswer.Id;
                     model.Questions.Add(answeredQuestion);
                 }
                 return View(model);
