@@ -1,11 +1,13 @@
 ﻿@using ErkinStudy.Infrastructure.Services
 @using ErkinStudy.Domain.Enums
+@using ErkinStudy.Domain.Entities.Quizzes
 @model IEnumerable<ErkinStudy.Domain.Entities.Quizzes.Question>
 @inject QuizService QuizService
 @{
     ViewData["Title"] = "Index";
-    long folderId = Model.Any() ? Model.First().Quiz.FolderId : QuizService.GetById(ViewBag.QuizId).Result.FolderId;
-    var isHomeTask = Model.First().Quiz.Type == QuizType.HomeTask;
+    Quiz quiz = await QuizService.GetById(ViewBag.QuizId);
+    var folderId = quiz.FolderId;
+    var isHomeTask = quiz.Type == QuizType.HomeTask;
 }
 
 <h1>Questions</h1>
