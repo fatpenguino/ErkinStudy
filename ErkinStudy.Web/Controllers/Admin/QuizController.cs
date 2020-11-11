@@ -145,7 +145,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                    //System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
                 }
                 catch (Exception e)
                 {
@@ -167,30 +167,42 @@ namespace ErkinStudy.Web.Controllers.Admin
         [HttpPost]
         public IActionResult Clone(long quizId, string title, string description, int order, long? folderId)
         {
-            var quiz = _dbContext.Quizzes.Include(x => x.Questions).ThenInclude(x => x.Answers).FirstOrDefault(x => x.Id == quizId);
-            if (quiz == null)
-                return RedirectToAction("Index");
-            var clonedQuiz = new Quiz {Title = title, Description = description, Order = order, FolderId = folderId};
-            _dbContext.Quizzes.Add(clonedQuiz);
-            _dbContext.SaveChanges();
-            foreach (var question in quiz.Questions)
+            try
             {
-                var clonedQuestion = new Question
-                {
-                    Content = question.Content, ImagePath = question.ImagePath, QuizId = clonedQuiz.Id
-                };
-                _dbContext.Questions.Add(clonedQuestion);
+                var quiz = _dbContext.Quizzes.Include(x => x.Questions).ThenInclude(x => x.Answers).FirstOrDefault(x => x.Id == quizId);
+                if (quiz == null)
+                    return RedirectToAction("Index");
+                var clonedQuiz = new Quiz { Title = title, Description = description, Order = order, FolderId = folderId };
+                _dbContext.Quizzes.Add(clonedQuiz);
                 _dbContext.SaveChanges();
-                foreach (var answer in question.Answers)
+                foreach (var question in quiz.Questions)
                 {
-                    var clonedAnswer = new Answer
+                    var clonedQuestion = new Question
                     {
-                        Content = answer.Content, IsCorrect = answer.IsCorrect, Question = clonedQuestion
+                        Content = question.Content,
+                        ImagePath = question.ImagePath,
+                        QuizId = clonedQuiz.Id
                     };
-                    _dbContext.Answers.Add(clonedAnswer);
+                    _dbContext.Questions.Add(clonedQuestion);
                     _dbContext.SaveChanges();
+                    foreach (var answer in question.Answers)
+                    {
+                        var clonedAnswer = new Answer
+                        {
+                            Content = answer.Content,
+                            IsCorrect = answer.IsCorrect,
+                            Question = clonedQuestion
+                        };
+                        _dbContext.Answers.Add(clonedAnswer);
+                        _dbContext.SaveChanges();
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка во время клонирование {quizId}, {title}, {e.Message} - {e.StackTrace}");
+            }
+            
 
             return folderId != null ? RedirectToAction("Manage", "Folder", new { id = folderId }) : RedirectToAction("Index");
         }

@@ -206,7 +206,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {   
-                    System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
+                    //System.IO.File.Delete(_appEnvironment.WebRootPath + question.ImagePath);
                 }
                 catch (Exception e)
                 {
