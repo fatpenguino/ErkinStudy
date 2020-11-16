@@ -102,9 +102,32 @@ body {
     color: #ffffff;
 }
 .main {
+}
+.section-main {
     height: 900px;
     background-color: #FE7A00;
-}
-.main-portrait {
     background-image: url(../img/arni.png);
+}
+.section-achievments {
+
+}
+.achievments-item {
+    display: inline-block;
+}
+.achievments-text {
+    display: inline-block;
+}
+.section-courses {
+    margin-top: 50px;
+}
+.section-about {
+    margin-top: 100px;
+}
+.about-image {
+    display: inline-block;
+    width: 450px
+}
+.about {
+    display: inline-block;
+    width: 450px;
 }
