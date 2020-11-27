@@ -1,0 +1,324 @@
+@import "libs"
+@import "vars"
+@import "fonts"
+
+.z-11
+	z-index: 11
+
+*
+	-webkit-box-sizing: border-box
+	-moz-box-sizing: border-box
+	box-sizing: border-box
+	outline: none
+	&:before, &:after
+		-webkit-box-sizing: border-box
+		-moz-box-sizing: border-box
+		box-sizing: border-box
+
+*::-webkit-input-placeholder
+	color: black
+	opacity: 1
+
+*:-moz-placeholder
+	color: #666
+	opacity: 1
+
+*::-moz-placeholder
+	color: #666
+	opacity: 1
+
+*:-ms-input-placeholder
+	color: #666
+	opacity: 1
+
+body input:focus:required:invalid,
+body textarea:focus:required:invalid
+	color: #666
+body input:required:valid,
+body textarea:required:valid
+	color: #666
+
+body
+	overflow-x: hidden
+	font-family: Open Sans
+h1
+	font-weight: 700
+a
+	color: black
+a:hover
+	text-decoration: none
+.btn-main
+	background: $red
+	color: white
+	font-size: 20px
+	border-radius: 13px
+	padding: 5px 18px
+.btn-nav
+	padding: 8px 0
+	font-size: 20px
+	font-weight: 700
+	width: 170px
+	&--white
+		border: 2px solid #000000
+		box-sizing: border-box
+		border-radius: 10px
+		&:hover
+			background: #000000
+			color: white
+			transition: .4s ease
+	&--black
+		background: #000000
+		border-radius: 10px
+		color: white
+		margin-left: 50px
+		&:hover
+			background: white
+			color: black
+			border: 2px solid #000000
+			transition: .4s ease
+header
+	padding: 10px 0
+	.title
+		font-size: 22px
+.main
+	background-image: url("../img/main-bg.png")
+	padding-top: 22px
+	background-repeat: no-repeat
+	background-size: cover
+	position: relative
+	.main-img
+		position: absolute
+		left: -40%
+		bottom: 0
+	.title
+		color: white
+		font-size: 54px
+		font-weight: 700
+		text-align: center
+		margin-top: 45px
+	.subtitle
+		font-size: 18px
+		color: white
+		text-align: center
+	.form
+		background: rgba(0, 0, 0, 0.24)
+		border-radius: 10px
+		padding: 35px 55px
+		width: 80%
+		margin: 0 auto
+		text-align: center
+		.form-title
+			color: white
+			font-weight: 800
+			font-size: 30px
+			text-transform: uppercase
+			text-align: center
+		input
+			background: none
+			border: none
+			color: white
+			padding-bottom: 20px
+			&::placeholder
+				color: white
+				font-size: 15px
+		.form-group
+			border-bottom: 1px solid white
+		.form-control:focus
+			border-color: #FF0000
+			box-shadow: inset 0 1px 1px white, 0 0 8px white
+		.btn-form
+			background: white
+			border-radius: unset
+			color: black
+			font-size: 15px
+			font-weight: bold
+			padding: 15px 0
+			width: 280px
+		.form-btn
+			border: 1px solid white
+			padding: 7px 10px
+			width: 300px
+			margin: 0 auto
+	.icons
+		margin: 24px 0 55px
+		img
+			margin: 0 10px
+	.countdown-container
+		margin: 30px 0 26px
+		.big-text
+			font-size: 60px
+			color: white
+		.dots
+			margin: 0 38px 0 28px
+		.days-up, .hours-up, .sec-up
+			background: rgba(25, 68, 141, 0.4)
+			border-radius: 10px
+			color: white
+			padding: 7px 10px
+			width: 90px
+			.big-text
+				margin: 0
+			span
+				font-size: 10px
+.advantages
+	padding: 50px 0 100px
+	p
+		font-size: 22px
+		font-weight: 700
+		color: #341E46
+		line-height: 1.1
+		margin: 0 0 0 25px
+		span
+			font-size: 16px
+.courses, .about, .contacts, .teachers
+	padding-bottom: 100px
+	.container
+		border-top: 1px solid rgba(135, 135, 135, 0.82)
+	.border-middle
+		border-top: 2px solid black
+		width: 50%
+		margin: 0 auto
+		transform: translateY(-1px)
+.courses
+	.title
+		font-weight: bold
+		font-size: 45px
+		margin: 53px 0 83px
+		text-align: center
+	.subtitle
+		font-size: 19px
+		font-weight: 700
+		text-align: center
+		margin-left: 20px
+	p
+		font-size: 15px
+		font-weight: 400
+		margin-top: 10px
+.about
+	.row
+		margin-top: 100px
+	.box
+		border: 1px solid black
+		padding: 30px
+		height: 100%
+		display: flex
+		background-image: url("../img/about.png")
+		background-repeat: no-repeat
+		background-position: center
+	.title
+		font-weight: 700
+		font-size: 24px
+	.subtitle
+		font-size: 38px
+		font-weight: bold
+	p
+		margin: 30px 0 30px
+		font-size: 15px
+	.bars
+		.bar-title-left
+			font-size: 13px
+			font-weight: 700
+		.bar-title-right
+			font-size: 15px
+			font-weight: 700
+		.progress
+			border-radius: 100px
+			height: 10px
+			margin: 10px 0
+			background: #9B9B9B
+.teachers
+	padding-bottom: 100px
+	.title
+		margin: 100px 0 50px
+		text-align: center
+		font-weight: 700
+		font-size: 45px
+	.swiper1
+		padding: 20px
+		.swiper-slide
+			padding: 10px 0 10px 34px
+			height: 380px
+			background: white
+			box-shadow: 5px -1px 10px rgba(94, 94, 94, 0.35)
+			.teacher
+				transform: translate(-140px, -35px)
+		.swiper-slide-next
+			z-index: -1!important
+			visibility: visible
+		.swiper-slide-prev
+			visibility: visible
+			z-index: -1!important
+		.swiper-slide-active
+			z-index: 99999!important
+			visibility: visible
+	.sbn
+		transform: translateX(100px)
+	.sbp
+		transform: translateX(-100px)
+	h2
+		font-weight: 700
+		font-size: 25px
+		margin-top: 10px
+	h3
+		font-weight: 600
+		font-size: 16px
+		margin: 10px 0
+	p
+		font-weight: 400
+		font-size: 14px
+.contacts
+	.title
+		margin: 100px 0 50px
+		text-align: center
+		font-weight: 700
+		font-size: 45px
+	h3
+		font-weight: 700
+		font-size: 30px
+	h4
+		font-weight: 600
+		font-size: 20px
+		color: #FE7A00
+		margin-top: 30px
+	p
+		margin-top: 30px
+	.swp
+		position: absolute
+		left: 40%
+		bottom: 0
+		z-index: 99999
+	.swn
+		position: absolute
+		left: 50%
+		bottom: 10%
+		z-index: 99999
+
+footer
+	border: 1px solid black
+	padding: 0 0 12px
+	.footer-logo
+		transform: translateX(-100px)
+	.title
+		font-size: 14px
+		transform: translateX(-10px)
+	.btn-nav
+		color: black
+	.form-control
+		border: none
+		font-weight: 700
+		font-size: 18px
+		margin-bottom: 20px
+		padding: 0
+	.form-control:focus
+		border-color: unset
+		box-shadow: none
+	.icons
+		margin-top: 25px
+		transform: translateX(-20px)
+		img
+			margin-right: 30px
+	.small-title
+		font-size: 13px
+		text-align: center
+		margin-top: 6px
+@import "media" // Всегда в конце
