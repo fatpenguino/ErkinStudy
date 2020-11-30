@@ -36,19 +36,19 @@ namespace ErkinStudy.Web.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> SendCallRequest(string name, string number, string type = "Онлайн курс")
+        public async Task<IActionResult> SendCallRequest(string name, string number, string message = "Онлайн курс")
         {
             try
             {
-                _logger.LogInformation($"Отправка уведомлений, данные: {name}, {number}, {type}");
-                await _emailService.SendEmailAsync("Әруақ Әруақ! Жаңа адам.",$"Аты: {name}, Нөмірі: {number}, Таңдауы: {type}");
+                _logger.LogInformation($"Отправка уведомлений, данные: {name}, {number}, {message}");
+                await _emailService.SendEmailAsync("Әруақ Әруақ! Жаңа адам.",$"Аты: {name}, Нөмірі: {number}, {message}");
             }
             catch (Exception e)
             {
-                _logger.LogError($"Ошибка при отправке уведомлений, данные: {name}, {number}, {type}", e);
+                _logger.LogError($"Ошибка при отправке уведомлений, данные: {name}, {number}, {message}", e);
                 TempData["ErrorMessage"] = $"{e.Message}, {e.StackTrace}";
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Landing");
         }
         public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
         {

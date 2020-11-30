@@ -26,6 +26,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.min.css">
+    <style>
+        .review-img {
+            border-top-left-radius: 22%;
+            border-top-right-radius: 22%;
+            border-bottom-left-radius: 22%;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -56,7 +63,7 @@
                         ҰБТ-ға ErkinStudy онлайн <br>
                         мектебімен дайындал
                     </h1>
-                    <p class="subtitle">Бүгін ЕРКІН ЖЕКСЕНБІ, 50% жеңілдікпен біздің курстарымызға тіркелгін келсе:</p>
+                    <p class="subtitle">Бүгін ЕРКІН ЖЕКСЕНБІ, 50% жеңілдікпен біздің курстарымызға тіркелгің келсе:</p>
                     <div class="countdown-container d-flex justify-content-center">
                         <div class="days-up">
                             <p id="days" class="big-text">0</p>
@@ -74,14 +81,15 @@
                         </div>
                     </div>
                     <div class="form">
-                        <form action="" id="form">
+                        <form asp-controller="Home" asp-action="SendCallRequest" method="post">
                             <h2 class="form-title">Байланысу үшін</h2>
                             <div class="form-group mt-3">
-                                <input type="name" class="form-control" id="name" aria-describedby="name" placeholder="Аты жөніңіз">
+                                <input type="name" class="form-control" id="name" name="name" aria-describedby="name" placeholder="Аты жөніңіз">
                             </div>
                             <div class="form-group mt-5">
-                                <input type="tel" class="form-control" id="number" aria-describedby="tel" placeholder="Телефон нөміріңіз ">
+                                <input type="tel" class="form-control" id="phone" name="number" aria-describedby="tel" placeholder="Телефон нөміріңіз ">
                             </div>
+                            <input type="hidden" name="message" value="Форма с главного баннера">
                             <div class="form-btn">
                                 <button type="submit" class="btn btn-form">Заявка қалдыру</button>
                             </div>
@@ -124,14 +132,14 @@
                 <div class="d-flex align-items-center">
                     <img src="img/icons/teacher.svg" alt="">
                     <p>
-                        10 + <br>
+                        20 + <br>
                         <span>мұғалім</span>
                     </p>
                 </div>
                 <div class="d-flex align-items-center">
                     <img src="img/icons/teacher.svg" alt="">
                     <p>
-                        10 + <br>
+                        1000 + <br>
                         <span>оқушы 100+ бал</span>
                     </p>
                 </div>
@@ -350,7 +358,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/akylzhan.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -404,7 +412,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/marzhan.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -428,7 +436,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/inzhu.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -452,7 +460,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/karakoz.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -475,7 +483,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/ayazhan.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -500,7 +508,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/erseit.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -524,7 +532,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/darkhan.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -552,14 +560,14 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/fariza.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
                         <div class="swiper-slide">
                             <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
                                 <img src="img/icons/teachers-mathphys.svg" alt="" class="img-fluid">
-                                <span>Физика</span>
+                                <span>Математика</span>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
@@ -567,7 +575,7 @@
                                         Рүстем Балтабай
                                     </h2>
                                     <h3>
-                                        Физика пәні
+                                        Математика пәні
                                         мұғалімі
                                     </h3>
                                     <p>
@@ -579,7 +587,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-6">
-                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                    <img src="img/rustem.png" alt="teacher" class="teacher">
                                 </div>
                             </div>
                         </div>
@@ -602,11 +610,11 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact1.png" alt="contact1" class="img-fluid">
+                                <img src="img/akbota.jpeg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>Ақбота Жаубасар</h3>
-                                <h4>ЕНТ: 135 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     Менің ең сүйікті,Қазақстандағы #1 курсым олErkin Study. Erkin Study мұғалімдері ЕҰУ,
                                     Назарбаев университеті, әл-Фараби атындағы
@@ -624,13 +632,13 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact2.png" alt="contact1" class="img-fluid">
+                                <img src="img/zhibek.jpg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>
                                     Ержан Жібек
                                 </h3>
-                                <h4>ЕНТ: 132 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     Мен Еркін Study туралы көп сөз айтқым
                                     келмейді, өйткені нәтижелерім бұл
@@ -647,14 +655,14 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact2.png" alt="contact1" class="img-fluid">
+                                <img src="img/kundyz.jpg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>
                                     Орынғалиева
                                     Құндыз
                                 </h3>
-                                <h4>ЕНТ: 115 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     Өте жоғары деңгейде сабақтар өткізгені үшін
                                     қатты ұнайды. Бірнеше курстарға қатысып
@@ -674,14 +682,14 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact2.png" alt="contact1" class="img-fluid">
+                                <img src="img/shugyla.jpg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>
                                     Шұғыла
                                     Бауыржанова
                                 </h3>
-                                <h4>ЕНТ: 125 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     Сабақтар еркін форматта жүреді. Оның үстіне
                                     өте қызықты. Оқушыға арналған конспект бар.
@@ -700,14 +708,14 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact2.png" alt="contact1" class="img-fluid">
+                                <img src="img/balzhan.jpg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>
                                     Ибадулла
                                     Балжан
                                 </h3>
-                                <h4>ЕНТ: 127 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     Менім еркін оқушы болғаныма 4-ай болып
                                     жатыр, 4-ай еркін стадимен бірге жұмыс жасап
@@ -729,14 +737,14 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact2.png" alt="contact1" class="img-fluid">
+                                <img src="img/symbat.jpg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>
                                     Сымбат
                                     Бақытжанқызы
                                 </h3>
-                                <h4>ЕНТ: 131 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     Мейлі бізден болса дағы алыс қалып,
                                     Жеткізе алды біздерді табысқа анық.
@@ -761,11 +769,11 @@
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/contact2.png" alt="contact1" class="img-fluid">
+                                <img src="img/aruzhan.jpg" alt="contact1" class="img-fluid review-img">
                             </div>
-                            <div class="col-lg-7 ml-lg-5	">
+                            <div class="col-lg-7 ml-lg-5">
                                 <h3>Аружан Тілеу</h3>
-                                <h4>ЕНТ: 132 балл</h4>
+                                <h4>Еркін оқушы</h4>
                                 <p>
                                     ЕРКІН ОҚУШЫ болғаныма 2 жылдан асып
                                     кеттіпті. Сол кезде сіздердің тегін
@@ -804,7 +812,7 @@
                 <div class="d-flex flex-wrap justify-content-center">
                     <div class="form-group mt-lg-5 mr-2">
                         <input class="form-control invisible">
-                        <a href="#" class="btn btn-nav btn-nav--white">Erkin oqýshy</a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-nav btn-nav--white">Erkin oqýshy</a>
                     </div>
                     <div class="form-group mt-lg-5 ml-2">
                         <input class="form-control invisible">
