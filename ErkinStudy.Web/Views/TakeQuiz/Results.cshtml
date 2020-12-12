@@ -38,6 +38,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.TakenTime)
                 </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Teacher") || User.IsInRole("Moderator"))
+                {
+                    <td>
+                        <a asp-controller="TakeQuiz" asp-action="QuizScore" asp-route-id="@item.Id"> Details </a>
+                    </td>
+                }
             </tr>
         }
     }

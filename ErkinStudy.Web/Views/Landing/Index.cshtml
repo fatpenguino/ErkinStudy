@@ -1,0 +1,858 @@
+﻿@using System.Web
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>ErkinSTUDY</title>
+    <meta name="description" content="ErkinSTUDY - ҰБТ-ға ErkinStudy онлайн мектебімен дайындал">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta property="og:image" content="img/logo.png">
+    <meta property="og:title" content="ErkinSTUDY" />
+    <meta property="og:site_name" content="ErkinSTUDY" />
+    <meta property="og:description" content="ҰБТ-ға ErkinStudy онлайн мектебімен дайындал" />
+    <meta property="og:image" content="img/logo.png" />
+    <meta property="og:url" content="https://erkinstudy.kz/" />
+    <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/logo.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/logo.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/logo.png">
+    <meta name="theme-color" content="#000">
+    <meta name="msapplication-navbutton-color" content="#000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#000">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.min.css">
+    <style>
+        .review-img {
+            border-top-left-radius: 22%;
+            border-top-right-radius: 22%;
+            border-bottom-left-radius: 22%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="d-lg-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="img/logo.png" alt="Logo" class="img-fluid">
+                    <h2 class="title">
+                        ErkinSTUDY <br>
+                        Bilimińmen Erkinsiń - Knowledge frees
+                    </h2>
+                </div>
+                <div class="text-center justify-content-between">
+                    <a class="btn btn-nav btn-nav--white" asp-controller="Home" asp-action="Index">Erkin oqýshy</a>
+                    <a class="btn btn-nav btn-nav--black" href="">UBT Hub</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <img src="img/13dec.png" alt="main" class="main-img">
+                </div>
+                <div class="col-lg-8 text-center">
+                    <h1 class="title">
+                       13 желтоқсан ЖАҢА поток <br>
+                    </h1>
+                    <p class="subtitle">Алғашқы 30 оқушыға бір пәннен бір айға тіркелу 7000 тг </p>
+                    <div class="countdown-container d-flex justify-content-center">
+                        <div class="days-up">
+                            <p id="days" class="big-text">0</p>
+                            <span>kyn</span>
+                        </div>
+                        <div class="big-text dots">:</div>
+                        <div class="hours-up">
+                            <p id="hours" class="big-text">0</p>
+                            <span>sagat</span>
+                        </div>
+                        <div class="big-text dots">:</div>
+                        <div class="sec-up">
+                            <p id="sec" class="big-text">0</p>
+                            <span>sekund</span>
+                        </div>
+                    </div>
+                    <div class="form">
+                        <form asp-controller="Home" asp-action="SendCallRequest" method="post">
+                            <h2 class="form-title">Байланысу үшін</h2>
+                            <div class="form-group mt-3">
+                                <input type="name" class="form-control" id="name" name="name" aria-describedby="name" placeholder="Аты жөніңіз">
+                            </div>
+                            <div class="form-group mt-5">
+                                <input type="tel" class="form-control" id="phone" name="number" aria-describedby="tel" placeholder="Телефон нөміріңіз ">
+                            </div>
+                            <input type="hidden" name="message" value="Форма с главного баннера">
+                            <div class="form-btn">
+                                <button type="submit" class="btn btn-form">Заявка қалдыру</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="icons">
+                        <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен Erkin курсына тіркелгім келеді")"><img src="img/icons/whatsapp.svg" alt=""></a>
+                        <a href="https://vk.com/erkinstudy"><img src="img/icons/vk.svg" alt=""></a>
+                        <a href="https://www.instagram.com/erkinstudy"><img src="img/icons/instagram.svg" alt=""></a>
+                        <a href="https://www.youtube.com/channel/UCH277W7YLefKuvxJGUs1bOQ"><img src="img/icons/youtube.svg" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="advantages">
+        <div class="container">
+            <div class="d-lg-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="img/icons/education.svg" alt="">
+                    <p>
+                        1500+ <br>
+                        <span>түлек</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <img src="img/icons/exam.svg" alt="">
+                    <p>
+                        5 000+ <br>
+                        <span>тесттер</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <img src="img/icons/up-arrow.svg" alt="">
+                    <p>
+                        95% <br>
+                        <span>оқушы грант иегері</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <img src="img/icons/teacher.svg" alt="">
+                    <p>
+                        20 + <br>
+                        <span>мұғалім</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <img src="img/icons/teacher.svg" alt="">
+                    <p>
+                        1000 + <br>
+                        <span>оқушы 100+ бал</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="courses">
+        <div class="container">
+            <div class="border-middle"></div>
+            <h2 class="title">Бiздiң курстар </h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                        <img src="img/icons/test.svg" alt="">
+                        <h3 class="subtitle">Аптасына 2 - 3 рет <br> тестiлеу</h3>
+                    </div>
+                    <p>
+                        Еркін Оқушы курс пәні бойынша ҰБТ-да келетін сұрақтардан онлайн байқау тестілеуін
+                        тапсырады
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                        <img src="img/icons/timer.svg" alt="">
+                        <h3 class="subtitle">Курс ұзақтығы 3 ай</h3>
+                    </div>
+                    <p>Еркін Оқушы белгіленген уақыт аралығында барлық ҰБТ тақырыптарын меңгереді</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                        <img src="img/icons/homework.svg" alt="">
+                        <h3 class="subtitle">Әр сабаққа сай үй  <br> жұмысы</h3>
+                    </div>
+                    <p>Еркін Оқушы өз білімін бекіту үшін әр сабақ сайын үй тапсырмасын орындайд</p>
+                </div>
+            </div>
+            <div class="row mt-lg-5">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                        <img src="img/icons/exam2.svg" alt="">
+                        <h3 class="subtitle">Онлайн формат</h3>
+                    </div>
+                    <p>
+                        Еркін Оқушы қауіпсіз, ыңғайлы уақытта, ыңғайлы ортада онлайн форматта қол жетімді білім
+                        алады
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                        <img src="img/icons/server.svg" alt="">
+                        <h3 class="subtitle">ҰБТ кеңестерi <br> базасы</h3>
+                    </div>
+                    <p>
+                        Еркін Оқушы тек білім ғана емес, ҰБТ-ға дайындалуға көмектесетін, өмірде тұлға ретінде
+                        қалыптасуына қолдау көрсететін керемет жинақты сыйлыққа алады
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                        <img src="img/icons/lecture.svg" alt="">
+                        <h3 class="subtitle">
+                            Сабақ ұзақтығы <br>
+                            1,5 сағат
+                        </h3>
+                    </div>
+                    <p>Еркін оқушы аптасына 3 рет 1,5 сағат білікті мұғалімнен сабақ алады</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="about">
+        <div class="container">
+            <div class="border-middle"></div>
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="box">
+                    </div>
+                </div>
+                <div class="col-lg-4 ml-lg-4">
+                    <h2 class="title">Біз жайлы...</h2>
+                    <h3 class="subtitle">НЕГЕ БІЗ?</h3>
+                    <p>
+                        Еркін Study-дың басты ерекшелігі «Еркін Оқушы», «Еркін Мұғалім», «Еркін Білім»
+                        концепциялары негізінде ҰБТ-ға дайындық жүргізеді. Бұл концепциялардың арқасында оқушы
+                        кез-келген уақытта, қысылмай мұғаліммен тікелей байланысқа шығып дос болып, мұғалімнің
+                        қолдауымен жоғары нәтиже көрсетеді.
+                    </p>
+                    <p>Біздің оқушылардың қазіргі орта балы:</p>
+                    <div class="bars">
+                        <div class="bar">
+                            <div class="d-flex justify-content-between">
+                                <span class="bar-title-left">Қазақстан тарихы</span>
+                                <span class="bar-title-right">19 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 95%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Математикалық сауаттылық</span>
+                                <span class="bar-title-right">18 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 90%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Оқу сауаттылығы</span>
+                                <span class="bar-title-right">20 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Математика</span>
+                                <span class="bar-title-right">35 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 88%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Физика</span>
+                                <span class="bar-title-right">36 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 90%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Химия</span>
+                                <span class="bar-title-right">35 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 88%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Биология</span>
+                                <span class="bar-title-right">37 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 92%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">География</span>
+                                <span class="bar-title-right">36.5 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 91%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="bar-title-left">Дүниежүзі тарихы</span>
+                                <span class="bar-title-right">37 балл</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 92%;  background-color:#FE7A00">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="teachers">
+        <div class="container">
+            <div class="border-middle"></div>
+            <h2 class="title">Біздің мұғалімдер</h2>
+            <!-- Swiper -->
+            <div class="d-flex">
+                <img src="img/icons/left.svg" alt="" class="sbp">
+                <div class="swiper-container swiper1">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-mathphys.svg" alt="" class="img-fluid">
+                                <span>Қазақстан Тарихы</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>
+                                        Ақылжан
+                                        Дүйсенғалиұлы
+                                    </h2>
+                                    <h3>
+                                        Орталық
+                                        Координаторы,
+                                        Қазақстан Тарихы
+                                        пәні мұғалімі
+                                    </h3>
+                                    <p>
+                                        1000+ оқушыны онлайн, 100+ оқушы офлайн ҰБТға дайындаған. Білімі: Л.Н.Гумилев атындағы
+                                        Еуразия Ұлттық Университеті, «Тарих» мамандығы.
+                                        Қазақстан тарихы пәнінен Республикалық пәндік
+                                        олимпиаданың жеңімпазы.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/akylzhan.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-language.svg" alt="" class="img-fluid">
+                                <span>Физика</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>Нұрғазы Қапбаров</h2>
+                                    <h3>
+                                        Физика пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        600+ оқушы офлайн, 600+ оқушы онлайн ҰБТ-ға
+                                        дайындаған. Білімі: Л.Н.Гумилев атындағы Еуразия
+                                        Ұлттық Университеті, «Ядролық Физика»
+                                        мамандығы. “Ядролық физика” бойынша
+                                        студенттер арасында республикалық
+                                        олимпиаданың күміс жүлдегері
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/teacher.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-history.svg" alt="" class="img-fluid">
+                                <span>Ағылшын тілі</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>
+                                        Маржан
+                                        Әбдіғалиқызы
+                                    </h2>
+                                    <h3>
+                                        Ағылшын пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        ҰБТ-ға оқушыларды дайындау тәжірибесі – 3 жыл.
+                                        Білімі: Сулейман Демирель Университеті, «Екі Шет
+                                        тілі» мамандығы. Young Inventors Project
+                                        Competition 2015, Young Inventors Project
+                                        Competition 2016 байқауларының І орын иегері.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/marzhan.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-mathphys.svg" alt="" class="img-fluid">
+                                <span>Химия</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>Інжу Қуаныш</h2>
+                                    <h3>
+                                        Химия пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        300+ оқушы ҰБТ-ға дайындаған. Білімі: әл-Фараби
+                                        атындағы Қазақ Ұлттық Университеті, «Химия»
+                                        мамандығы. Химиядан ұлттық интернет
+                                        олимпиаданың І орын иегері.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/inzhu.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-language.svg" alt="" class="img-fluid">
+                                <span>Биология</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>Қаракөз Болатқызы</h2>
+                                    <h3>
+                                        Биология пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        250+ оқушы ҰБТ-ға дайындаған. Білімі: Сулейман
+                                        Демирель Университеті, «Биология-Химия»
+                                        мамандығы. Алтын белгі иегері, Республикалық
+                                        пәндік олимпиада жеңімпазы
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/karakoz.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-history.svg" alt="" class="img-fluid">
+                                <span>Ағылшын тілі</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>Аяжан Жолдас</h2>
+                                    <h3>
+                                        Ағылшын пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        100+ оқушы ҰБТ-ға дайындаған. Білімі: Сулейман
+                                        Демирель Университеті, «Екі Шет тілі»
+                                        мамандығы. Team Enactus 2019 жеңімпазы.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/ayazhan.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-mathphys.svg" alt="" class="img-fluid">
+                                <span>Физика</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>Ерсейіт Үсенұлы</h2>
+                                    <h3>
+                                        Физика пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        150+ оқушы ҰБТ-ға дайындаған. Білімі:
+                                        Л.Н.Гумилев атындағы Еуразия Ұлттық
+                                        Университеті, «Ядролық Физика» мамандығы.
+                                        “Ядролық физика” бойынша студенттер арасында
+                                        республикалық олимпиаданың қола жүлдегері
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/erseit.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-language.svg" alt="" class="img-fluid">
+                                <span>Дүниежүзі тарихы</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>Дархан Болғамбай</h2>
+                                    <h3>
+                                        Дүниежүзі тарихы
+                                        пәні мұғалімі
+                                    </h3>
+                                    <p>
+                                        150+ оқушыны ҰБТ-ға дайындаған. Білімі:
+                                        Л.Н.Гумилев атындағы Еуразия Ұлттық
+                                        Университеті, «Тарих» мамандығы. Республикалық
+                                        ғылыми жобалар байқауының жеңімпазы.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/darkhan.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-history.svg" alt="" class="img-fluid">
+                                <span>Математикалық сауаттылық</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>
+                                        Фаризажан
+                                        Аскербек
+                                    </h2>
+                                    <h3>
+                                        Математикалық
+                                        сауаттылық пәнінің
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        200+ оқушы ҰБТ-ға дайындаған. Білімі: Сулейман
+                                        Демирель Университеті, «Математика»
+                                        мамандығы. Республикалық ғылыми жобалар
+                                        байқауының жеңімпазы.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/fariza.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                                <img src="img/icons/teachers-mathphys.svg" alt="" class="img-fluid">
+                                <span>Математика</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h2>
+                                        Рүстем Балтабай
+                                    </h2>
+                                    <h3>
+                                        Математика пәні
+                                        мұғалімі
+                                    </h3>
+                                    <p>
+                                        1000+ оқушы онлайн, 500+ оқушы офлайн ҰБТ-ға
+                                        дайындаған. Білімі: Л.Н.Гумилев атындағы Еуразия
+                                        Ұлттық Университеті, «Ядролық Физика»
+                                        мамандығы. Республикалық пәндік
+                                        олимпиаданың жеңімпазы.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="img/rustem.png" alt="teacher" class="teacher">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <img src="img/icons/right.svg" alt="" class="sbn">
+
+            </div>
+
+        </div>
+    </section>
+    <section class="contacts">
+        <div class="container">
+            <div class="border-middle"></div>
+            <h2 class="title">Кері байланыс</h2>
+            <!-- Swiper -->
+            <div class="swiper-container swiper2">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/akbota.jpeg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>Ақбота Жаубасар</h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    Менің ең сүйікті,Қазақстандағы #1 курсым олErkin Study. Erkin Study мұғалімдері ЕҰУ,
+                                    Назарбаев университеті, әл-Фараби атындағы
+                                    қазақ ұлттық университеті сияқты ең үздік
+                                    ЖОО-да білім алған, білімдері жоғары ұжым.
+                                    Бұл курста ең кереметі ҰБТ-да келетін
+                                    нәрселерді уақ түйегіне дейін үйретеді. Бұл
+                                    курсқа сүйеніп оқыған адам ҰБТ-дан гарантия
+                                    130+ бал жинайды. Шыныменде бұл рас, бұл
+                                    курсқа қанша мақтау айтсаң да жетпейді.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/zhibek.jpg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>
+                                    Ержан Жібек
+                                </h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    Мен Еркін Study туралы көп сөз айтқым
+                                    келмейді, өйткені нәтижелерім бұл
+                                    орталықтың қандай үздік екенін дәлелдейді.
+                                    Қазақстан тарихынан тұрақты 18+ бал,
+                                    Математикалық сауаттылықтан 17+ бал,
+                                    Дүниежүзі тарихынан 35+ бал, Ағылшын
+                                    пәнінен қатысқаныма аз болғанына
+                                    қарамастан 30+ бал жинап жүрмін.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/kundyz.jpg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>
+                                    Орынғалиева
+                                    Құндыз
+                                </h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    Өте жоғары деңгейде сабақтар өткізгені үшін
+                                    қатты ұнайды. Бірнеше курстарға қатысып
+                                    көрдім, бірақ түсіндіру жолы, сабақ өту
+                                    форматы, сапасы ұнамады. Қазір байқау
+                                    сынақтарынан кем дегенде 110 бал жинаймын.
+                                    ҰБТ ға қалай дайындалу керек екенің білдім.
+                                    Білікті ұстаздардан сабақ алып келемін. Өзімде
+                                    күннен-күнге прогрес байқап жатырмын! Алға
+                                    қарай дами беріңіздер. Курсқа
+                                    тіркелмегендерге айтарым: «Eркін Study-ға
+                                    қатысып көрмепсін, бұл өмірді сүрмепсін!»
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/shugyla.jpg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>
+                                    Шұғыла
+                                    Бауыржанова
+                                </h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    Сабақтар еркін форматта жүреді. Оның үстіне
+                                    өте қызықты. Оқушыға арналған конспект бар.
+                                    Біліміңді тексеріп отыратын үй жұмыстары, әр
+                                    түрлі нұсқа талдаулар. Апта сайын байқау тест
+                                    сынақтамасы. Бұның барлығы оқушының яғни
+                                    еркін оқушының ынтасын артыратыны шүбәсіз. <br> <br>
+                                    Ұстаздар өте білікті Кейбір курстар тек ақша
+                                    үшін жұмыс жасап жатады, ал мұнда сапаға
+                                    жұмыс жасайды. Қазақстан тарихы пәнінен
+                                    тұрақты 19-20 ұпай жинап жүрмін.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/balzhan.jpg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>
+                                    Ибадулла
+                                    Балжан
+                                </h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    Менім еркін оқушы болғаныма 4-ай болып
+                                    жатыр, 4-ай еркін стадимен бірге жұмыс жасап
+                                    келе жатырмын. Осы курсты тандағаныма
+                                    қуанамын және уақытымның бос өтпегеніне
+                                    ризамын. Сабақтар өте жоғары деңгейде
+                                    жүргізелді, маған қатты ұнайтыны әр баламен
+                                    жеке жұмыс жасауы. Еркін білім алып,
+                                    математика-математикалық сауаттылық
+                                    пандерін толық бітірдім және жақында
+                                    Қазақстан тарихын да аяқтаймын. Қазірдің
+                                    өзінде сапалы білім алудың арқасында 120-дан
+                                    жоғары ұпай жинап жүрмін. Мен еркін оқушы
+                                    болғаныма мақтанамын.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/symbat.jpg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>
+                                    Сымбат
+                                    Бақытжанқызы
+                                </h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    Мейлі бізден болса дағы алыс қалып,
+                                    Жеткізе алды біздерді табысқа анық.
+                                    Еркіндікті сүйетін, мен талапкер
+                                    Сапалы білімменен қауышты анық.
+                                    Төрт ай бойы басымыз кешті нені:
+                                    Түсінбеппін көп нәрсені ес білгелі
+                                    Еркін курс жол ашты зейініме.
+                                    Тіркеліп алдым мен де естігелі.
+                                    Талпындырып өренін баққа білем,
+                                    Еркін курс біздермен мақтанып ең.
+                                    Ақылжан ағай бөлісті барын салып
+                                    Тарихымның ең алтын шақтарымен
+                                    Еркін курс дарытып берекесін,
+                                    Бүгін де олар кеңейтті керегесін.
+                                    Кешегі "бес алты" балл жинағандар
+                                    Бүгінде 20\20 алатындар.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img src="img/aruzhan.jpg" alt="contact1" class="img-fluid review-img">
+                            </div>
+                            <img src="img/icons/arrow-left.svg" alt="" class="swp">
+                            <img src="img/icons/arrow-right.svg" alt="" class="swn">
+                            <div class="col-lg-7 ml-lg-5">
+                                <h3>Аружан Тілеу</h3>
+                                <h4>Еркін оқушы</h4>
+                                <p>
+                                    ЕРКІН ОҚУШЫ болғаныма 2 жылдан асып
+                                    кеттіпті. Сол кезде сіздердің тегін
+                                    сабақтарыңызды үзбей қатысатынмын. Өзіме
+                                    сөз бергенмін ҰБТ-да осы ERKIN STUDY мен
+                                    дайындаламын деп. Аллаға Шүкір деймін
+                                    сіздермен мен 3 пәнімді оқыдым нәтижесі
+                                    бомба. Физикадан 10 балдан
+                                    әрең асыратынмын, қазір 30 балдан жоғары
+                                    аламын. Бұл жетістігім сіздердің
+                                    арқаларыңызда сабақ өте түсінікті, қызық,
+                                    оқуға деген ынтаны ашасыздар Ағайлар өте
+                                    тамаша жандар ғой, Teacher Assistant-тер де
+                                    өте керемет жандар. Мақтауға
+                                    тұрарлықсыздар!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<img src="img/icons/arrow-left.svg" alt="" class="swp">
+                <img src="img/icons/arrow-right.svg" alt="" class="swn">*@
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="d-lg-flex justify-content-between text-center text-lg-left">
+                <a href="#" class="d-flex align-items-end footer-logo align-items-center">
+                    <img src="img/logo.png" alt="Logo" class="img-fluid">
+                    <h2 class="title">
+                        ErkinSTUDY <br>
+                        Bilimińmen Erkinsiń - Knowledge frees
+                    </h2>
+                </a>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <div class="form-group mt-lg-5 mr-2">
+                        <input class="form-control invisible">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-nav btn-nav--white">Erkin oqýshy</a>
+                    </div>
+                    <div class="form-group mt-lg-5 ml-2">
+                        <input class="form-control invisible">
+                        <a href="#" class="btn btn-nav btn-nav--white">UBT Hub</a>
+                    </div>
+                    <div>
+                        <form>
+                            <div class="form-group mt-lg-5">
+                                <input name="tel" type="phone" class="form-control" id="tel" aria-describedby="tel" placeholder="+7 ( ___) - ___ -__ - __">
+                                <button type="submit" class="btn btn-nav btn-nav--white">Тіркелу</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex icons">
+                <a href="https://wa.me/77772247244?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен Erkin курсына тіркелгім келеді")"><img src="img/icons/whatsapp.svg" alt=""></a>
+                <a href="https://vk.com/erkinstudy"><img src="img/icons/vk.svg" alt=""></a>
+                <a href="https://www.instagram.com/erkinstudy"><img src="img/icons/instagram.svg" alt=""></a>
+                <a href="https://www.youtube.com/channel/UCH277W7YLefKuvxJGUs1bOQ"><img src="img/icons/youtube.svg" alt=""></a>
+            </div>
+            <div>
+                <h3 class="small-title">© 2020 Все права защищены</h3>
+            </div>
+        </div>
+    </footer>
+    <script src="js/scripts.min.js"></script>
+</body>
+</html>
