@@ -128,5 +128,11 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             return _context.Specialties.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> ManageSubjects(int id)
+        {
+            var specialtySubjects = await _context.SpecialtySubjects.Where(x => x.SpecialtyId == id).ToListAsync();
+            return View(specialtySubjects);
+        }
     }
 }
