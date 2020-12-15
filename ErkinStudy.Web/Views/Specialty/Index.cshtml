@@ -43,8 +43,10 @@
                 @Html.DisplayFor(modelItem => item.MediaUrl)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | 
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> | 
+                <a asp-action="ManageSubjects" asp-route-id="@item.Id">Subjects</a> | 
+                <a asp-action="ManageUniversities" asp-route-id="@item.Id">Universities</a>
             </td>
         </tr>
 }

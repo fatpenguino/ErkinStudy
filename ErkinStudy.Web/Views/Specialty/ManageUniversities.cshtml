@@ -1,0 +1,102 @@
+﻿@using ErkinStudy.Infrastructure.Services
+@model ErkinStudy.Domain.Entities.UbtHub.Specialty
+@inject SpecialtyService SpecialtyService
+@{
+    ViewData["Title"] = "Manage Universities";
+    var included = await SpecialtyService.GetUniversities(Model.Id);
+    var excluded = await SpecialtyService.GetExcludedUniversities(Model.Id);
+}
+
+
+<h4 class="mt-4">Added:</h4>
+<table class="table table-bordered mb-5">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in included)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    <a asp-action="DeleteUniversity" asp-route-specialtyId="@Model.Id" asp-route-universityId="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Other:</h4>
+<form>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th>Add</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in excluded)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        <input class="university" value="@item.Id" type="checkbox">
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group row">
+        <input type="button" class="btn btn-primary"
+               value="Add Universities"
+               id="add_universities" />
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    $(function() {
+
+        $("#add_universities").on("click", function() {
+            let specialtyId = @Model.Id;
+            let checkedItems = [];
+            $(".university:checked").each(function() {
+                checkedItems.push($(this).val());
+            });
+
+            let formData = JSON.stringify({
+                'specialtyId': specialtyId,
+                'checkedItems': checkedItems
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Specialty/AddUniversities",
+                contentType: "application/json; charset=utf-8",
+                data: formData,
+                dataType: "json",
+
+                success: function () {
+                    location.href = '@Url.Action("ManageUniversities", "Specialty", new { id = @Model.Id})';
+                },
+                error: function () {
+                    location.href = '@Url.Action("ManageUniversities", "Specialty", new { id = @Model.Id})';
+                }
+            });
+        });
+
+    });
+</script>

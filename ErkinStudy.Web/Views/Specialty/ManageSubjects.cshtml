@@ -1,0 +1,102 @@
+﻿@using ErkinStudy.Infrastructure.Services
+@model ErkinStudy.Domain.Entities.UbtHub.Specialty
+@inject SpecialtyService SpecialtyService
+@{
+    ViewData["Title"] = "Manage Subjects";
+    var included = await SpecialtyService.GetSubjects(Model.Id);
+    var excluded = await SpecialtyService.GetExcludedSubjects(Model.Id);
+}
+
+
+<h4 class="mt-4">Added:</h4>
+<table class="table table-bordered mb-5">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in included)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    <a asp-action="DeleteSubject" asp-route-specialtyId="@Model.Id" asp-route-subjectId="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Other:</h4>
+<form>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th>Add</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in excluded)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        <input class="subject" value="@item.Id" type="checkbox">
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group row">
+        <input type="button" class="btn btn-primary"
+               value="Add Subjects"
+               id="add_subjects" />
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    $(function() {
+
+        $("#add_subjects").on("click", function() {
+            let specialtyId = @Model.Id;
+            let checkedItems = [];
+            $(".subject:checked").each(function() {
+                checkedItems.push($(this).val());
+            });
+
+            let formData = JSON.stringify({
+                'specialtyId': specialtyId,
+                'checkedItems': checkedItems
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Specialty/AddSubjects",
+                contentType: "application/json; charset=utf-8",
+                data: formData,
+                dataType: "json",
+
+                success: function () {
+                    location.href = '@Url.Action("ManageSubjects", "Specialty", new { id = @Model.Id})';
+                },
+                error: function () {
+                    location.href = '@Url.Action("ManageSubjects", "Specialty", new { id = @Model.Id})';
+                }
+            });
+        });
+
+    });
+</script>
