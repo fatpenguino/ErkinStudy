@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities.UbtHub;
 using ErkinStudy.Infrastructure.Context;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
@@ -37,6 +38,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         {
             if (ModelState.IsValid)
             {
+                ViewData["CityList"] = new SelectList(_context.Cities, "Id", "Title");
                 _context.Add(university);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

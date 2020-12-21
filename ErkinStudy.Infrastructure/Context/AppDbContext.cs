@@ -35,6 +35,7 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<University> Universities { get; set; }
         public DbSet<SpecialtySubject> SpecialtySubjects { get; set; }
         public DbSet<UniversitySpecialty> UniversitySpecialties { get; set; }
+        public DbSet<City> Cities { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 	        modelBuilder.Entity<UserFolder>(entity =>
