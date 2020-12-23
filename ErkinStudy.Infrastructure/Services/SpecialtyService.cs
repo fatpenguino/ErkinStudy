@@ -16,6 +16,10 @@ namespace ErkinStudy.Infrastructure.Services
             _context = context;
         }
 
+        public Task<List<Specialty>> GetAll()
+        {
+          return _context.Specialties.Include(x => x.SpecialtySubjects).ThenInclude(x => x.Subject).ToListAsync();
+        }
         public async Task<List<Subject>> GetSubjects(int id)
         {
             return await _context.SpecialtySubjects.Include(x => x.Subject).Where(x => x.SpecialtyId == id)

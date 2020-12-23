@@ -1,7 +1,91 @@
-﻿
+﻿@model IEnumerable<ErkinStudy.Domain.Entities.UbtHub.Specialty>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Мамандықтар";
 }
+<div class="container mt-3">
+    <div class="mx-auto text-center mt-3 mb-3">
+        <h4>Мамандықтар</h4>
+    </div>
+    <div class="row">
+        <aside class="col-sm-3">
+            <div class="card">
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Таңдау пәні</h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="card-body">
+                            <form>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="">
+                                    <span class="form-check-label">
+                                        Mersedes Benz
+                                    </span>
+                                </label> <!-- form-check.// -->
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="">
+                                    <span class="form-check-label">
+                                        Nissan Altima
+                                    </span>
+                                </label> <!-- form-check.// -->
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="">
+                                    <span class="form-check-label">
+                                        Another Brand
+                                    </span>
+                                </label> <!-- form-check.// -->
+                            </form>
 
-<h1>Index</h1>
+                        </div> <!-- card-body.// -->
+                    </div>
+                </article> <!-- card-group-item.// -->
 
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Университеттер </h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="card-body">
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" name="exampleRadio" value="">
+                                <span class="form-check-label">
+                                    First hand items
+                                </span>
+                            </label>
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" name="exampleRadio" value="">
+                                <span class="form-check-label">
+                                    Brand new items
+                                </span>
+                            </label>
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" name="exampleRadio" value="">
+                                <span class="form-check-label">
+                                    Some other option
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+
+
+
+        </aside>
+        <div class="col-md-8">
+            <div class="list-group">
+                @foreach (var item in  Model)
+                {
+                    <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">@item.Title</h5>
+                        </div>
+                        <p class="mb-1">@item.About</p>
+                        <small>@item.Description</small>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
