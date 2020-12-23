@@ -4,74 +4,70 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ErkinStudy.Domain.Entities.UbtHub;
 using ErkinStudy.Infrastructure.Context;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ErkinStudy.Web.Controllers.Admin
 {
-    public class UniversityController : Controller
+    public class CityController : Controller
     {
         private readonly AppDbContext _context;
 
-        public UniversityController(AppDbContext context)
+        public CityController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: University
+        // GET: City
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Universities.Include(x => x.City).ToListAsync());
+            return View(await _context.Cities.ToListAsync());
         }
 
-        // GET: University/Create
+        // GET: City/Create
         public IActionResult Create()
         {
-            ViewData["CityList"] = new SelectList(_context.Cities, "Id", "Title");
             return View();
         }
 
-        // POST: University/Create
+        // POST: City/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,About,CityId")] University university)
+        public async Task<IActionResult> Create([Bind("Id,Title")] City city)
         {
             if (ModelState.IsValid)
             {
-                ViewData["CityList"] = new SelectList(_context.Cities, "Id", "Title");
-                _context.Add(university);
+                _context.Add(city);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(university);
+            return View(city);
         }
 
-        // GET: University/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: City/Edit/5
+        public async Task<IActionResult> Edit(short? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var university = await _context.Universities.FindAsync(id);
-            if (university == null)
+            var city = await _context.Cities.FindAsync(id);
+            if (city == null)
             {
                 return NotFound();
             }
-            ViewData["CityList"] = new SelectList(_context.Cities, "Id", "Title");
-            return View(university);
+            return View(city);
         }
 
-        // POST: University/Edit/5
+        // POST: City/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,About,CityId")] University university)
+        public async Task<IActionResult> Edit(short id, [Bind("Id,Title")] City city)
         {
-            if (id != university.Id)
+            if (id != city.Id)
             {
                 return NotFound();
             }
@@ -80,12 +76,12 @@ namespace ErkinStudy.Web.Controllers.Admin
             {
                 try
                 {
-                    _context.Update(university);
+                    _context.Update(city);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UniversityExists(university.Id))
+                    if (!CityExists(city.Id))
                     {
                         return NotFound();
                     }
@@ -96,41 +92,41 @@ namespace ErkinStudy.Web.Controllers.Admin
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(university);
+            return View(city);
         }
 
-        // GET: University/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: City/Delete/5
+        public async Task<IActionResult> Delete(short? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var university = await _context.Universities
+            var city = await _context.Cities
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (university == null)
+            if (city == null)
             {
                 return NotFound();
             }
 
-            return View(university);
+            return View(city);
         }
 
-        // POST: University/Delete/5
+        // POST: City/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(short id)
         {
-            var university = await _context.Universities.FindAsync(id);
-            _context.Universities.Remove(university);
+            var city = await _context.Cities.FindAsync(id);
+            _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UniversityExists(int id)
+        private bool CityExists(short id)
         {
-            return _context.Universities.Any(e => e.Id == id);
+            return _context.Cities.Any(e => e.Id == id);
         }
     }
 }
