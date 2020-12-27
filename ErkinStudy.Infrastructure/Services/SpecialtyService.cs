@@ -26,6 +26,15 @@ namespace ErkinStudy.Infrastructure.Services
                 .Select(x => x.Subject).ToListAsync();
         }
 
+        public async Task<List<Subject>> GetAllSubjects()
+        {
+            return await _context.Subjects.ToListAsync();
+        }
+
+        public async Task<List<City>> GetCities()
+        {
+            return await _context.Cities.Include(x => x.Universities).ToListAsync();
+        }
         public async Task<List<Subject>> GetExcludedSubjects(int id)
         {
             var included = await GetSubjects(id);

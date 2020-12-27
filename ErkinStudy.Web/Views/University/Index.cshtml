@@ -16,7 +16,7 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.About)
+                @Html.DisplayNameFor(model => model.ShortTitle)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.City)
@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.Raw(item.About.Length > 100 ? $"{item.About.Substring(0, 100)}..." : item.About) 
+                @Html.Raw(item.ShortTitle)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.City.Title)
