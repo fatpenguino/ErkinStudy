@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Services;
 using ErkinStudy.Web.Models.UbtHub;
@@ -24,7 +25,14 @@ namespace ErkinStudy.Web.Controllers
 
         public async Task<JsonResult> GetSpecialties([FromBody] GetSpecialtiesViewModel model)
         {
-            var result = await _specialtyService.GetSpecialties(-1, -1);
+            short.TryParse(model.FirstSubject, out var first);
+            short.TryParse(model.SecondSubject, out var second);
+            var universities = new List<int>();
+            if (model.Universities.Count > 0)
+            {
+                universities = model.Universities.Select(int.Parse).ToList();
+            }
+            var result = await _specialtyService.GetSpecialties(first, second, universities);
             return Json(result.Select(x => new { x.Id, x.Title}) );
         }
     }

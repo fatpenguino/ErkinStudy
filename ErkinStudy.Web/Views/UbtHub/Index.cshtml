@@ -11,83 +11,92 @@
     </div>
     <div class="row">
         <aside class="col-sm-3">
-        <form>
-            <div class="card">
-                <article class="card-group-item">
-                    <header class="card-header">
-                        <h6 class="title">Таңдау пәні</h6>
-                    </header>
-                    <div class="filter-content">
-                        <div class="card-body">
-                            <div class="mb-3">Бірінші пән:
-                                <select class="form-select" id="firstSubject"  onchange="loadSpecialties()" asp-items="selectList">
-                                    <option value="">Тандалмаған</option>
-                                </select>
-                            </div>
-                            <div>
-                                Екінші пән:
-                                <select class="form-select" id="secondSubject" onchange="loadSpecialties()" asp-items="selectList">
-                                    <option value="">Тандалмаған</option>
-                                </select>
-                            </div>
-                        </div> <!-- card-body.// -->
-                    </div>
-                </article> <!-- card-group-item.// -->
-
-                <article class="card-group-item">
-                    <header class="card-header">
-                        <h6 class="title">Университеттер </h6>
-                    </header>
-                    <div class="filter-content">
-                        <div class="card-body">
-                            <ul class="list-group">
-                                @foreach (var city in cities)
-                                {
-                                    <li class="list-group-item">
-                                        <div data-toggle="collapse" data-target="#city_@city.Id">@city.Title</div>
-                                        <div id="city_@city.Id" class="collapse">
-                                            @foreach (var university in city.Universities)
-                                            {
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                                    <label class="form-check-label" for="exampleCheck1">@university.ShortTitle</label>
-                                                </div>
-                                            }
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
+            <form>
+                <div class="card">
+                    <article class="card-group-item">
+                        <header class="card-header">
+                            <h6 class="title">Таңдау пәні</h6>
+                        </header>
+                        <div class="filter-content">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    Бірінші пән:
+                                    <select class="form-select" id="firstSubject" onchange="loadSpecialties('true')" asp-items="selectList">
+                                        <option value="">Тандалмаған</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    Екінші пән:
+                                    <select class="form-select" id="secondSubject" onchange="loadSpecialties('true')" asp-items="selectList">
+                                        <option value="">Тандалмаған</option>
+                                    </select>
+                                </div>
+                            </div> <!-- card-body.// -->
                         </div>
-                    </div>
-                </article>
-            </div>
-        </form>
+                    </article> <!-- card-group-item.// -->
+
+                    <article class="card-group-item">
+                        <header class="card-header">
+                            <h6 class="title">Университеттер </h6>
+                        </header>
+                        <div class="filter-content">
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    @foreach (var city in cities)
+                                    {
+                                        <li class="list-group-item">
+                                            <div data-toggle="collapse"  data-target="#city_@city.Id">@city.Title</div>
+                                            <div id="city_@city.Id" class="collapse show">
+                                                @foreach (var university in city.Universities)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="checkbox" value="@university.Id" name="university" class="form-check-input" id="univer_@university.Id">
+                                                        <label class="form-check-label" for="univer_@university.Id">@university.ShortTitle</label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </form>
         </aside>
         <div class="col-md-8">
             <div class="list-group" id="specialties" onload="loadSpecialties()">
-                @*@foreach (var item in  Model)
-                {
-                    <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">@item.Title</h5>
-                        </div>
-                    </a>
-                }*@
+                <!--FILLED BY JS-->
+            </div>
+            <div style="display: none;" id="notFound">
+                Сіз таңдаған параметрлер бойынша мамандықтар табылмады
             </div>
         </div>
     </div>
 </div>
+<div class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+        <div class="loader">Loading...</div>
+    </div>
+</div>
 <script>
     const specialtiesBody = document.querySelector("#specialties");
-
-    function loadSpecialties() {
-
+    
+    function loadSpecialties(showModal) {
+        if (showModal === 'true') {
+            $(".modal").modal("show");
+        }
         let firstSubject = $('#firstSubject option:selected').val();
         let secondSubject = $('#secondSubject option:selected').val();
-        debugger;
+        var universities = [];
+        $("input:checkbox[name=university]:checked").each(function () {
+            universities.push($(this).val());
+        });
+
         let formData = JSON.stringify({
             'firstSubject': firstSubject,
-            'secondSubject': secondSubject
+            'secondSubject': secondSubject,
+            'universities': universities
         });
 
         $.ajax({
@@ -97,28 +106,40 @@
             data: formData,
             dataType: "json",
 
-            success: function(result) {
+            success: function (result) {
                 populateSpecialties(result);
+                $(".modal").modal("hide");
             },
-            error: function() {
+            error: function () {
+                $(".modal").modal("hide");
             }
         });
     };
 
     function populateSpecialties(json) {
-        
-        json.forEach((row) => {
-            const a = document.createElement("a");
-            const div = document.createElement("div");
-            const h5 = document.createElement("h5");
-            a.className = "list-group-item list-group-item-action";
-            div.className = "d-flex w-100 justify-content-between";
-            h5.className = "mb-1";
-            h5.textContent = row["title"];
-            div.appendChild(h5);
-            a.appendChild(div);
-            specialtiesBody.appendChild(a);
-        });
+        $("#specialties a").remove();
+        if (jQuery.isEmptyObject(json)) {
+            $("#notFound").show();
+        }
+        else
+        {
+            $("#notFound").hide();
+            json.forEach((row) => {
+                const a = document.createElement("a");
+                const div = document.createElement("div");
+                const h5 = document.createElement("h5");
+                a.className = "list-group-item list-group-item-action";
+                div.className = "d-flex w-100 justify-content-between";
+                h5.className = "mb-1";
+                h5.textContent = row["title"];
+                div.appendChild(h5);
+                a.appendChild(div);
+                specialtiesBody.appendChild(a);
+            }); 
+        }
     };
-    document.addEventListener("DOMContentLoaded", () => { loadSpecialties(); });
+    $("input:checkbox[name=university]").on('change', function () {
+        loadSpecialties('true');
+    });
+    document.addEventListener("DOMContentLoaded", () => { loadSpecialties('true'); });
 </script>

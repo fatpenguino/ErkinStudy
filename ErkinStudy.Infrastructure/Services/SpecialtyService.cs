@@ -16,17 +16,23 @@ namespace ErkinStudy.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<List<Specialty>> GetSpecialties(short firstSubject = -1, short secondSubject = -1)
+        public async Task<List<Specialty>> GetSpecialties(short firstSubject, short secondSubject, List<int> universities)
         {
-            var result =  await _context.Specialties.Include(x => x.SpecialtySubjects).ThenInclude(x => x.Subject).ToListAsync();
-            if (firstSubject != -1)
+            var result =  await _context.Specialties.Include(x => x.SpecialtySubjects).ThenInclude(x => x.Subject).Include(x => x.UniversitySpecialties).ToListAsync();
+            if (firstSubject != 0)
             {
                 result = result.Where(x => x.SpecialtySubjects.Any(s => s.SubjectId == firstSubject)).ToList();
             }
-            if (secondSubject != -1)
+            if (secondSubject != 0)
             {
                 result = result.Where(x => x.SpecialtySubjects.Any(s => s.SubjectId == secondSubject)).ToList();
             }
+
+            if (universities.Count > 0)
+            {
+                result = result.Where(x => x.UniversitySpecialties.Any(u => universities.Contains(u.UniversityId))).ToList();
+            }
+
             return result;
         }
         public async Task<List<Subject>> GetSubjects(int id)
