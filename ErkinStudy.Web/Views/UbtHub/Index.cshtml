@@ -1,5 +1,4 @@
 ﻿@using ErkinStudy.Infrastructure.Services
-@model IEnumerable<ErkinStudy.Domain.Entities.UbtHub.Specialty>
 @inject SpecialtyService SpecialtyService
 @{
     ViewData["Title"] = "Мамандықтар";
@@ -21,13 +20,13 @@
                     <div class="filter-content">
                         <div class="card-body">
                             <div class="mb-3">Бірінші пән:
-                                <select class="form-select" name="firstSubject" asp-items="selectList">
+                                <select class="form-select" id="firstSubject"  onchange="loadSpecialties()" asp-items="selectList">
                                     <option value="">Тандалмаған</option>
                                 </select>
                             </div>
                             <div>
                                 Екінші пән:
-                                <select class="form-select" name="secondSubject" asp-items="selectList">
+                                <select class="form-select" id="secondSubject" onchange="loadSpecialties()" asp-items="selectList">
                                     <option value="">Тандалмаған</option>
                                 </select>
                             </div>
@@ -65,16 +64,61 @@
         </form>
         </aside>
         <div class="col-md-8">
-            <div class="list-group">
-                @foreach (var item in  Model)
+            <div class="list-group" id="specialties" onload="loadSpecialties()">
+                @*@foreach (var item in  Model)
                 {
                     <a href="#" class="list-group-item list-group-item-action" aria-current="true">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">@item.Title</h5>
                         </div>
                     </a>
-                }
+                }*@
             </div>
         </div>
     </div>
 </div>
+<script>
+    const specialtiesBody = document.querySelector("#specialties");
+
+    function loadSpecialties() {
+
+        let firstSubject = $('#firstSubject option:selected').val();
+        let secondSubject = $('#secondSubject option:selected').val();
+        debugger;
+        let formData = JSON.stringify({
+            'firstSubject': firstSubject,
+            'secondSubject': secondSubject
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/UbtHub/GetSpecialties",
+            contentType: "application/json; charset=utf-8",
+            data: formData,
+            dataType: "json",
+
+            success: function(result) {
+                populateSpecialties(result);
+            },
+            error: function() {
+            }
+        });
+    };
+
+    function populateSpecialties(json) {
+        
+        json.forEach((row) => {
+            const a = document.createElement("a");
+            const div = document.createElement("div");
+            const h5 = document.createElement("h5");
+            a.className = "list-group-item list-group-item-action";
+            div.className = "d-flex w-100 justify-content-between";
+            h5.className = "mb-1";
+            h5.textContent = row["title"];
+            div.appendChild(h5);
+            a.appendChild(div);
+            specialtiesBody.appendChild(a);
+        });
+    };
+    document.addEventListener("DOMContentLoaded", () => { loadSpecialties(); });
+</script>

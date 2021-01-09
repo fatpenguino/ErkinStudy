@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using ErkinStudy.Infrastructure.Services;
+using ErkinStudy.Web.Models.UbtHub;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -15,9 +17,15 @@ namespace ErkinStudy.Web.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public  IActionResult Index()
         {
-            return View(await _specialtyService.GetAll());
+            return View();
+        }
+
+        public async Task<JsonResult> GetSpecialties([FromBody] GetSpecialtiesViewModel model)
+        {
+            var result = await _specialtyService.GetSpecialties(-1, -1);
+            return Json(result.Select(x => new { x.Id, x.Title}) );
         }
     }
 }
