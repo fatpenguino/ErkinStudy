@@ -15,7 +15,12 @@ namespace ErkinStudy.Infrastructure.Services
         {
             _context = context;
         }
-
+        
+        public Task<Specialty> GetSpecialty(short id)
+        {
+            return _context.Specialties.Include(x => x.SpecialtySubjects).ThenInclude(x => x.Subject).Include(x => x.UniversitySpecialties)
+                .ThenInclude(u => u.University).FirstOrDefaultAsync(x => x.Id == id);
+        }
         public async Task<List<Specialty>> GetSpecialties(short firstSubject, short secondSubject, List<int> universities)
         {
             var result =  await _context.Specialties.Include(x => x.SpecialtySubjects).ThenInclude(x => x.Subject).Include(x => x.UniversitySpecialties).ToListAsync();

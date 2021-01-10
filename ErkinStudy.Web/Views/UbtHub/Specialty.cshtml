@@ -1,0 +1,44 @@
+﻿@model ErkinStudy.Domain.Entities.UbtHub.Specialty
+
+@{
+    ViewData["Title"] = "Specialty";
+}
+<div class="container mt-3">
+    <div class="row">
+        <div class="mx-auto text-center mt-3">
+            <h4>@Model.Title</h4>
+        </div>
+        <div>
+            <hr/>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Атауы:
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <dt class="col-sm-2">
+                    Мамандық туралы:
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.About)
+                </dd>
+                <dt class="col-sm-2">
+                    Орташа түcу балы:
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+                <dt class="col-sm-2">
+                    Университеттер:
+                </dt>
+            </dl>  
+            <ul class="list-group col-6">
+                @foreach (var item in Model.UniversitySpecialties)
+                {
+                <li class="list-group-item">(@item.University.ShortTitle) - @item.University.Title</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

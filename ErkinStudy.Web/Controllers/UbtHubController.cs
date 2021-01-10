@@ -35,5 +35,10 @@ namespace ErkinStudy.Web.Controllers
             var result = await _specialtyService.GetSpecialties(first, second, universities);
             return Json(result.Select(x => new { x.Id, x.Title}) );
         }
+        public async Task<IActionResult> Specialty(short id)
+        {
+            var specialty = await _specialtyService.GetSpecialty(id);
+            return View(specialty);
+        }
     }
 }
