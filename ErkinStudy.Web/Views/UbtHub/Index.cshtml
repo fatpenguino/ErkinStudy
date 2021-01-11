@@ -10,14 +10,14 @@
         <h4>Мамандықтар</h4>
     </div>
     <div class="row">
-        <aside class="col-sm-3">
+        <aside class="col-sm-3 mb-2">
             <form>
                 <div class="card">
                     <article class="card-group-item">
-                        <header class="card-header">
+                        <div data-toggle="collapse"  data-target="#subjects" class="card-header">
                             <h6 class="title">Таңдау пәні</h6>
-                        </header>
-                        <div class="filter-content">
+                        </div>
+                        <div class="filter-content collapse" id="subjects">
                             <div class="card-body">
                                 <div class="mb-3">
                                     Бірінші пән:
@@ -27,7 +27,7 @@
                                 </div>
                                 <div>
                                     Екінші пән:
-                                    <select class="form-select" id="secondSubject" onchange="loadSpecialties('true')" asp-items="selectList">
+                                    <select class="form-select" id="secondSubject" onchange="loadSpecialtie1s('true')" asp-items="selectList">
                                         <option value="">Тандалмаған</option>
                                     </select>
                                 </div>
@@ -36,17 +36,17 @@
                     </article> <!-- card-group-item.// -->
 
                     <article class="card-group-item">
-                        <header class="card-header">
+                        <div class="card-header" data-toggle="collapse" data-target="#cities">
                             <h6 class="title">Университеттер </h6>
-                        </header>
-                        <div class="filter-content">
+                        </div>
+                        <div class="filter-content collapse" id="cities">
                             <div class="card-body">
-                                <ul class="list-group">
+                                <ul class="list-unstyled">
                                     @foreach (var city in cities)
                                     {
-                                        <li class="list-group-item">
-                                            <div data-toggle="collapse"  data-target="#city_@city.Id">@city.Title</div>
-                                            <div id="city_@city.Id" class="collapse show">
+                                        <li class="mb-1">
+                                            <div data-toggle="collapse"  data-target="#city_@city.Id"><h6> @city.Title</h6></div>
+                                            <div id="city_@city.Id" class="collapse cities">
                                                 @foreach (var university in city.Universities)
                                                 {
                                                     <div class="form-check">
@@ -81,6 +81,11 @@
 </div>
 <script>
     const specialtiesBody = document.querySelector("#specialties");
+    if ($(window).width() > 1024) {
+        $("#subjects").addClass("show");
+        $("#cities").addClass("show");
+    }
+
     
     function loadSpecialties(showModal) {
         if (showModal === 'true') {
