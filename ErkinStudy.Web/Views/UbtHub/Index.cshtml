@@ -1,0 +1,151 @@
+﻿@using ErkinStudy.Infrastructure.Services
+@inject SpecialtyService SpecialtyService
+@{
+    ViewData["Title"] = "Мамандықтар";
+    var selectList = new SelectList(await SpecialtyService.GetAllSubjects(), "Id", "Title");
+    var cities = await SpecialtyService.GetCities();
+}
+<div class="container mt-3">
+    <div class="mx-auto text-center mt-3 mb-3">
+        <h4>Мамандықтар</h4>
+    </div>
+    <div class="row">
+        <aside class="col-sm-3 mb-2">
+            <form>
+                <div class="card">
+                    <article class="card-group-item">
+                        <div data-toggle="collapse"  data-target="#subjects" class="card-header">
+                            <h6 class="title">Таңдау пәні</h6>
+                        </div>
+                        <div class="filter-content collapse" id="subjects">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    Бірінші пән:
+                                    <select class="form-select" id="firstSubject" onchange="loadSpecialties('true')" asp-items="selectList">
+                                        <option value="">Тандалмаған</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    Екінші пән:
+                                    <select class="form-select" id="secondSubject" onchange="loadSpecialtie1s('true')" asp-items="selectList">
+                                        <option value="">Тандалмаған</option>
+                                    </select>
+                                </div>
+                            </div> <!-- card-body.// -->
+                        </div>
+                    </article> <!-- card-group-item.// -->
+
+                    <article class="card-group-item">
+                        <div class="card-header" data-toggle="collapse" data-target="#cities">
+                            <h6 class="title">Университеттер </h6>
+                        </div>
+                        <div class="filter-content collapse" id="cities">
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    @foreach (var city in cities)
+                                    {
+                                        <li class="mb-1">
+                                            <div data-toggle="collapse"  data-target="#city_@city.Id"><h6> @city.Title</h6></div>
+                                            <div id="city_@city.Id" class="collapse cities">
+                                                @foreach (var university in city.Universities)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="checkbox" value="@university.Id" name="university" class="form-check-input" id="univer_@university.Id">
+                                                        <label class="form-check-label" for="univer_@university.Id">@university.ShortTitle</label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </form>
+        </aside>
+        <div class="col-md-8">
+            <div class="list-group" id="specialties" onload="loadSpecialties()">
+                <!--FILLED BY JS-->
+            </div>
+            <div style="display: none;" id="notFound">
+                Сіз таңдаған параметрлер бойынша мамандықтар табылмады
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+        <div class="loader">Loading...</div>
+    </div>
+</div>
+<script>
+    const specialtiesBody = document.querySelector("#specialties");
+    if ($(window).width() > 1024) {
+        $("#subjects").addClass("show");
+        $("#cities").addClass("show");
+    }
+
+    
+    function loadSpecialties(showModal) {
+        if (showModal === 'true') {
+            $(".modal").modal("show");
+        }
+        let firstSubject = $('#firstSubject option:selected').val();
+        let secondSubject = $('#secondSubject option:selected').val();
+        var universities = [];
+        $("input:checkbox[name=university]:checked").each(function () {
+            universities.push($(this).val());
+        });
+
+        let formData = JSON.stringify({
+            'firstSubject': firstSubject,
+            'secondSubject': secondSubject,
+            'universities': universities
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/UbtHub/GetSpecialties",
+            contentType: "application/json; charset=utf-8",
+            data: formData,
+            dataType: "json",
+
+            success: function (result) {
+                populateSpecialties(result);
+                $(".modal").modal("hide");
+            },
+            error: function () {
+                $(".modal").modal("hide");
+            }
+        });
+    };
+
+    function populateSpecialties(json) {
+        $("#specialties a").remove();
+        if (jQuery.isEmptyObject(json)) {
+            $("#notFound").show();
+        }
+        else
+        {
+            $("#notFound").hide();
+            json.forEach((row) => {
+                const a = document.createElement("a");
+                const div = document.createElement("div");
+                const h5 = document.createElement("h5");
+                a.className = "list-group-item list-group-item-action";
+                a.href = "UbtHub/Specialty/" + row["id"];
+                div.className = "d-flex w-100 justify-content-between";
+                h5.className = "mb-1";
+                h5.textContent = row["title"];
+                div.appendChild(h5);
+                a.appendChild(div);
+                specialtiesBody.appendChild(a);
+            }); 
+        }
+    };
+    $("input:checkbox[name=university]").on('change', function () {
+        loadSpecialties('true');
+    });
+    document.addEventListener("DOMContentLoaded", () => { loadSpecialties('true'); });
+</script>

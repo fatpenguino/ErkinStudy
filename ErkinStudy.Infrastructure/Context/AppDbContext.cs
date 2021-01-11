@@ -3,6 +3,7 @@ using ErkinStudy.Domain.Entities.Lessons;
 using ErkinStudy.Domain.Entities.OnlineCourses;
 using ErkinStudy.Domain.Entities.Payment;
 using ErkinStudy.Domain.Entities.Quizzes;
+using ErkinStudy.Domain.Entities.UbtHub;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,12 @@ namespace ErkinStudy.Infrastructure.Context
         public DbSet<Payment> Payments { get; set; }
         public DbSet<OrderOperation> OrderOperations { get; set; }
         public DbSet<UserAnswer> UserAnswers { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Specialty> Specialties { get; set; }
+        public DbSet<University> Universities { get; set; }
+        public DbSet<SpecialtySubject> SpecialtySubjects { get; set; }
+        public DbSet<UniversitySpecialty> UniversitySpecialties { get; set; }
+        public DbSet<City> Cities { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 	        modelBuilder.Entity<UserFolder>(entity =>
@@ -41,10 +48,30 @@ namespace ErkinStudy.Infrastructure.Context
 			        .WithMany(x => x.UserFolders)
 			        .HasForeignKey(x => x.UserId);
 	        });
-            modelBuilder.Entity<ApplicationUser>(entity => { entity.ToTable(name: "Users"); });
-	        modelBuilder.Entity<ApplicationRole>(entity => { entity.ToTable(name: "Roles"); });
+
+            modelBuilder.Entity<SpecialtySubject>(entity =>
+            {
+                entity.HasKey(x => new { x.SpecialtyId, x.SubjectId });
+                entity.HasOne(x => x.Specialty)
+                    .WithMany(x => x.SpecialtySubjects)
+                    .HasForeignKey(x => x.SpecialtyId);
+                entity.HasOne(x => x.Subject)
+                    .WithMany(x => x.SpecialtySubjects)
+                    .HasForeignKey(x => x.SubjectId);
+            });
+
+            modelBuilder.Entity<UniversitySpecialty>(entity =>
+            {
+                entity.HasKey(x => new { x.UniversityId, x.SpecialtyId });
+                entity.HasOne(x => x.University)
+                    .WithMany(x => x.UniversitySpecialties)
+                    .HasForeignKey(x => x.UniversityId);
+                entity.HasOne(x => x.Specialty)
+                    .WithMany(x => x.UniversitySpecialties)
+                    .HasForeignKey(x => x.SpecialtyId);
+            });
+
             base.OnModelCreating(modelBuilder);
         }
     }
-
 }

@@ -4,14 +4,16 @@ using ErkinStudy.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ErkinStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201212212620_UbtHubInit")]
+    partial class UbtHubInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -583,21 +585,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.ToTable("UserAnswers");
                 });
 
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.UbtHub.City", b =>
-                {
-                    b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cities");
-                });
-
             modelBuilder.Entity("ErkinStudy.Domain.Entities.UbtHub.Specialty", b =>
                 {
                     b.Property<int>("Id")
@@ -662,18 +649,10 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.Property<string>("About")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("CityId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("ShortTitle")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CityId");
 
                     b.ToTable("Universities");
                 });
@@ -943,15 +922,6 @@ namespace ErkinStudy.Infrastructure.Migrations
                     b.HasOne("ErkinStudy.Domain.Entities.UbtHub.Subject", "Subject")
                         .WithMany("SpecialtySubjects")
                         .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ErkinStudy.Domain.Entities.UbtHub.University", b =>
-                {
-                    b.HasOne("ErkinStudy.Domain.Entities.UbtHub.City", "City")
-                        .WithMany("Universities")
-                        .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

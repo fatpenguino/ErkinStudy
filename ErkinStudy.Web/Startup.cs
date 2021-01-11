@@ -35,6 +35,7 @@ namespace ErkinStudy.Web
             services.AddScoped<FolderService>();
             services.AddScoped<CourseService>();
             services.AddScoped<QuizService>();
+            services.AddScoped<SpecialtyService>();
             services.AddScoped<LessonService>();
             services.AddScoped<WooppayPaymentService>();
             services.AddScoped<OrderService>();
