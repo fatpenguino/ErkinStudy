@@ -42,8 +42,10 @@ namespace ErkinStudy.Web.Controllers
         public async Task<ActionResult> DownloadHomework(long id)
         {
             var homework = await _context.Homeworks.FirstOrDefaultAsync(x => x.Id == id);
-            byte[] fileBytes = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + homework.Path);
+            if (homework == null) return RedirectToAction("Index");
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(_appEnvironment.WebRootPath + homework.Path);
             return File(fileBytes, "application/force-download", homework.Name);
+
         }
     }
 }
