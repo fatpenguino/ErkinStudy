@@ -19,17 +19,17 @@ namespace ErkinStudy.Web.Controllers
         private readonly AppDbContext _dbContext;
         private readonly EmailService _emailService;
         private readonly FolderService _folderService;
-        private readonly QuizService _quizService;
         private readonly CourseService _courseService;
+        private readonly QuizService _quizService;
 
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, FolderService folderService, QuizService quizService)
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, FolderService folderService, CourseService courseService, QuizService quizService)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
-            _courseService = courseService;
             _folderService = folderService;
+            _courseService = courseService;
             _quizService = quizService;
         }
         public IActionResult Index()
@@ -68,10 +68,10 @@ namespace ErkinStudy.Web.Controllers
             var courses = await _courseService.GetByFolderId(id);
             var quizzes = await _quizService.GetByFolderId(id);
             if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
-               return RedirectToAction("Index", "Course",new { id = courses.First().Id});
+                return RedirectToAction("Index", "Course", new { id = courses.First().Id });
             if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
                 return quizzes.First().Type == QuizType.MultipleChoice
-                    ? RedirectToAction("Quiz", "TakeQuiz", new {id = quizzes.First().Id})
+                    ? RedirectToAction("Quiz", "TakeQuiz", new { id = quizzes.First().Id })
                     : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
             return View(folder);
         }

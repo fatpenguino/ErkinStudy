@@ -42,20 +42,9 @@ namespace ErkinStudy.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users(int count = 50)
         {
-            ViewData["UserCount"] = _dbContext.Users.Count();
-            var users = count == -1 ? await _userManager.Users.OrderByDescending(x => x.Id).ToListAsync() : await _userManager.Users.OrderByDescending(x => x.Id).Take(count).ToListAsync();
-            var model = new List<UserViewModel>();
-            foreach (var user in users)
-            {
-                var item = new UserViewModel
-                {
-                    PhoneNumber = user.PhoneNumber,
-                    Email = user.Email,
-                    Id = user.Id,
-                    UserName = user.UserName
-                };
-                model.Add(item);
-            }
+            ViewData["UserCount"] = await _dbContext.Users.CountAsync();
+            var users = count == -1 ? _userManager.Users.OrderByDescending(x => x.Id).AsEnumerable() : _userManager.Users.OrderByDescending(x => x.Id).Take(count).AsEnumerable();
+            var model =  users.Select(user => new UserViewModel {PhoneNumber = user.PhoneNumber, Email = user.Email, Id = user.Id, UserName = user.UserName}).ToList();
             return View(model);
         }
 
