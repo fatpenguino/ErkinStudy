@@ -11,6 +11,7 @@ namespace ErkinStudy.Domain.Entities.OnlineCourses
         public string Description { get; set; }
         public int Order { get; set; }
         public string StreamUrl { get; set; }
+        public DateTime StartDate { get; set; }
         public virtual OnlineCourse OnlineCourse { get; set; }
         public virtual ICollection<Homework> Homeworks { get; set; }
 
