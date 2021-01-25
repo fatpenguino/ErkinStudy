@@ -2,6 +2,7 @@
 @using ErkinStudy.Infrastructure.Helpers
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
+@using System.Globalization
 @inject UserService UserService
 @inject UserManager<ApplicationUser> UserManager
 @model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
@@ -12,6 +13,19 @@
     <div class="row">
         <div class="mx-auto mb-2 text-center">
             <h3 class="schedule-title">Курс бағдарламасы:</h3>
+            @if (nearestWeek != null)
+            {
+                <div class="nextweek">
+                    Келесі сабақ: @nearestWeek.Name
+                    <br>
+                    <ul class="countdownWeek">
+                        <li><span id="days"></span>күн</li>
+                        <li><span id="hours"></span>сағат</li>
+                        <li><span id="minutes"></span>минут</li>
+                        <li><span id="seconds"></span>секунд</li>
+                    </ul>
+                </div>
+            }
         </div>
         <div class="accordion" id="accordionCourse">
             @foreach (var week in Model.OnlineCourseWeeks.OrderBy(x => x.Order))
@@ -19,14 +33,14 @@
                 <div class="card">
                     <div class="card-header" id="heading_@week.Id">
                         <div class="mb-0">
-                            @if (week == nearestWeek)
+                            @*@if (week == nearestWeek)
                             {
                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
                                     @week.Name
                                 </button>
                                 <div class="btn float-right">@week.StartDate.ToString("dd.MM.yyyy")</div>
-                            }
-                            else if (week.StartDate < TimeZoneHelper.GetLocalDateTime())
+                            }*@
+                            @if (week.StartDate < TimeZoneHelper.GetLocalDateTime())
                             {
                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
                                     @week.Name
@@ -70,3 +84,19 @@
         </div>
     </div>
 </div>
+ <script>
+    const second = 1000,
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24;
+    let countDownWeek = new Date('@nearestWeek?.StartDate.ToString(CultureInfo.InvariantCulture)').getTime(),
+        x = setInterval(function() {
+                let now = new Date().getTime(),
+                    distance = countDownWeek - now;
+                document.getElementById('days').innerText = Math.floor(distance / (day)),
+                    document.getElementById('hours').innerText = Math.floor((distance % (day)) / (hour)),
+                    document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
+                    document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
+            },
+            second);
+ </script>

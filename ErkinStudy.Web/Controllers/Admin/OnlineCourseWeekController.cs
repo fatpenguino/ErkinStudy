@@ -34,25 +34,6 @@ namespace ErkinStudy.Web.Controllers.Admin
                 : View(_context.OnlineCourseWeeks.Include(x => x.OnlineCourse).AsQueryable());
         }
 
-        // GET: OnlineCourseWeek/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var onlineCourseWeek = await _context.OnlineCourseWeeks
-                .Include(o => o.OnlineCourse)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (onlineCourseWeek == null)
-            {
-                return NotFound();
-            }
-
-            return View(onlineCourseWeek);
-        }
-
         // GET: OnlineCourseWeek/Create
         public IActionResult Create(long onlineCourseId)
         {
