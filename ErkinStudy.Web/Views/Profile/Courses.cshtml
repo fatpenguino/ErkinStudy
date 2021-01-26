@@ -1,7 +1,9 @@
 ﻿@using ErkinStudy.Infrastructure.Services
 @model IEnumerable<ErkinStudy.Domain.Entities.Lessons.Folder>
 @inject FolderService FolderService
-
+@{
+    ViewData["Title"] = "Менің сабақтарым";
+}
 <div class="container">
     <section class="jumbotron text-center p-3 mb-0">
         <div class="container">
