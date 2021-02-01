@@ -75,6 +75,24 @@ namespace ErkinStudy.Web.Controllers
                     : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
             return View(folder);
         }
+
+        public async Task<IActionResult> Folder2(long id)
+        {
+            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+            if (folder == null)
+            {
+                _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
+                return RedirectToAction("Index");
+            }
+
+            var model = new FolderViewModel {Id = folder.Id, Price = folder.Price, Title = folder.Name, IsQuizGroup = folder.IsQuizGroup};
+
+            var childs = _folderService.GetChildsEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Price = x.Price, Title = x.Name, Color = x.Color, Type = FolderItemType.Folder});
+            var courses = _folderService.GetCoursesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Price = x.Price, Title = x.Name, Color = x.Color, Type = FolderItemType.Course });
+            var quizzes = _folderService.GetQuizzesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Title = x.Title, Color =x.Color, Type  = FolderItemType.Quiz });
+            model.Items = childs.Union(courses).Union(quizzes);
+            return View(model);
+        }
         public async Task<IActionResult> Tests()
         {
             var tests = await _dbContext.Quizzes.Where(x => x.IsActive).OrderBy(x => x.Order).ThenBy(x => x.Title).ToListAsync();
