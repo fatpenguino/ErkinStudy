@@ -58,7 +58,7 @@ namespace ErkinStudy.Web.Controllers
         }
         public async Task<IActionResult> Folder(long id)
         {
-            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
             if (folder == null)
             {
                 _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
