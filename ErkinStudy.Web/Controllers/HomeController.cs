@@ -8,6 +8,7 @@ using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -139,6 +140,29 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [Authorize]
+        public IActionResult FeedBack()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> FeedBack(string subject, string message, string anonymous)
+        {
+            try
+            {
+                message = anonymous == "on"
+                    ? $"Кері байланыс: Аноним, Message: {message}"
+                    : $"Кері байланыс: Email - {User.Identity.Name}, Message: {message}";
+                await _emailService.SendEmailAsync(subject, message, "report@erkinstudy.kz");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка во время отправки из формы контактов, {e}");
+            }
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Offer()
         {
             return View();
