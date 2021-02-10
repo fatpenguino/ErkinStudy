@@ -71,7 +71,7 @@
                                         <div class="homework-items">
                                             @foreach (var homework in week.Homeworks)
                                             {
-                                                <a class="btn btn-outline-success" asp-controller="Course" asp-action="DownloadHomework" asp-route-id="@homework.Id">@homework.Name</a>
+                                                <a class="btn btn-outline-success" asp-controller="Course" asp-action="DownloadHomework" asp-route-path="@homework.Path" asp-route-courseId="@Model.Id">@homework.Name</a>
                                             }
                                         </div>
                                     </div>

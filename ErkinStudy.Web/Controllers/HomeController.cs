@@ -51,12 +51,6 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction("Index","Landing");
         }
-        public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
-        {
-            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).ThenInclude(x => x.Homeworks)
-                .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
-            return View(onlineCourse);
-        }
         public async Task<IActionResult> Folder(long id)
         {
             var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
