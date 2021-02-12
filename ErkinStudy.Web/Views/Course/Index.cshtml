@@ -3,6 +3,7 @@
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
 @using System.Globalization
+@using ErkinStudy.Domain.Entities.OnlineCourses
 @inject UserService UserService
 @inject UserManager<ApplicationUser> UserManager
 @model ErkinStudy.Domain.Entities.OnlineCourses.OnlineCourse
@@ -33,13 +34,6 @@
                 <div class="card">
                     <div class="card-header" id="heading_@week.Id">
                         <div class="mb-0">
-                            @*@if (week == nearestWeek)
-                            {
-                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
-                                    @week.Name
-                                </button>
-                                <div class="btn float-right">@week.StartDate.ToString("dd.MM.yyyy")</div>
-                            }*@
                             @if (week.StartDate < TimeZoneHelper.GetLocalDateTime())
                             {
                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_@week.Id" aria-controls="collapse_@week.Id">
@@ -71,7 +65,7 @@
                                         <div class="homework-items">
                                             @foreach (var homework in week.Homeworks)
                                             {
-                                                <a class="btn btn-outline-success" asp-controller="Course" asp-action="DownloadHomework" asp-route-path="@homework.Path" asp-route-courseId="@Model.Id">@homework.Name</a>
+                                                <a class="btn btn-outline-success" asp-controller="Course" asp-action="DownloadHomework" asp-route-filename="@homework.Name" asp-route-path="@homework.Path" asp-route-courseId="@Model.Id">@homework.Name</a>
                                             }
                                         </div>
                                     </div>

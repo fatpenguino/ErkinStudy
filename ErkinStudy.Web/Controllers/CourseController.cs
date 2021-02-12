@@ -43,9 +43,8 @@ namespace ErkinStudy.Web.Controllers
             return RedirectToAction("Index","Home");
         }
 
-        public async Task<ActionResult> DownloadHomework(string path, long courseId)
+        public async Task<ActionResult> DownloadHomework(string path, string filename, long courseId)
         {
-           
             if (!System.IO.File.Exists(_appEnvironment.WebRootPath + path))
             {
                 _logger.LogError($"Не нашли файл {path}, для курса {courseId}");
@@ -54,7 +53,7 @@ namespace ErkinStudy.Web.Controllers
             }
             var fileBytes = await System.IO.File.ReadAllBytesAsync(_appEnvironment.WebRootPath + path);
             //хитрим чтобы лишнию дату тюда сюда не гонять, переделать надо 
-            return File(fileBytes, "application/force-download", path.Replace("/Homeworks/",string.Empty));
+            return File(fileBytes, "application/force-download", filename);
         }
     }
 }

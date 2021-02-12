@@ -139,19 +139,19 @@ namespace ErkinStudy.Web.Controllers.Admin
                 try
                 {
                     // путь к папке Homeworks
-                    string path = "/Homeworks/" + uploadedHomework.FileName;
+                    string path = "/Homeworks/" + $"{onlineCourseWeekId}week{uploadedHomework.FileName}";
                     // сохраняем файл в папку Homeworks в каталоге wwwroot
                     await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                     {
                         await uploadedHomework.CopyToAsync(fileStream);
                     }
                     var homework = new Homework() { Name = uploadedHomework.FileName, Path = path, OnlineCourseWeekId = onlineCourseWeekId, UploadTime = DateTime.UtcNow };
-                    _context.Homeworks.Add(homework);
+                    await _context.Homeworks.AddAsync(homework);
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Ошибка при загрузке файла homework- {e}");
+                    _logger.LogError($"Ошибка при загрузке файла homework - {e}");
                 }
             }
             return RedirectToAction("Homeworks", new { id = onlineCourseWeekId });
