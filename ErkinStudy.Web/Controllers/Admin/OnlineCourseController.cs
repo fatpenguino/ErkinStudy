@@ -159,21 +159,20 @@ namespace ErkinStudy.Web.Controllers.Admin
             return _context.OnlineCourses.Any(e => e.Id == id);
         }
 
-        public IActionResult Test()
-        {
-            var folders = _context.Folders.Where(x => x.Name.ToLower().Replace(" ", "") == "курссабақтары").ToList();
-            foreach (var folder in folders)
-            {
-                var course = _context.OnlineCourses.FirstOrDefault(x => x.FolderId == folder.Id);
-                if (course == null) continue;
-                var userFolders = _context.UserFolders.Where(x => x.FolderId == folder.Id).ToList();
-                course.FolderId = folder.ParentId;
-                folder.IsActive = false;
-                _context.Update(course);
-            }
+        //public IActionResult Test()
+        //{
+        //    var folders = _context.Folders.Where(x => x.Name.ToLower().Replace(" ", "") == "курссабақтары").ToList();
+        //    foreach (var folder in folders)
+        //    {
+        //        var course = _context.OnlineCourses.FirstOrDefault(x => x.FolderId == folder.Id);
+        //        if (course == null) continue;
+        //        course.FolderId = folder.ParentId;
+        //        folder.IsActive = false;
+        //        _context.Update(course);
+        //    }
 
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //    _context.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
     }
 }
