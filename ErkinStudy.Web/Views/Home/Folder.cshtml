@@ -3,78 +3,69 @@
 @using ErkinStudy.Domain.Enums
 @using ErkinStudy.Infrastructure.Services
 @using Microsoft.AspNetCore.Identity
-@model ErkinStudy.Domain.Entities.Lessons.Folder
+@model FolderViewModel
 @inject FolderService FolderService
-@inject CourseService CourseService
-@inject QuizService QuizService
 @inject UserManager<ApplicationUser> UserManager
 @inject UserService UserService
 @{
-    ViewData["Title"] = Model.Name;
-    var childs = await FolderService.GetChilds(Model.Id);
-    var courses = await CourseService.GetByFolderId(Model.Id);
-    var quizzes = await QuizService.GetByFolderId(Model.Id);
+    ViewData["Title"] = Model.Title;
     var userId = User.Identity.IsAuthenticated ? long.Parse(UserManager.GetUserId(User)) : 0;
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="card-list mt-5">
-            @foreach (var folder in childs.OrderBy(x => x.Order).ThenBy(x => x.Name))
+            @foreach (var item in Model.Items.OrderBy(x => x.Order).ThenBy(x => x.Title))
             {
-                <div class="col-auto mb-3">
-                    <div class="card text-white" style="width: 18rem; background-color: @if(!string.IsNullOrWhiteSpace(folder.Color)){@folder.Color} else {@Html.Raw("#66a1d2")}">
-                        <div class="card-body text-center folder-button">
-                            @if (folder.Price == 0 || User.IsInRole("Admin") || FolderService.IsUserHasAccess(folder.Id, userId))
-                            {
-                                <a asp-action="Folder" asp-route-id="@folder.Id" class="card-link text-white folder-button">@folder.Name</a>
-                            }
-                            else
-                            {
-                                if (folder.EnableLanding)
-                                {
-                                    <a asp-action="Landing" asp-route-id="@folder.Id" class="card-link text-white folder-button">@folder.Name</a>
-                                }
-                                else
-                                {
-                                    <a href="https://wa.me/77759231052?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {folder.Name} курсына тіркелгім келеді")" class="card-link text-white folder-button">
-                                        @folder.Name
-                                    </a>
-                                }
-                            }
+                switch (item.Type)
+                {
+                    case FolderItemType.Folder:
+                        <div class="col-auto mb-3">
+                            <div class="card text-white" style="width: 18rem; background-color: @if (!string.IsNullOrWhiteSpace(item.Color)){@item.Color} else {@Html.Raw("#66a1d2")}">
+                                <div class="card-body text-center folder-button">
+                                    @if (item.Price == 0 || User.IsInRole("Admin") || FolderService.IsUserHasAccess(item.Id, userId))
+                                    {
+                                        <a asp-action="Folder" asp-route-id="@item.Id" class="card-link text-white folder-button">@item.Title</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="https://wa.me/77759231052?text=@HttpUtility.UrlEncode($"Сәлеметсізбе! Мен {item.Title} курсына тіркелгім келеді")" class="card-link text-white folder-button">
+                                            @item.Title
+                                        </a>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            }
-            @foreach (var course in courses)
-            {
-                <div class="col-auto mb-3">
-                    <div class="card text-white folder-button" style="width: 18rem; background-color: @if(!string.IsNullOrWhiteSpace(course.Color)){@course.Color} else {@Html.Raw("#66a1d2")}">
-                        <div class="card-body text-center">
-                            <a asp-controller="Course" asp-action="Index" asp-route-id="@course.Id" class="card-link text-white">@course.Name</a>
+                        break;
+                    case FolderItemType.Course:
+                        <div class="col-auto mb-3">
+                            <div class="card text-white folder-button" style="width: 18rem; background-color: @if (!string.IsNullOrWhiteSpace(item.Color)){@item.Color} else {@Html.Raw("#66a1d2")}">
+                                <div class="card-body text-center">
+                                    <a asp-controller="Course" asp-action="Index" asp-route-id="@item.Id" class="card-link text-white">@item.Title</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            }
-            @foreach (var quiz in quizzes.OrderBy(x => x.Order).ThenBy(x => x.Title))
-            {
-                <div class="col-auto mb-3">
-                    <div class="card text-white folder-button" style="width: 18rem; background-color: @if(!string.IsNullOrWhiteSpace(quiz.Color)){ @quiz.Color} else {@Html.Raw("#66a1d2")}">
-                        <div class="card-body text-center">
-                            @if (quiz.Type == QuizType.MultipleChoice)
-                            {
-                                <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
-                            }
-                            else
-                            {
-                                <a asp-controller="TakeQuiz" asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="card-link text-white folder-button">@quiz.Title</a>
-                            }
-                            <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@quiz.Id" class="card-link text-white">Рейтинг</a>
+                        break;
+                    case FolderItemType.Quiz:
+                        <div class="col-auto mb-3">
+                            <div class="card text-white folder-button" style="width: 18rem; background-color: @if (!string.IsNullOrWhiteSpace(item.Color)){ @item.Color} else {@Html.Raw("#66a1d2")}">
+                                <div class="card-body text-center">
+                                    @if (item.QuizType == QuizType.MultipleChoice)
+                                    {
+                                        <a asp-controller="TakeQuiz" asp-action="Quiz" asp-route-id="@item.Id" class="card-link text-white folder-button">@item.Title</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="TakeQuiz" asp-action="OpenQuiz" asp-route-id="@item.Id" class="card-link text-white folder-button">@item.Title</a>
+                                    }
+                                    <a asp-controller="TakeQuiz" asp-action="Results" asp-route-id="@item.Id" class="card-link text-white">Рейтинг</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        break;
+                }
             }
-            @if (Model.IsQuizGroup && quizzes.Count > 0)
+            @if (Model.IsQuizGroup)
             {
                 <div class="col-auto mb-3">
                     <div class="card folder-button" style="width: 18rem; background-color: #66a1d2">
@@ -87,4 +78,3 @@
         </div>
     </div>
 </div>
-

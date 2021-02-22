@@ -51,29 +51,29 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction("Index","Landing");
         }
+        //public async Task<IActionResult> Folder(long id)
+        //{
+        //    var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
+        //    if (folder == null)
+        //    {
+        //        _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
+        //        return RedirectToAction("Index");
+        //    }
+        //    var childs = await _folderService.GetChilds(id);
+        //    var courses = await _courseService.GetByFolderId(id);
+        //    var quizzes = await _quizService.GetByFolderId(id);
+        //    if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
+        //        return RedirectToAction("Index", "Course", new { id = courses.First().Id });
+        //    if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
+        //        return quizzes.First().Type == QuizType.MultipleChoice
+        //            ? RedirectToAction("Quiz", "TakeQuiz", new { id = quizzes.First().Id })
+        //            : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
+        //    return View(folder);
+        //}
+
         public async Task<IActionResult> Folder(long id)
         {
             var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
-            if (folder == null)
-            {
-                _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
-                return RedirectToAction("Index");
-            }
-            var childs = await _folderService.GetChilds(id);
-            var courses = await _courseService.GetByFolderId(id);
-            var quizzes = await _quizService.GetByFolderId(id);
-            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
-                return RedirectToAction("Index", "Course", new { id = courses.First().Id });
-            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
-                return quizzes.First().Type == QuizType.MultipleChoice
-                    ? RedirectToAction("Quiz", "TakeQuiz", new { id = quizzes.First().Id })
-                    : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
-            return View(folder);
-        }
-
-        public async Task<IActionResult> Folder2(long id)
-        {
-            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
             if (folder == null)
             {
                 _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
