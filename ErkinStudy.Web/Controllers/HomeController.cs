@@ -84,7 +84,7 @@ namespace ErkinStudy.Web.Controllers
 
             var childs = _folderService.GetChildsEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Price = x.Price, Title = x.Name, Color = x.Color, Type = FolderItemType.Folder});
             var courses = _folderService.GetCoursesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Price = x.Price, Title = x.Name, Color = x.Color, Type = FolderItemType.Course });
-            var quizzes = _folderService.GetQuizzesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Title = x.Title, Color =x.Color, Type  = FolderItemType.Quiz });
+            var quizzes = _folderService.GetQuizzesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Title = x.Title, Color =x.Color, Type  = FolderItemType.Quiz, QuizType = x.Type });
             model.Items = childs.Union(courses).Union(quizzes);
             return View(model);
         }
