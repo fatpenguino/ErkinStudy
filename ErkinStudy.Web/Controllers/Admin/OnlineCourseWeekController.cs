@@ -34,25 +34,6 @@ namespace ErkinStudy.Web.Controllers.Admin
                 : View(_context.OnlineCourseWeeks.Include(x => x.OnlineCourse).AsQueryable());
         }
 
-        // GET: OnlineCourseWeek/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var onlineCourseWeek = await _context.OnlineCourseWeeks
-                .Include(o => o.OnlineCourse)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (onlineCourseWeek == null)
-            {
-                return NotFound();
-            }
-
-            return View(onlineCourseWeek);
-        }
-
         // GET: OnlineCourseWeek/Create
         public IActionResult Create(long onlineCourseId)
         {
@@ -64,7 +45,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,OnlineCourseId,Name,Description,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
+        public async Task<IActionResult> Create([Bind("Id,OnlineCourseId,Name,Description,StartDate,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +76,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,OnlineCourseId,Name,Description,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,OnlineCourseId,Name,Description,StartDate,Order,StreamUrl")] OnlineCourseWeek onlineCourseWeek)
         {
             if (id != onlineCourseWeek.Id)
             {
@@ -158,19 +139,19 @@ namespace ErkinStudy.Web.Controllers.Admin
                 try
                 {
                     // путь к папке Homeworks
-                    string path = "/Homeworks/" + uploadedHomework.FileName;
+                    string path = "/Homeworks/" + $"{onlineCourseWeekId}week{uploadedHomework.FileName}";
                     // сохраняем файл в папку Homeworks в каталоге wwwroot
                     await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
                     {
                         await uploadedHomework.CopyToAsync(fileStream);
                     }
                     var homework = new Homework() { Name = uploadedHomework.FileName, Path = path, OnlineCourseWeekId = onlineCourseWeekId, UploadTime = DateTime.UtcNow };
-                    _context.Homeworks.Add(homework);
+                    await _context.Homeworks.AddAsync(homework);
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Ошибка при загрузке файла homework- {e}");
+                    _logger.LogError($"Ошибка при загрузке файла homework - {e}");
                 }
             }
             return RedirectToAction("Homeworks", new { id = onlineCourseWeekId });

@@ -35,7 +35,8 @@ namespace ErkinStudy.Web.Controllers.Admin
         // GET: Folder
         public async Task<IActionResult> Index()
         {
-            return User.IsInRole("Teacher") ? View(await _folderService.GetFoldersByTeacherId(_userManager.FindByNameAsync(User.Identity.Name).Result.Id, true)) : View(_context.Folders.Where(x => !x.ParentId.HasValue).Include(x =>x.Lessons).OrderBy(x => x.Order).AsQueryable());
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            return User.IsInRole("Teacher") ? View(await _folderService.GetFoldersByTeacherId(user.Id, true)) : View(_context.Folders.Where(x => !x.ParentId.HasValue).Include(x =>x.Lessons).OrderBy(x => x.Order).AsEnumerable());
         }
 
         // GET: Folder/Details/5
@@ -106,7 +107,7 @@ namespace ErkinStudy.Web.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,Price,IsActive,LandingPage,Color,EnableLanding,IsQuizGroup")] Folder folder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,TeacherId,ParentId,Order,CreatedAt,Price,IsActive,LandingPage,Color,EnableLanding,IsQuizGroup")] Folder folder)
         {
             if (id != folder.Id)
             {

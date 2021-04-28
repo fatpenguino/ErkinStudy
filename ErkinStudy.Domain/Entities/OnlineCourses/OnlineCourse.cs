@@ -12,6 +12,7 @@ namespace ErkinStudy.Domain.Entities.OnlineCourses
         public long Price { get; set; }
         public bool IsActive { get; set; }
         public string Color { get; set; }
+        public uint Order { get; set; }
         public virtual ICollection<OnlineCourseWeek> OnlineCourseWeeks { get; set; }
     }
 }

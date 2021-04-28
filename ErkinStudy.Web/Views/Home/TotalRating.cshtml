@@ -1,6 +1,6 @@
 ﻿@model ErkinStudy.Web.Models.TotalRatingViewModel
 @{
-    ViewData["Title"] = "Scores";
+    ViewData["Title"] = $"{Model.FolderName} Жалпы рейтинг";
     var quizQuantity = Model.QuizIds.Length;
     var userCounter = 0;
 }

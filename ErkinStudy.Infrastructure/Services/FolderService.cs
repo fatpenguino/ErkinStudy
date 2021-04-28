@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ErkinStudy.Domain.Entities.Lessons;
+using ErkinStudy.Domain.Entities.OnlineCourses;
+using ErkinStudy.Domain.Entities.Quizzes;
 using ErkinStudy.Infrastructure.Context;
 using ErkinStudy.Infrastructure.DTOs.Quiz;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +41,18 @@ namespace ErkinStudy.Infrastructure.Services
             return folder != null ? folder.Name : string.Empty;
         }
 
+        public IEnumerable<Folder> GetChildsEnumerable(long id, bool active = true)
+        {
+            return active ? _context.Folders.Where(x => x.IsActive && x.ParentId == id).AsEnumerable() :  _context.Folders.Where(x => x.ParentId == id).AsEnumerable();
+        }
+        public IEnumerable<Quiz> GetQuizzesEnumerable(long id, bool active = true)
+        {
+            return active ? _context.Quizzes.Where(x => x.IsActive && x.FolderId == id).AsEnumerable() : _context.Quizzes.Where(x => x.FolderId == id).AsEnumerable();
+        }
+        public IEnumerable<OnlineCourse> GetCoursesEnumerable(long id, bool active = true)
+        {
+            return active ? _context.OnlineCourses.Where(x => x.IsActive && x.FolderId == id).AsEnumerable() : _context.OnlineCourses.Where(x => x.FolderId == id).AsEnumerable();
+        }
         public async Task<List<Folder>> GetChilds(long id, bool active = true)
         {
             return active ? await _context.Folders.Where(x => x.IsActive && x.ParentId == id).ToListAsync() : await _context.Folders.Where(x => x.ParentId == id).ToListAsync();
@@ -116,7 +130,7 @@ namespace ErkinStudy.Infrastructure.Services
 
         public async Task<List<Folder>> GetUserFolders(long userId)
         {
-            return await _context.UserFolders.Include(x => x.Folder).Where(x => x.UserId == userId && x.Folder.IsActive).Select(x => x.Folder)
+            return await _context.UserFolders.Include(x => x.Folder).Where(x => x.UserId == userId).Select(x => x.Folder)
                 .ToListAsync();
 
         }

@@ -165,7 +165,7 @@ namespace ErkinStudy.Web.Controllers.Admin
             return View(quiz);
         }
         [HttpPost]
-        public IActionResult Clone(long quizId, string title, string description, int order, long? folderId)
+        public IActionResult Clone(long quizId, string title, string description, uint order, long? folderId)
         {
             try
             {

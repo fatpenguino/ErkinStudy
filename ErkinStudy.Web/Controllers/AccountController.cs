@@ -19,16 +19,14 @@ namespace ErkinStudy.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<AccountController> _logger;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly EmailService _emailService;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            ILogger<AccountController> logger, EmailService emailService, RoleManager<ApplicationRole> roleManager)
+            ILogger<AccountController> logger, EmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailService = emailService;
-            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -210,9 +208,9 @@ namespace ErkinStudy.Web.Controllers
             //var user = _userManager.FindByNameAsync("moderator").Result;
             //_userManager.AddToRoleAsync(user, "Moderator").Wait();
             //AppDbInitializer.SeedUsers(_userManager, _roleManager);
-            var role = new ApplicationRole();
-            role.Name = "Moderator";
-            _roleManager.CreateAsync(role).Wait();
+            //var role = new ApplicationRole();
+            //role.Name = "Moderator";
+            //_roleManager.CreateAsync(role).Wait();
             return View(nameof(Login));
         }
 

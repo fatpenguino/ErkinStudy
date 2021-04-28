@@ -21,6 +21,9 @@
                 Folder
             </th>
             <th>
+                Order
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
@@ -43,6 +46,9 @@
             </td>
             <td>
                 @FolderService.GetFolderName(item.FolderId ?? 0)
+            </td>
+            <td>
+                @item.Order
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)

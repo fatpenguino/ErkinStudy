@@ -9,7 +9,7 @@
     ViewData["Title"] = "Manage";
     var courses = await CourseService.GetByFolderId(Model.Id, false);
     var quizzes = await QuizService.GetByFolderId(Model.Id, false);
-    var lessons = await LessonService.GetByFolderId(Model.Id, false);
+    //var lessons = await LessonService.GetByFolderId(Model.Id, false);
     var childs = await FolderService.GetChilds(Model.Id, false);
     var users = await FolderService.GetApprovedUsers(Model.Id);
 }
@@ -124,11 +124,14 @@
                             <th>
                                 Description
                             </th>
-                            <th>
-                                Folder
-                            </th>
+                            @*<th>
+            Folder
+        </th>*@
                             <th>
                                 Price
+                            </th>
+                            <th>
+                                Order
                             </th>
                             <th>
                                 Color
@@ -149,11 +152,14 @@
                             <td>
                                 @course.Description
                             </td>
-                            <td>
+                            @*<td>
                                 @Model.Name
-                            </td>
+                            </td>*@
                             <td>
                                 @course.Price
+                            </td>
+                            <td>
+                                @course.Order
                             </td>
                             <td style="@if(!string.IsNullOrWhiteSpace(course.Color)){ @Html.Raw($"background-color: {course.Color}")}">
                                 @course.Color
@@ -249,7 +255,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    @*<div class="card">
         <div class="card-header text-center" id="headingFive">
             <h2 class="mb-0">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
@@ -316,7 +322,7 @@
             </div>
 
         </div>
-</div>
+</div>*@
     <div class="card">
             <div class="card-header" id="headingOne">
                 <h2 class="mb-0 text-center">

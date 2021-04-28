@@ -6,7 +6,7 @@
 }
 <div class="container">
     <div class="row">
-        <h4 class="mx-auto mt-3 mb-3">@Model.First().Quiz.Title</h4>
+        <h4 class="mx-auto mt-3 mb-3">@Model.FirstOrDefault()?.Quiz.Title</h4>
 
         <table class="table">
             <thead>

@@ -8,6 +8,7 @@ using ErkinStudy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ErkinStudy.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -19,17 +20,17 @@ namespace ErkinStudy.Web.Controllers
         private readonly AppDbContext _dbContext;
         private readonly EmailService _emailService;
         private readonly FolderService _folderService;
-        private readonly QuizService _quizService;
         private readonly CourseService _courseService;
+        private readonly QuizService _quizService;
 
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, CourseService courseService, FolderService folderService, QuizService quizService)
+        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext, EmailService emailService, FolderService folderService, CourseService courseService, QuizService quizService)
         {
 	        _logger = logger;
 	        _dbContext = dbContext;
             _emailService = emailService;
-            _courseService = courseService;
             _folderService = folderService;
+            _courseService = courseService;
             _quizService = quizService;
         }
         public IActionResult Index()
@@ -50,30 +51,42 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction("Index","Landing");
         }
-        public async Task<IActionResult> OnlineCourseSchedule(long onlineCourseId)
-        {
-            var onlineCourse = await _dbContext.OnlineCourses.Include(x => x.OnlineCourseWeeks).ThenInclude(x => x.Homeworks)
-                .FirstOrDefaultAsync(x => x.Id == onlineCourseId);
-            return View(onlineCourse);
-        }
+        //public async Task<IActionResult> Folder(long id)
+        //{
+        //    var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
+        //    if (folder == null)
+        //    {
+        //        _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
+        //        return RedirectToAction("Index");
+        //    }
+        //    var childs = await _folderService.GetChilds(id);
+        //    var courses = await _courseService.GetByFolderId(id);
+        //    var quizzes = await _quizService.GetByFolderId(id);
+        //    if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
+        //        return RedirectToAction("Index", "Course", new { id = courses.First().Id });
+        //    if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
+        //        return quizzes.First().Type == QuizType.MultipleChoice
+        //            ? RedirectToAction("Quiz", "TakeQuiz", new { id = quizzes.First().Id })
+        //            : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
+        //    return View(folder);
+        //}
+
         public async Task<IActionResult> Folder(long id)
         {
-            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
+            var folder = await _dbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
             if (folder == null)
             {
                 _logger.LogError($"Ошибка при открытие папки, не существует такой папки {id}");
                 return RedirectToAction("Index");
             }
-            var childs = await _folderService.GetChilds(id);
-            var courses = await _courseService.GetByFolderId(id);
-            var quizzes = await _quizService.GetByFolderId(id);
-            if (childs.Count == 0 && courses.Count == 1 && quizzes.Count == 0)
-               return RedirectToAction("Index", "Course",new { id = courses.First().Id});
-            if (childs.Count == 0 && courses.Count == 0 && quizzes.Count == 1)
-                return quizzes.First().Type == QuizType.MultipleChoice
-                    ? RedirectToAction("Quiz", "TakeQuiz", new {id = quizzes.First().Id})
-                    : RedirectToAction("OpenQuiz", "TakeQuiz", new { id = quizzes.First().Id });
-            return View(folder);
+
+            var model = new FolderViewModel {Id = folder.Id, Price = folder.Price, Title = folder.Name, IsQuizGroup = folder.IsQuizGroup};
+
+            var childs = _folderService.GetChildsEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Price = x.Price, Title = x.Name, Color = x.Color, Type = FolderItemType.Folder});
+            var courses = _folderService.GetCoursesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Price = x.Price, Title = x.Name, Color = x.Color, Type = FolderItemType.Course });
+            var quizzes = _folderService.GetQuizzesEnumerable(id).Select(x => new FolderItem() { Id = x.Id, Order = x.Order, Title = x.Title, Color =x.Color, Type  = FolderItemType.Quiz, QuizType = x.Type });
+            model.Items = childs.Union(courses).Union(quizzes);
+            return View(model);
         }
         public async Task<IActionResult> Tests()
         {
@@ -121,6 +134,29 @@ namespace ErkinStudy.Web.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [Authorize]
+        public IActionResult FeedBack()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> FeedBack(string subject, string message, string anonymous)
+        {
+            try
+            {
+                message = anonymous == "on"
+                    ? $"Кері байланыс: Аноним, Message: {message}"
+                    : $"Кері байланыс: Email - {User.Identity.Name}, Message: {message}";
+                await _emailService.SendEmailAsync(subject, message, "report@erkinstudy.kz");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Ошибка во время отправки из формы контактов, {e}");
+            }
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Offer()
         {
             return View();

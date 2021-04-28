@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "Кері байланысу";
+}
+<div class="container">
+            <div class="row">
+                <div class="col-md-4 mx-auto mt-4">
+                    <form role="form" method="post" id="contactForm" name="contact-form" data-toggle="validator" asp-action="FeedBack">
+                        <h4>Кері байланыс</h4>
+                        <hr />
+                        <div class="form-group">
+                            <label for="msg_subject">Тақырып</label>
+                            <input class="form-control" id="msg_subject" type="text" name="subject" required data-error="Тақырыбыңызды енгізіңіз!">
+                        </div>
+                        <!-- Message -->
+                        <div class="form-group">
+                            <label for="message">Хабарлама</label>
+                            <textarea class="form-control" rows="5" id="message" name="message" required data-error="Хабарламаңызды енгізіңіз!"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="anonymous" type="checkbox" name="anonymous">
+                            <label for="anonymous">Анонимді</label>
+                        </div>
+                        <!-- Form Submit -->
+                        <div class="form-group mt-2">
+                            <button class="btn btn-primary" type="submit" id="form-submit">Жіберу</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
